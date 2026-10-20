@@ -88,11 +88,7 @@ func (e *emitter) emitFunc(buf *bytes.Buffer, p *funcPlan) {
 	type fieldEntry struct{ name, expr string }
 	entries := make([]fieldEntry, 0, len(p.fields))
 	for _, f := range p.fields {
-		val := "src." + f.read.name
-		if f.read.getter {
-			val += "()"
-		}
-		entries = append(entries, fieldEntry{f.dstName, e.fieldExpr(fn, f, val)})
+		entries = append(entries, fieldEntry{f.dstName, e.fieldExpr(fn, f, readExpr(f.read))})
 	}
 
 	lit := p.dst
@@ -101,15 +97,73 @@ func (e *emitter) emitFunc(buf *bytes.Buffer, p *funcPlan) {
 		lit = ptr.Elem()
 		amp = "&"
 	}
-	fmt.Fprintf(buf, "return %s%s{\n", amp, e.typeExpr(lit))
+
+	// A oneof is set after the literal, so a function with one builds the
+	// value up in dst; any other returns the literal itself.
+	hasOneof := len(p.dstOneofs) > 0 || len(p.srcOneofs) > 0
+	if hasOneof {
+		fmt.Fprintf(buf, "dst := %s%s{\n", amp, e.typeExpr(lit))
+	} else {
+		fmt.Fprintf(buf, "return %s%s{\n", amp, e.typeExpr(lit))
+	}
 	for _, entry := range entries {
 		fmt.Fprintf(buf, "%s: %s,\n", entry.name, entry.expr)
 	}
 	buf.WriteString("}")
-	if p.returnsError {
-		buf.WriteString(", nil")
+	if !hasOneof {
+		if p.returnsError {
+			buf.WriteString(", nil")
+		}
+		buf.WriteString("\n}\n")
+		return
 	}
-	buf.WriteString("\n}\n")
+	buf.WriteString("\n")
+	for _, o := range p.dstOneofs {
+		e.emitDstOneof(fn, o)
+	}
+	for _, o := range p.srcOneofs {
+		e.emitSrcOneof(fn, o)
+	}
+	fmt.Fprintf(buf, "return %s\n}\n", e.returnVals(p, "dst"))
+}
+
+func readExpr(r readAccess) string {
+	if r.getter {
+		return "src." + r.name + "()"
+	}
+	return "src." + r.name
+}
+
+// emitDstOneof writes the chain that stores the first set arm in the
+// destination field, leaving it nil when none is.
+func (e *emitter) emitDstOneof(fn *fnCtx, o dstOneof) {
+	for i, a := range o.arms {
+		tv := e.tmp("v")
+		if i == 0 {
+			fmt.Fprintf(fn.buf, "if %s := %s; %s != nil {\n", tv, readExpr(a.read), tv)
+		} else {
+			fmt.Fprintf(fn.buf, "} else if %s := %s; %s != nil {\n", tv, readExpr(a.read), tv)
+		}
+		val := tv
+		if a.deref {
+			val = "*" + tv
+		}
+		expr := e.fieldExpr(fn, fieldPlan{dstName: o.dstName, dstType: a.field.Type(), conv: a.conv}, val)
+		fmt.Fprintf(fn.buf, "dst.%s = &%s{%s: %s}\n", o.dstName, e.typeExpr(a.wrapper), a.field.Name(), expr)
+	}
+	fn.buf.WriteString("}\n")
+}
+
+// emitSrcOneof writes the type switch that takes each arm the destination
+// has a field for out of its wrapper.
+func (e *emitter) emitSrcOneof(fn *fnCtx, o srcOneof) {
+	tv := e.tmp("v")
+	fmt.Fprintf(fn.buf, "switch %s := %s.(type) {\n", tv, readExpr(o.read))
+	for _, a := range o.arms {
+		fmt.Fprintf(fn.buf, "case *%s:\n", e.typeExpr(a.wrapper))
+		e.emitAssign(fn, "dst."+a.dstName, tv+"."+a.field.Name(), a.conv, a.dstType, a.dstName)
+	}
+	fn.buf.WriteString("}\n")
 }
 
 // fieldExpr emits any statements needed to convert one field and returns

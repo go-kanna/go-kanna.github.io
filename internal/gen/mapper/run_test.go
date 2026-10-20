@@ -159,6 +159,93 @@ func TestRunPerPairDirection(t *testing.T) {
 	}
 }
 
+// A protobuf oneof maps both ways, and -exclude on an arm's wrapper leaves
+// that arm out.
+func TestRunOneof(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	writeModule(t, dir, baseModule(
+		"package model\n\ntype Event struct {\n\tNote   *string\n\tCount  *int64\n}\n",
+		`package wire
+
+type Event struct {
+	Kind isEvent_Kind
+}
+
+type isEvent_Kind interface{ isEvent_Kind() }
+
+type Event_Note struct{ Note string }
+
+type Event_Count struct{ Count int64 }
+
+type Event_Secret struct{ Secret string }
+
+func (*Event_Note) isEvent_Kind()   {}
+func (*Event_Count) isEvent_Kind()  {}
+func (*Event_Secret) isEvent_Kind() {}
+`,
+	))
+
+	code, _, stderr := runCLI(t, dir,
+		"-types=example.com/app/model.Event:*example.com/app/wire.Event",
+		"-exclude=example.com/app/wire.Event_Secret.Secret",
+		"-destination=./out", "-package=out")
+	if code != exit.OK {
+		t.Fatalf("Run() = %d, want %d\nstderr: %s", code, exit.OK, stderr)
+	}
+
+	got := readGenerated(t, dir)
+	for _, want := range []string{
+		"if v0 := src.Note; v0 != nil {\n" +
+			"\t\tdst.Kind = &wire.Event_Note{Note: *v0}\n" +
+			"\t} else if v1 := src.Count; v1 != nil {",
+		"switch v0 := src.Kind.(type) {\n" +
+			"\tcase *wire.Event_Note:\n\t\tv1 := v0.Note\n\t\tdst.Note = &v1\n" +
+			"\tcase *wire.Event_Count:",
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("generated file does not contain %q:\n%s", want, got)
+		}
+	}
+	if strings.Contains(got, "Event_Secret") {
+		t.Errorf("generated file maps the excluded arm:\n%s", got)
+	}
+}
+
+// An interface field both sides have is copied as is, even when its
+// implementations look like oneof arms.
+func TestRunInterfaceFieldOnBothSides(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	writeModule(t, dir, baseModule(
+		`package model
+
+type Shape interface{ Area() float64 }
+
+type Circle struct{ R float64 }
+
+func (*Circle) Area() float64 { return 0 }
+
+type Figure struct{ Outline Shape }
+`,
+		"package wire\n\nimport \"example.com/app/model\"\n\ntype Figure struct{ Outline model.Shape }\n",
+	))
+
+	code, _, stderr := runCLI(t, dir,
+		"-types=example.com/app/model.Figure:example.com/app/wire.Figure",
+		"-destination=./out", "-package=out")
+	if code != exit.OK {
+		t.Fatalf("Run() = %d, want %d\nstderr: %s", code, exit.OK, stderr)
+	}
+
+	got := readGenerated(t, dir)
+	if n := strings.Count(got, "Outline: src.Outline,"); n != 2 {
+		t.Errorf("generated file copies Outline %d times, want 2:\n%s", n, got)
+	}
+}
+
 // A tag on a promoted field keeps applying. Copying the field anyway would leak
 // data the author excluded, with nothing on stderr to say so.
 func TestRunPromotedFieldKeepsItsTag(t *testing.T) {

@@ -36,6 +36,32 @@ func employeePairs(t *testing.T) ([]mapper.PairSpec, mapper.ConverterTable, *pac
 	return pairs, table, model
 }
 
+// eventPairs adds the oneof-carrying pair to employeePairs; its arms resolve
+// through the Employee and Address pairs.
+func eventPairs(t *testing.T) ([]mapper.PairSpec, mapper.ConverterTable, *packages.Package) {
+	t.Helper()
+	pairs, table, model := employeePairs(t)
+	protolike := fixture(t, "protolike")
+	pairs = append(pairs, mapper.PairSpec{
+		Src: namedType(t, model, "Event"), Dst: types.NewPointer(namedType(t, protolike, "Event")),
+	})
+	return pairs, table, model
+}
+
+// plansNamed keeps the plans whose function name has one of the prefixes.
+func plansNamed(plans []*mapper.FuncPlan, prefixes ...string) []*mapper.FuncPlan {
+	var out []*mapper.FuncPlan
+	for _, p := range plans {
+		for _, prefix := range prefixes {
+			if strings.HasPrefix(mapper.PlanName(p), prefix) {
+				out = append(out, p)
+				break
+			}
+		}
+	}
+	return out
+}
+
 func TestResolvePlans(t *testing.T) {
 	t.Parallel()
 
@@ -85,6 +111,83 @@ func TestResolvePlans(t *testing.T) {
 		if got := mapper.DescribePlan(plan); got != want[i] {
 			t.Errorf("plan %d:\ngot:\n%s\nwant:\n%s", i, got, want[i])
 		}
+	}
+}
+
+// A destination oneof takes the first set source pointer, converted through
+// what it points at; a source oneof hands each arm to the destination field of
+// the arm's name, with the nil-safety any pointer gets.
+func TestResolvePlansOneof(t *testing.T) {
+	t.Parallel()
+
+	pairs, table, model := eventPairs(t)
+	plans, _, err := mapper.ResolvePlans(mapper.ResolveConfig{
+		Fset:  model.Fset,
+		Pairs: mapper.WithDirection(pairs, mapper.DirectionBoth),
+		Conv:  table,
+		Ignores: map[mapper.FieldKey]bool{
+			{PkgPath: model.PkgPath, Type: "Employee", Field: "CreatedAt"}: true,
+		},
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	want := []string{
+		`EventToProtolike(model.Event) *protolike.Event
+  Version = .Version direct
+  Kind = oneof
+    Event_Hired.Hired = *.Hired map:EmployeeToProtolike
+    Event_Moved.Moved = *.Moved map:AddressToProtolike
+    Event_Note.Note = *.Note direct`,
+		`EventFromProtolike(*protolike.Event) (model.Event, error)
+  Version = .GetVersion() direct
+  oneof .GetKind()
+    Hired = Event_Hired.Hired guard(addr(map:EmployeeFromProtolike))
+    Moved = Event_Moved.Moved guard(addr(map:AddressFromProtolike))
+    Note = Event_Note.Note addr(direct)`,
+	}
+	got := plansNamed(plans, "Event")
+	if len(got) != len(want) {
+		t.Fatalf("got %d Event plans, want %d", len(got), len(want))
+	}
+	for i, plan := range got {
+		if got := mapper.DescribePlan(plan); got != want[i] {
+			t.Errorf("plan %d:\ngot:\n%s\nwant:\n%s", i, got, want[i])
+		}
+	}
+}
+
+// -exclude names an arm by its wrapper, as TYPE.FIELD always does, and the
+// arm drops out of the chain.
+func TestResolvePlansOneofExcludesArm(t *testing.T) {
+	t.Parallel()
+
+	pairs, table, model := eventPairs(t)
+	protolike := fixture(t, "protolike")
+	plans, _, err := mapper.ResolvePlans(mapper.ResolveConfig{
+		Fset:  model.Fset,
+		Pairs: mapper.WithDirection(pairs, mapper.DirectionTo),
+		Conv:  table,
+		Ignores: map[mapper.FieldKey]bool{
+			{PkgPath: protolike.PkgPath, Type: "Event_Note", Field: "Note"}: true,
+		},
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	want := `EventToProtolike(model.Event) *protolike.Event
+  Version = .Version direct
+  Kind = oneof
+    Event_Hired.Hired = *.Hired map:EmployeeToProtolike
+    Event_Moved.Moved = *.Moved map:AddressToProtolike`
+	got := plansNamed(plans, "Event")
+	if len(got) != 1 {
+		t.Fatalf("got %d Event plans, want 1", len(got))
+	}
+	if got := mapper.DescribePlan(got[0]); got != want {
+		t.Errorf("got:\n%s\nwant:\n%s", got, want)
 	}
 }
 
@@ -247,9 +350,24 @@ func TestResolvePlansErrors(t *testing.T) {
 			wantErr: []string{"ambiguous"},
 		},
 		{
-			name: "oneof-like interface field",
+			name: "interface field without implementations",
 			src:  "OneofSrc", dst: "OneofDst",
-			wantErr: []string{"cannot map", "oneof"},
+			wantErr: []string{"cannot map", "oneof", "this one has none"},
+		},
+		{
+			name: "oneof arm without a source",
+			src:  "ArmlessSrc", dst: "ArmlessDst",
+			wantErr: []string{"no source field", "errcases.Armless_X.X (arm of errcases.ArmlessDst.Kind)"},
+		},
+		{
+			name: "oneof arm from a value",
+			src:  "ValueArmSrc", dst: "ValueArmDst",
+			wantErr: []string{"ValueArmSrc.X (string)", "set only when its source is"},
+		},
+		{
+			name: "oneof arm from another oneof",
+			src:  "BothSrc", dst: "BothDst",
+			wantErr: []string{"errcases.BothSrc_X.X", "not filled from another oneof"},
 		},
 		{
 			name: "opaque destination",

@@ -63,6 +63,31 @@ func TestEmitFile(t *testing.T) {
 	checkGolden(t, filepath.Join("testdata", "output", "output_gen.go"), got)
 }
 
+// The oneof functions go to their own golden in the same package, so the
+// Employee and Address functions they call come from output_gen.go.
+func TestEmitFileOneof(t *testing.T) {
+	t.Parallel()
+
+	pairs, table, model := eventPairs(t)
+	plans, _, err := mapper.ResolvePlans(mapper.ResolveConfig{
+		Fset:  model.Fset,
+		Pairs: mapper.WithDirection(pairs, mapper.DirectionBoth),
+		Conv:  table,
+		Ignores: map[mapper.FieldKey]bool{
+			{PkgPath: model.PkgPath, Type: "Employee", Field: "CreatedAt"}: true,
+		},
+	})
+	if err != nil {
+		t.Fatalf("resolve plans: %v", err)
+	}
+
+	got, err := mapper.EmitFile("output", fixturePrefix+"output", plansNamed(plans, "Event"))
+	if err != nil {
+		t.Fatalf("emit: %v", err)
+	}
+	checkGolden(t, filepath.Join("testdata", "output", "oneof_gen.go"), got)
+}
+
 func TestEmitFileSelfImport(t *testing.T) {
 	t.Parallel()
 

@@ -11,10 +11,11 @@ import (
 //
 // The emitter names its temporaries v0, err0, i0, e0 and so on, so a package
 // whose name looks like one of those is pushed aside before it can shadow it.
-// "src" is the parameter every generated function takes.
+// "src" is the parameter every generated function takes and "dst" the value a
+// function with oneof fields builds up.
 func newImportTracker(outputPkgPath string) *imports.Tracker {
 	return imports.New(outputPkgPath, func(base string) string {
-		if base == "src" || isTempPattern(base) {
+		if base == "src" || base == "dst" || isTempPattern(base) {
 			return base + "pkg"
 		}
 		return base

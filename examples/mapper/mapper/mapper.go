@@ -1,6 +1,6 @@
 package mapper
 
-//go:generate go tool kanna-mapper -types=model.Employee:*employeev1.Employee,model.Address:*employeev1.Address -converters=../lib/converters -exclude=employeev1.Employee.Revision
+//go:generate go tool kanna-mapper -types=model.Employee:*employeev1.Employee,model.Address:*employeev1.Address,model.Contact:*employeev1.Contact -converters=../lib/converters -exclude=employeev1.Employee.Revision
 
 import (
 	_ "github.com/go-kanna/kanna/examples/mapper/gen/employeev1"
