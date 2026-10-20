@@ -265,8 +265,7 @@ func holdsLocaleFiles(path string) bool {
 // localeDiag converts a locale error into a diagnostic, keeping the position
 // it carries and anchoring position-less ones to the file.
 func localeDiag(path string, err error) diag.Diag {
-	var pe *locale.Error
-	if errors.As(err, &pe) {
+	if pe, ok := errors.AsType[*locale.Error](err); ok {
 		return diag.Errorf(pe.Pos, "%s", pe.Msg)
 	}
 	return diag.Errorf(token.Position{Filename: path}, "%v", err)

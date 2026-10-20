@@ -140,8 +140,7 @@ func ParseFile(path string) (Catalog, error) {
 	}
 	c, err := parse(tag, data)
 	if err != nil {
-		var pe *Error
-		if errors.As(err, &pe) {
+		if pe, ok := errors.AsType[*Error](err); ok {
 			pe.Pos.Filename = path
 			return Catalog{}, pe
 		}
