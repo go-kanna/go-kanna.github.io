@@ -19,6 +19,7 @@ func EmployeeToEmployeev1(src model.Employee) *employeev1.Employee {
 		HiredAt:   converters.ToDate(src.HiredAt),
 		Address:   AddressToEmployeev1(src.Address),
 		Nicknames: src.Nicknames,
+		Contact:   ContactToEmployeev1(src.Contact),
 	}
 }
 
@@ -37,6 +38,7 @@ func EmployeeFromEmployeev1(src *employeev1.Employee) (model.Employee, error) {
 		HiredAt:   converters.ToTime(src.GetHiredAt()),
 		Address:   AddressFromEmployeev1(src.GetAddress()),
 		Nicknames: src.GetNicknames(),
+		Contact:   ContactFromEmployeev1(src.GetContact()),
 	}, nil
 }
 
@@ -57,4 +59,34 @@ func AddressFromEmployeev1(src *employeev1.Address) model.Address {
 		City:   src.GetCity(),
 		Street: src.GetStreet(),
 	}
+}
+
+// ContactToEmployeev1 maps model.Contact to *employeev1.Contact.
+func ContactToEmployeev1(src model.Contact) *employeev1.Contact {
+	dst := &employeev1.Contact{}
+	if v0 := src.Email; v0 != nil {
+		dst.Kind = &employeev1.Contact_Email{Email: *v0}
+	} else if v1 := src.Postal; v1 != nil {
+		dst.Kind = &employeev1.Contact_Postal{Postal: AddressToEmployeev1(*v1)}
+	}
+	return dst
+}
+
+// ContactFromEmployeev1 maps *employeev1.Contact to model.Contact.
+func ContactFromEmployeev1(src *employeev1.Contact) model.Contact {
+	if src == nil {
+		return model.Contact{}
+	}
+	dst := model.Contact{}
+	switch v0 := src.GetKind().(type) {
+	case *employeev1.Contact_Email:
+		v1 := v0.Email
+		dst.Email = &v1
+	case *employeev1.Contact_Postal:
+		if v2 := v0.Postal; v2 != nil {
+			v3 := AddressFromEmployeev1(v2)
+			dst.Postal = &v3
+		}
+	}
+	return dst
 }

@@ -38,10 +38,59 @@ type AmbiguousDst struct{ Ident string }
 // OneofSrc pairs with OneofDst.
 type OneofSrc struct{ Payload string }
 
-// OneofDst has an interface field like a protobuf oneof.
+// OneofDst has an interface field like a protobuf oneof, but nothing
+// implements it, so it is not one.
 type OneofDst struct{ Payload isPayload }
 
 type isPayload interface{ isPayload() }
+
+// ArmlessSrc has no field for the arm of ArmlessDst.Kind.
+type ArmlessSrc struct{ Other string }
+
+// ArmlessDst is a oneof whose arm has no source.
+type ArmlessDst struct{ Kind isArmless }
+
+type isArmless interface{ isArmless() }
+
+// Armless_X is the arm of ArmlessDst.Kind.
+type Armless_X struct{ X *string }
+
+func (*Armless_X) isArmless() {}
+
+// ValueArmSrc has the arm's field as a value, which cannot say whether it is
+// set.
+type ValueArmSrc struct{ X string }
+
+// ValueArmDst is a oneof whose arm's source is not nilable.
+type ValueArmDst struct{ Kind isValueArm }
+
+type isValueArm interface{ isValueArm() }
+
+// ValueArm_X is the arm of ValueArmDst.Kind.
+type ValueArm_X struct{ X string }
+
+func (*ValueArm_X) isValueArm() {}
+
+// BothSrc is a oneof whose arm matches an arm of BothDst, which is not
+// supported.
+type BothSrc struct{ Kind isBothSrc }
+
+type isBothSrc interface{ isBothSrc() }
+
+// BothSrc_X is the arm of BothSrc.Kind.
+type BothSrc_X struct{ X *string }
+
+func (*BothSrc_X) isBothSrc() {}
+
+// BothDst is the oneof BothSrc would fill.
+type BothDst struct{ Kind isBothDst }
+
+type isBothDst interface{ isBothDst() }
+
+// BothDst_X is the arm of BothDst.Kind.
+type BothDst_X struct{ X *string }
+
+func (*BothDst_X) isBothDst() {}
 
 // OpaqueSrc pairs with OpaqueDst.
 type OpaqueSrc struct{ Id string }

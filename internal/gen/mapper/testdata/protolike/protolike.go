@@ -128,3 +128,74 @@ type Flat struct {
 	Code string
 	Name string
 }
+
+// Event mirrors a message with a oneof, as protoc-gen-go writes it: the field
+// holds an interface, each arm is a struct wrapping one field, and the message
+// has a getter per arm.
+type Event struct {
+	state   int
+	Version int64
+	// Types that are assignable to Kind:
+	//
+	//	*Event_Hired
+	//	*Event_Moved
+	//	*Event_Note
+	Kind isEvent_Kind
+}
+
+func (x *Event) GetVersion() int64 {
+	if x != nil {
+		return x.Version
+	}
+	return 0
+}
+
+func (x *Event) GetKind() isEvent_Kind {
+	if x != nil {
+		return x.Kind
+	}
+	return nil
+}
+
+func (x *Event) GetHired() *Employee {
+	if x, ok := x.GetKind().(*Event_Hired); ok {
+		return x.Hired
+	}
+	return nil
+}
+
+func (x *Event) GetMoved() *Address {
+	if x, ok := x.GetKind().(*Event_Moved); ok {
+		return x.Moved
+	}
+	return nil
+}
+
+func (x *Event) GetNote() string {
+	if x, ok := x.GetKind().(*Event_Note); ok {
+		return x.Note
+	}
+	return ""
+}
+
+type isEvent_Kind interface {
+	isEvent_Kind()
+}
+
+type Event_Hired struct {
+	Hired *Employee
+}
+
+type Event_Moved struct {
+	Moved *Address
+}
+
+type Event_Note struct {
+	Note string
+}
+
+func (*Event_Hired) isEvent_Kind() {}
+
+func (*Event_Moved) isEvent_Kind() {}
+
+func (*Event_Note) isEvent_Kind() {}

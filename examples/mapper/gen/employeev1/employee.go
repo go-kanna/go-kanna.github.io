@@ -43,6 +43,7 @@ type Employee struct {
 	HiredAt   *Date
 	Address   *Address
 	Nicknames []string
+	Contact   *Contact
 
 	// Revision is owned by the server and has no domain counterpart, so the
 	// directive excludes it with -exclude. The type is generated, so there is
@@ -91,6 +92,62 @@ func (x *Employee) GetNicknames() []string {
 	}
 	return nil
 }
+
+func (x *Employee) GetContact() *Contact {
+	if x != nil {
+		return x.Contact
+	}
+	return nil
+}
+
+// Contact carries a oneof, in the shape protoc-gen-go gives one: the field
+// holds an interface, each arm is a struct wrapping one field, and the message
+// has a getter per arm.
+type Contact struct {
+	state int
+	// Types that are assignable to Kind:
+	//
+	//	*Contact_Email
+	//	*Contact_Postal
+	Kind isContact_Kind
+}
+
+func (x *Contact) GetKind() isContact_Kind {
+	if x != nil {
+		return x.Kind
+	}
+	return nil
+}
+
+func (x *Contact) GetEmail() string {
+	if x, ok := x.GetKind().(*Contact_Email); ok {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *Contact) GetPostal() *Address {
+	if x, ok := x.GetKind().(*Contact_Postal); ok {
+		return x.Postal
+	}
+	return nil
+}
+
+type isContact_Kind interface {
+	isContact_Kind()
+}
+
+type Contact_Email struct {
+	Email string
+}
+
+type Contact_Postal struct {
+	Postal *Address
+}
+
+func (*Contact_Email) isContact_Kind() {}
+
+func (*Contact_Postal) isContact_Kind() {}
 
 // Address is the wire-side representation of model.Address.
 type Address struct {

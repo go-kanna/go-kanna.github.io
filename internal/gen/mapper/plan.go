@@ -13,6 +13,8 @@ type funcPlan struct {
 	dst          types.Type
 	returnsError bool
 	fields       []fieldPlan
+	dstOneofs    []dstOneof
+	srcOneofs    []srcOneof
 }
 
 // fieldPlan describes how one destination field is populated.
@@ -29,6 +31,48 @@ type readAccess struct {
 	name   string
 	getter bool
 	typ    types.Type // type the read yields
+}
+
+// oneofArm is one implementation of a oneof interface: a struct that wraps the
+// arm's value in its single field, as protoc-gen-go writes them.
+type oneofArm struct {
+	wrapper *types.Named
+	field   *types.Var
+}
+
+// dstOneof fills a destination oneof field from the first of its arms whose
+// source field is set.
+type dstOneof struct {
+	dstName string
+	arms    []dstArm
+}
+
+// dstArm is one arm of a dstOneof: the source field that carries it, the
+// wrapper it is stored in, and how the set value becomes the wrapper's field.
+type dstArm struct {
+	oneofArm
+
+	read  readAccess
+	deref bool // convert what the pointer read points at, not the pointer
+	conv  op
+}
+
+// srcOneof fills destination fields from the arms of a source oneof field,
+// one per arm the destination has a field for.
+type srcOneof struct {
+	via  *types.Var // the interface-typed source field
+	read readAccess
+	arms []srcArm
+}
+
+// srcArm is one arm of a srcOneof: the wrapper the value arrives in and the
+// destination field it goes to.
+type srcArm struct {
+	oneofArm
+
+	dstName string
+	dstType types.Type
+	conv    op
 }
 
 // op describes how a source value becomes a destination value. Ops nest
@@ -89,6 +133,25 @@ func (o opAddr) mayFail() bool     { return o.elem.mayFail() }
 func (o opNilGuard) mayFail() bool { return o.elem.mayFail() }
 func (o opSlice) mayFail() bool    { return o.elem.mayFail() }
 
+// ops lists every conversion the function performs.
+func (p *funcPlan) ops() []op {
+	var ops []op
+	for _, f := range p.fields {
+		ops = append(ops, f.conv)
+	}
+	for _, o := range p.dstOneofs {
+		for _, a := range o.arms {
+			ops = append(ops, a.conv)
+		}
+	}
+	for _, o := range p.srcOneofs {
+		for _, a := range o.arms {
+			ops = append(ops, a.conv)
+		}
+	}
+	return ops
+}
+
 // describe renders a compact, human-readable form of the plan for tests
 // and debug output.
 func (p *funcPlan) describe() string {
@@ -99,13 +162,32 @@ func (p *funcPlan) describe() string {
 	}
 	fmt.Fprintf(&b, "%s(%s) %s", p.name, typeLabel(p.src), ret)
 	for _, f := range p.fields {
-		read := "." + f.read.name
-		if f.read.getter {
-			read += "()"
+		fmt.Fprintf(&b, "\n  %s = %s %s", f.dstName, describeRead(f.read), describeOp(f.conv))
+	}
+	for _, o := range p.dstOneofs {
+		fmt.Fprintf(&b, "\n  %s = oneof", o.dstName)
+		for _, a := range o.arms {
+			val := describeRead(a.read)
+			if a.deref {
+				val = "*" + val
+			}
+			fmt.Fprintf(&b, "\n    %s.%s = %s %s", a.wrapper.Obj().Name(), a.field.Name(), val, describeOp(a.conv))
 		}
-		fmt.Fprintf(&b, "\n  %s = %s %s", f.dstName, read, describeOp(f.conv))
+	}
+	for _, o := range p.srcOneofs {
+		fmt.Fprintf(&b, "\n  oneof %s", describeRead(o.read))
+		for _, a := range o.arms {
+			fmt.Fprintf(&b, "\n    %s = %s.%s %s", a.dstName, a.wrapper.Obj().Name(), a.field.Name(), describeOp(a.conv))
+		}
 	}
 	return b.String()
+}
+
+func describeRead(r readAccess) string {
+	if r.getter {
+		return "." + r.name + "()"
+	}
+	return "." + r.name
 }
 
 func describeOp(o op) string {

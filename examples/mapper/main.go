@@ -25,7 +25,9 @@ func main() {
 		HiredAt:   time.Date(2024, time.April, 1, 9, 30, 0, 0, time.UTC),
 		Address:   model.Address{City: "Tokyo", Street: "1-2-3"},
 		Nicknames: []string{"al", "ali"},
-		SyncedAt:  time.Date(2026, time.August, 10, 12, 0, 0, 0, time.UTC),
+		// One of the contact fields is set; the wire carries it as a oneof.
+		Contact:  model.Contact{Email: new("alice@example.com")},
+		SyncedAt: time.Date(2026, time.August, 10, 12, 0, 0, 0, time.UTC),
 	}
 
 	// The domain types have no counterpart on the wire — a UUID becomes a
@@ -43,6 +45,11 @@ func main() {
 		panic(err)
 	}
 	fmt.Printf("from wire: id=%s name=%s hired=%s\n", back.ID, back.FullName, back.HiredAt.Format(time.DateOnly))
+
+	// The set contact field became the matching arm of the oneof, and comes
+	// back as the same field; the other stays nil in both directions.
+	fmt.Printf("oneof:     email=%s postal set=%t back email=%s postal nil=%t\n",
+		wire.GetContact().GetEmail(), wire.GetContact().GetPostal() != nil, *back.Contact.Email, back.Contact.Postal == nil)
 
 	// The wire side is nil-safe throughout: a nil message maps to the zero
 	// value rather than panicking.

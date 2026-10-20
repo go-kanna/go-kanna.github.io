@@ -1,6 +1,7 @@
 package mapper
 
 import (
+	"cmp"
 	"errors"
 	"fmt"
 	"go/token"
@@ -192,10 +193,22 @@ func titleFirst(s string) string {
 }
 
 // srcField is a source struct field visible to matching, with its rename
-// tag if any.
+// tag if any. An arm of a source oneof is visible too, under the name of its
+// wrapper's field: v is then that field, and via the oneof field it is
+// reached through.
 type srcField struct {
 	v   *types.Var
 	tag string
+	via *types.Var
+	arm oneofArm
+}
+
+// dstField is a destination to find a source for: a field of the destination
+// struct, or the field of a oneof arm's wrapper.
+type dstField struct {
+	v     *types.Var
+	tag   string
+	label string // how messages name it
 }
 
 func (r *resolver) resolveFields(p *funcPlan) {
@@ -220,11 +233,22 @@ func (r *resolver) resolveFields(p *funcPlan) {
 		if skip {
 			continue
 		}
-		chosen, ok := r.matchSrcField(p, srcNamed, f, tag, srcFields)
+		d := dstField{v: f, tag: tag, label: namedLabel(p.dst) + "." + f.Name()}
+		// An interface the source carries too is matched like any other field
+		// and copied as is, rather than taken apart as a oneof.
+		if arms := oneofArms(f.Type()); len(arms) > 0 && !carriesType(srcFields, f.Type()) {
+			r.resolveDstOneof(p, srcNamed, d, arms, srcFields)
+			continue
+		}
+		chosen, ok := r.matchSrcField(p, srcNamed, d, srcFields)
 		if !ok {
 			continue
 		}
-		fp, ok := r.buildFieldPlan(p, f, chosen)
+		if sf, ok := armOf(srcFields, chosen); ok {
+			r.resolveSrcArm(p, d, sf)
+			continue
+		}
+		fp, ok := r.buildFieldPlan(p, d, chosen)
 		if !ok {
 			continue
 		}
@@ -233,8 +257,11 @@ func (r *resolver) resolveFields(p *funcPlan) {
 	r.checkSrcTags(p, srcFields, dstStruct)
 }
 
+// collectSrcFields lists the fields a destination can be matched against. The
+// arms of a oneof field follow the fields proper, so that a field wins an
+// exact-name match over an arm.
 func (r *resolver) collectSrcFields(st *types.Struct) []srcField {
-	var fields []srcField
+	var fields, arms []srcField
 	for i := range st.NumFields() {
 		f := st.Field(i)
 		if !f.Exported() {
@@ -245,8 +272,175 @@ func (r *resolver) collectSrcFields(st *types.Struct) []srcField {
 			continue
 		}
 		fields = append(fields, srcField{v: f, tag: tag})
+		for _, arm := range oneofArms(f.Type()) {
+			arms = append(arms, srcField{v: arm.field, via: f, arm: arm})
+		}
 	}
-	return fields
+	return append(fields, arms...)
+}
+
+// carriesType reports whether a field of the source struct, not an arm, has
+// type t.
+func carriesType(fields []srcField, t types.Type) bool {
+	return slices.ContainsFunc(fields, func(sf srcField) bool {
+		return sf.via == nil && types.Identical(sf.v.Type(), t)
+	})
+}
+
+// armOf reports whether v, as returned by matchSrcField, is the arm of a
+// source oneof rather than a field of the source struct.
+func armOf(fields []srcField, v *types.Var) (srcField, bool) {
+	for _, sf := range fields {
+		if sf.v == v && sf.via != nil {
+			return sf, true
+		}
+	}
+	return srcField{}, false
+}
+
+// oneofArms lists the arms of a protobuf oneof: the structs of the interface's
+// package that implement it through a pointer and wrap one exported field, as
+// protoc-gen-go writes them. Any other interface has no arms and is not a
+// oneof.
+func oneofArms(t types.Type) []oneofArm {
+	named, ok := types.Unalias(t).(*types.Named)
+	if !ok || named.Obj().Pkg() == nil {
+		return nil
+	}
+	iface, ok := named.Underlying().(*types.Interface)
+	if !ok || iface.NumMethods() == 0 {
+		return nil
+	}
+
+	var arms []oneofArm
+	scope := named.Obj().Pkg().Scope()
+	for _, name := range scope.Names() {
+		tn, ok := scope.Lookup(name).(*types.TypeName)
+		if !ok || tn.IsAlias() {
+			continue
+		}
+		wrapper, ok := tn.Type().(*types.Named)
+		if !ok || wrapper.TypeParams().Len() > 0 {
+			continue
+		}
+		st, ok := wrapper.Underlying().(*types.Struct)
+		if !ok || st.NumFields() != 1 || !st.Field(0).Exported() {
+			continue
+		}
+		if !types.Implements(types.NewPointer(wrapper), iface) {
+			continue
+		}
+		arms = append(arms, oneofArm{wrapper: wrapper, field: st.Field(0)})
+	}
+	// protoc-gen-go declares the wrappers in field order, which is the order
+	// the first-set-wins rule follows.
+	slices.SortStableFunc(arms, func(a, b oneofArm) int {
+		return cmp.Compare(a.wrapper.Obj().Pos(), b.wrapper.Obj().Pos())
+	})
+	return arms
+}
+
+// resolveDstOneof plans a destination oneof field. Each arm needs a source
+// that can be unset — a pointer, slice or map — because the arm is taken only
+// when it is; the first set arm, in declaration order, wins.
+func (r *resolver) resolveDstOneof(
+	p *funcPlan, srcNamed *types.Named, d dstField, arms []oneofArm, srcFields []srcField,
+) {
+	o := dstOneof{dstName: d.v.Name()}
+	for _, arm := range arms {
+		key := fieldKey{PkgPath: arm.wrapper.Obj().Pkg().Path(), Type: arm.wrapper.Obj().Name(), Field: arm.field.Name()}
+		if r.cfg.Ignores[key] {
+			r.usedIgnores[key] = true
+			continue
+		}
+		ad := dstField{v: arm.field, label: fmt.Sprintf("%s.%s (arm of %s)", armLabel(arm), arm.field.Name(), d.label)}
+		chosen, ok := r.matchSrcField(p, srcNamed, ad, srcFields)
+		if !ok {
+			continue
+		}
+		if sf, isArm := armOf(srcFields, chosen); isArm {
+			r.errs = append(r.errs, fmt.Errorf("%s: cannot map %s.%s to %s: a oneof arm is not filled from another oneof",
+				r.pos(arm.field), armLabel(sf.arm), sf.v.Name(), ad.label))
+			continue
+		}
+		read, ok := nilableRead(readCandidates(p.src, chosen))
+		if !ok {
+			r.errs = append(r.errs, fmt.Errorf(
+				"%s: cannot map %s.%s (%s) to %s: a oneof arm is set only when its source is, "+
+					"which takes a pointer, slice or map",
+				r.pos(arm.field), namedLabel(p.src), chosen.Name(), typeLabel(chosen.Type()), ad.label))
+			continue
+		}
+		conv, deref, err := r.armConv(read.typ, arm.field.Type())
+		if err != nil {
+			r.conversionError(ad, namedLabel(p.src)+"."+chosen.Name(), chosen.Type())
+			continue
+		}
+		o.arms = append(o.arms, dstArm{read: read, deref: deref, oneofArm: arm, conv: conv})
+	}
+	if len(o.arms) > 0 {
+		p.dstOneofs = append(p.dstOneofs, o)
+	}
+}
+
+// resolveSrcArm plans destination field d from the arm sf of a source oneof.
+func (r *resolver) resolveSrcArm(p *funcPlan, d dstField, sf srcField) {
+	conv, err := r.resolveOp(sf.v.Type(), d.v.Type())
+	if err != nil {
+		r.conversionError(d, armLabel(sf.arm)+"."+sf.v.Name(), sf.v.Type())
+		return
+	}
+	arm := srcArm{oneofArm: sf.arm, dstName: d.v.Name(), dstType: d.v.Type(), conv: conv}
+
+	i := slices.IndexFunc(p.srcOneofs, func(o srcOneof) bool { return o.via == sf.via })
+	if i < 0 {
+		p.srcOneofs = append(p.srcOneofs, srcOneof{via: sf.via, read: readOf(p.src, sf.via)})
+		i = len(p.srcOneofs) - 1
+	}
+	p.srcOneofs[i].arms = append(p.srcOneofs[i].arms, arm)
+}
+
+// armConv finds how a set source value becomes an arm's field. A pointer is
+// converted through what it points at — the arm is only taken when it is set,
+// so the pointer has nothing left to say — unless the field takes the pointer
+// itself or only a converter or pair for it exists.
+func (r *resolver) armConv(read, field types.Type) (conv op, deref bool, err error) {
+	ptr, isPtr := types.Unalias(read).(*types.Pointer)
+	if !isPtr || types.Identical(types.Unalias(read), types.Unalias(field)) {
+		conv, err = r.resolveOp(read, field)
+		return conv, false, err
+	}
+	if conv, err = r.resolveOp(ptr.Elem(), field); err == nil {
+		return conv, true, nil
+	}
+	conv, err = r.resolveOp(read, field)
+	return conv, false, err
+}
+
+func armLabel(arm oneofArm) string {
+	return arm.wrapper.Obj().Pkg().Name() + "." + arm.wrapper.Obj().Name()
+}
+
+// readOf picks how to read field: its getter when that yields the field's own
+// type, the field itself otherwise.
+func readOf(src types.Type, field *types.Var) readAccess {
+	cands := readCandidates(src, field)
+	for _, c := range cands {
+		if types.Identical(types.Unalias(c.typ), types.Unalias(field.Type())) {
+			return c
+		}
+	}
+	return cands[len(cands)-1]
+}
+
+// nilableRead picks the first read that can report unset.
+func nilableRead(cands []readAccess) (readAccess, bool) {
+	for _, c := range cands {
+		if isNilable(c.typ) {
+			return c, true
+		}
+	}
+	return readAccess{}, false
 }
 
 // fieldTag reads and validates the field's map tag. skip reports that the
@@ -272,12 +466,13 @@ func (r *resolver) fieldTag(st *types.Struct, i int) (string, bool) {
 	return tag, false
 }
 
-// matchSrcField finds the source field for dst field f.
-// Priority: f's own map tag, a source field tagged with f's name, exact
+// matchSrcField finds the source field for destination d.
+// Priority: d's own map tag, a source field tagged with d's name, exact
 // name match, case-insensitive match, then promoted fields (exact only).
 func (r *resolver) matchSrcField(
-	p *funcPlan, srcNamed *types.Named, f *types.Var, dstTag string, srcFields []srcField,
+	p *funcPlan, srcNamed *types.Named, d dstField, srcFields []srcField,
 ) (*types.Var, bool) {
+	f, dstTag := d.v, d.tag
 	var chosen *types.Var
 	if dstTag != "" {
 		for _, sf := range srcFields {
@@ -306,8 +501,8 @@ func (r *resolver) matchSrcField(
 	if len(tagged) == 1 {
 		if chosen != nil && chosen != tagged[0] {
 			r.errs = append(r.errs, fmt.Errorf(
-				"%s: conflicting map tags for %s.%s: the field's tag names %s but source field %s is tagged map:%q",
-				r.pos(f), namedLabel(p.dst), f.Name(), dstTag, tagged[0].Name(), f.Name()))
+				"%s: conflicting map tags for %s: the field's tag names %s but source field %s is tagged map:%q",
+				r.pos(f), d.label, dstTag, tagged[0].Name(), f.Name()))
 			return nil, false
 		}
 		chosen = tagged[0]
@@ -332,8 +527,8 @@ func (r *resolver) matchSrcField(
 		return folds[0], true
 	}
 	if len(folds) > 1 {
-		r.errs = append(r.errs, fmt.Errorf("%s: source field for %s.%s is ambiguous in %s",
-			r.pos(f), namedLabel(p.dst), f.Name(), typeLabel(p.src)))
+		r.errs = append(r.errs, fmt.Errorf("%s: source field for %s is ambiguous in %s",
+			r.pos(f), d.label, typeLabel(p.src)))
 		return nil, false
 	}
 	if v, ok := r.promotedField(p.src, srcNamed.Obj().Pkg(), f.Name()); ok {
@@ -346,7 +541,7 @@ func (r *resolver) matchSrcField(
 			return nil, false
 		}
 	}
-	r.unmappedError(p, f)
+	r.unmappedError(p, d)
 	return nil, false
 }
 
@@ -407,8 +602,9 @@ func declaringStruct(t types.Type, index []int) (*types.Struct, int, bool) {
 	return st, last, true
 }
 
-func (r *resolver) unmappedError(p *funcPlan, f *types.Var) {
-	msg := fmt.Sprintf("%s: no source field in %s for %s.%s", r.pos(f), typeLabel(p.src), namedLabel(p.dst), f.Name())
+func (r *resolver) unmappedError(p *funcPlan, d dstField) {
+	f := d.v
+	msg := fmt.Sprintf("%s: no source field in %s for %s", r.pos(f), typeLabel(p.src), d.label)
 	if f.Anonymous() {
 		msg += "\n\tnote: embedded fields are not flattened on the destination side"
 	}
@@ -422,7 +618,8 @@ func (r *resolver) unmappedError(p *funcPlan, f *types.Var) {
 // from. Otherwise a getter that unwraps a nil-able field is passed over for the
 // field itself: reading through it turns a nil pointer into a zero, which is
 // exactly the distinction the pointer was carrying.
-func (r *resolver) buildFieldPlan(p *funcPlan, dstField, srcVar *types.Var) (fieldPlan, bool) {
+func (r *resolver) buildFieldPlan(p *funcPlan, d dstField, srcVar *types.Var) (fieldPlan, bool) {
+	dstField := d.v
 	cands := readCandidates(p.src, srcVar)
 	dst := types.Unalias(dstField.Type())
 
@@ -441,7 +638,7 @@ func (r *resolver) buildFieldPlan(p *funcPlan, dstField, srcVar *types.Var) (fie
 		}
 	}
 
-	r.conversionError(p, dstField, srcVar)
+	r.conversionError(d, namedLabel(p.src)+"."+srcVar.Name(), srcVar.Type())
 	return fieldPlan{}, false
 }
 
@@ -465,16 +662,16 @@ func isNilable(t types.Type) bool {
 	return false
 }
 
-func (r *resolver) conversionError(p *funcPlan, dstField, srcVar *types.Var) {
-	srcT, dstT := srcVar.Type(), dstField.Type()
+func (r *resolver) conversionError(d dstField, srcLabel string, srcT types.Type) {
+	dstT := d.v.Type()
 	var b strings.Builder
-	fmt.Fprintf(&b, "%s: cannot map %s.%s (%s) to %s.%s (%s)",
-		r.pos(dstField), namedLabel(p.src), srcVar.Name(), typeLabel(srcT),
-		namedLabel(p.dst), dstField.Name(), typeLabel(dstT))
+	fmt.Fprintf(&b, "%s: cannot map %s (%s) to %s (%s)",
+		r.pos(d.v), srcLabel, typeLabel(srcT), d.label, typeLabel(dstT))
 	fmt.Fprintf(&b, "\n\tregister a converter: mapper.Register(func(%s) %s { ... })", typeLabel(srcT), typeLabel(dstT))
 	b.WriteString("\n\tor declare the pair in -types, or exclude the field with map:\"-\" or -exclude")
 	if isInterface(srcT) || isInterface(dstT) {
-		b.WriteString("\n\tnote: interface-typed fields (protobuf oneof) are not supported")
+		b.WriteString("\n\tnote: an interface-typed field is mapped only as a protobuf oneof, " +
+			"whose arms are single-field structs implementing it; this one has none")
 	}
 	r.errs = append(r.errs, errors.New(b.String()))
 }
@@ -678,6 +875,14 @@ func (r *resolver) coverageWarnings() {
 		for _, fp := range p.fields {
 			read[fp.read.name] = true
 		}
+		for _, o := range p.dstOneofs {
+			for _, a := range o.arms {
+				read[a.read.name] = true
+			}
+		}
+		for _, o := range p.srcOneofs {
+			read[o.read.name] = true
+		}
 
 		for _, col := range tf.Columns {
 			if read[col] {
@@ -725,12 +930,9 @@ func (r *resolver) finalize() {
 			if p.returnsError {
 				continue
 			}
-			for _, f := range p.fields {
-				if f.conv.mayFail() {
-					p.returnsError = true
-					changed = true
-					break
-				}
+			if slices.ContainsFunc(p.ops(), op.mayFail) {
+				p.returnsError = true
+				changed = true
 			}
 		}
 	}

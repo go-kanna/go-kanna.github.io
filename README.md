@@ -454,6 +454,40 @@ A nil source stays nil whenever the destination is a pointer too. That includes 
 pointer itself, such as `*timestamppb.Timestamp` → `time.Time` filling a `*time.Time`: it is called only when the
 source is set. To decide what nil becomes, register a converter between the two pointer types; it is called as is.
 
+### Protobuf oneofs
+
+A oneof arrives as an interface-typed field whose implementations are single-field wrapper structs, which is how
+`protoc-gen-go` writes them. On the domain side it is a set of pointer fields of which at most one is set:
+
+```go
+type Change struct {                       // domain
+	Version    int64
+	Membership *Membership
+	Category   *Category
+}
+
+type Change struct {                       // wire, as protoc-gen-go wrote it
+	Version int64
+	Kind    isChange_Kind                   // *Change_Membership | *Change_Category
+}
+```
+
+Each arm is matched to a domain field by the name of its wrapper's field, with the rules above, and converted the way
+that field would be. Going out, the first set field in the oneof's declaration order fills the arm; none set leaves
+the oneof nil. Coming back, a type switch on the oneof fills the field for the arm that is there:
+
+```go
+if v0 := src.Membership; v0 != nil {
+	dst.Kind = &syncv1.Change_Membership{Membership: MembershipToHouseholdv1(*v0)}
+} else if v1 := src.Category; v1 != nil {
+	dst.Kind = &syncv1.Change_Category{Category: CategoryToCategoryv1(*v1)}
+}
+```
+
+The domain field has to be a pointer, slice or map, because that is what says whether the arm is set. An arm with
+no domain field is an error like any other destination field; exclude it through its wrapper,
+`-exclude syncv1.Change_Membership.Membership`, or the whole oneof with `-exclude syncv1.Change.Kind`.
+
 ### With kanna-orm models
 
 When a pair type is a `//kanna:table` struct, the mapper reads the same orm tags the ORM generator does:
@@ -484,8 +518,8 @@ Packages without orm tags are untouched.
 
 [`examples/mapper`](examples/mapper) maps a domain aggregate onto protobuf-shaped wire types and back, covering each way
 a field can be handled: renamed with `map:"Name"`, excluded from the domain side with `map:"-"`, excluded from the wire
-side with `-exclude` where there is no tag to write, converted through a registered function, and converted through one
-that can fail. CI regenerates it and fails if the output would change.
+side with `-exclude` where there is no tag to write, converted through a registered function, converted through one
+that can fail, and folded into a oneof. CI regenerates it and fails if the output would change.
 
 ## kanna-orm
 

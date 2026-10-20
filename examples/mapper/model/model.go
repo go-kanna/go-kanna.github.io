@@ -21,6 +21,7 @@ type Employee struct {
 	HiredAt   time.Time
 	Address   Address
 	Nicknames []string
+	Contact   Contact
 
 	// Local bookkeeping that never crosses the wire. Without the tag the
 	// wire-to-domain direction fails: there is nothing on the wire to fill this
@@ -32,4 +33,12 @@ type Employee struct {
 type Address struct {
 	City   string
 	Street string
+}
+
+// Contact is one way to reach the employee: at most one field is set, which
+// is the shape the wire's oneof maps onto. Each field pairs with the arm of
+// the same name.
+type Contact struct {
+	Email  *string
+	Postal *Address
 }

@@ -40,3 +40,12 @@ type WithBase struct {
 	Base
 	Name string
 }
+
+// Event has at most one of its pointer fields set, the shape a protobuf oneof
+// maps onto.
+type Event struct {
+	Version int64
+	Hired   *Employee
+	Moved   *Address
+	Note    *string
+}
