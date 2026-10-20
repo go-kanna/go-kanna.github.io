@@ -12,6 +12,8 @@ formatters:
 linters:
   default: all
   settings:
+    dupword:
+      comments-only: true # String literals here are mostly Go source for the generators, where "DB DB" is a field, not a typo.
     errcheck:
       exclude-functions:
         - fmt.Fprint
@@ -37,6 +39,7 @@ linters:
     - dupl             # High false-positive rate in test suites where setup code is similar
     - err113           # Sentinel errors are used where meaningful; contextual fmt.Errorf is preferred elsewhere
     - exhaustruct      # Hinders use of default values; too boilerplate-heavy for large structs
+    - exhaustruct_v5   # Same as exhaustruct; v5 variant replaces the deprecated one
     - forbidigo        # Essential for CLI tools that rely on fmt.Print for user output
     - funlen           # Testing logic and table-driven tests naturally exceed standard length
     - gochecknoglobals # Necessary for certain package-level configurations or singleton patterns
