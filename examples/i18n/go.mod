@@ -2,6 +2,8 @@ module github.com/go-kanna/kanna/examples/i18n
 
 go 1.26.0
 
+toolchain go1.26.9
+
 // There is no matching require yet: kanna is unreleased, so this resolves
 // through the repository's go.work. Once it carries a tag, running
 // `go get -tool github.com/go-kanna/kanna/cmd/kanna-i18n` in your own module

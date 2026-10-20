@@ -2,6 +2,8 @@ module github.com/go-kanna/kanna/examples/mapper
 
 go 1.26.0
 
+toolchain go1.26.9
+
 tool github.com/go-kanna/kanna/cmd/kanna-mapper
 
 require (

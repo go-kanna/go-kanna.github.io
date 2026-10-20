@@ -2,6 +2,8 @@ module github.com/go-kanna/kanna/orm/integration
 
 go 1.26.0
 
+toolchain go1.26.9
+
 require (
 	github.com/go-kanna/kanna v0.1.6
 	github.com/go-sql-driver/mysql v1.10.1
