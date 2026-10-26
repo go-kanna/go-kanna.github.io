@@ -1,4 +1,7 @@
-package di
+// Package stale loads packages for a generator whose earlier output may no
+// longer type-check, setting that output aside so that the packages can be read
+// and the output written again.
+package stale
 
 import (
 	"bytes"
@@ -19,12 +22,13 @@ import (
 	"github.com/go-kanna/kanna/internal/scan"
 )
 
-// load loads the packages to generate for, setting aside output of an earlier
-// run that no longer type-checks.
+// Load loads the packages to generate for, setting aside the output of an
+// earlier run that no longer type-checks. outputs names the files a generator
+// writes; only a generated file by one of those names is ever set aside.
 //
-// A container that changes can leave its generated file referring to what is gone,
-// and a package that does not type-check cannot be regenerated. The constructors
-// in that file are planned again within the run, so nothing is lost by
+// A declaration that changes can leave its generated file referring to what is
+// gone, and a package that does not type-check cannot be regenerated. What that
+// file declares is generated again within the run, so nothing is lost by
 // neutralizing it, in two steps: first only the function bodies, which is where
 // stale output almost always breaks and which keeps hand-written callers
 // compiling; then, if that is not enough, the whole file. Errors anywhere else
@@ -32,13 +36,13 @@ import (
 //
 // The second return value lists the files whose declarations were dropped
 // entirely, for the caller to mention when errors remain.
-func load(patterns []string, cfg packages.Config) (*packages.Result, []string, error) {
+func Load(patterns []string, cfg packages.Config, outputs ...string) (*packages.Result, []string, error) {
 	res, err := loadPackages(patterns, cfg)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	stale := staleOutputs(res.Packages)
+	stale := staleOutputs(res.Packages, outputs)
 	if len(stale) == 0 {
 		return res, nil, nil
 	}
@@ -60,7 +64,7 @@ func load(patterns []string, cfg packages.Config) (*packages.Result, []string, e
 		return nil, nil, err
 	}
 
-	still := staleOutputs(res.Packages)
+	still := staleOutputs(res.Packages, outputs)
 	if len(still) == 0 {
 		return res, nil, nil
 	}
@@ -96,15 +100,16 @@ type staleFile struct {
 	pkgName string
 }
 
-// staleOutputs lists the generated output files that type errors point into.
-func staleOutputs(pkgs []*packages.Package) []staleFile {
+// staleOutputs lists the generated files named one of outputs that type errors
+// point into.
+func staleOutputs(pkgs []*packages.Package, outputs []string) []staleFile {
 	var out []staleFile
 	for _, pkg := range scan.DedupePackages(pkgs) {
 		if len(pkg.Errors) == 0 {
 			continue
 		}
 		for path := range scan.GeneratedFiles(pkg) {
-			if base := filepath.Base(path); base != defaultOutputFile && base != testOutputFile {
+			if !slices.Contains(outputs, filepath.Base(path)) {
 				continue
 			}
 			for _, e := range pkg.Errors {

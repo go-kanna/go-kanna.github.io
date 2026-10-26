@@ -14,6 +14,7 @@ import (
 	"github.com/go-kanna/kanna/internal/output"
 	"github.com/go-kanna/kanna/internal/packages"
 	"github.com/go-kanna/kanna/internal/scan"
+	"github.com/go-kanna/kanna/internal/stale"
 )
 
 // defaultOutputFile is the name given to the generated file in each package.
@@ -111,13 +112,13 @@ func (c CLI) Run(args []string) int {
 		}
 	}
 
-	res, dropped, err := load(patterns, packages.Config{
+	res, dropped, err := stale.Load(patterns, packages.Config{
 		Dir:       c.Dir,
 		BuildTags: splitTags(tagsRaw),
 		// Test files take part: a container declared in one gets its constructor
 		// in testOutputFile, and providers declared there serve such containers.
 		Tests: true,
-	})
+	}, defaultOutputFile, testOutputFile)
 	if err != nil {
 		fmt.Fprintln(c.Err, err)
 		return exit.Error
