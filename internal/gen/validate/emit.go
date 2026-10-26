@@ -160,16 +160,24 @@ func (e *emitter) method(b *bytes.Buffer, p Plan) {
 	b.WriteString("\nreturn errs.Err()\n}\n\n")
 }
 
+// value renders the checks of one value.
+//
+// A value that breaks required is reported blank and nothing else: whatever
+// else an empty value breaks only says again that it is missing.
 func (e *emitter) value(b *bytes.Buffer, v *ValuePlan, at value, depth int) {
 	if v.Pointee != nil {
 		e.pointer(b, v, at, depth)
 		return
 	}
 
-	if v.Required {
+	rest := len(v.Checks) > 0 || v.Nest || v.Elem != nil
+	switch {
+	case v.Required && !rest:
 		fmt.Fprintf(b, "if %s {\nerrs.Add(%s, %s.Blank())\n}\n", e.zero(v, at), at.path, e.runtime)
-	}
-	if v.OmitEmpty {
+		return
+	case v.Required:
+		fmt.Fprintf(b, "if %s {\nerrs.Add(%s, %s.Blank())\n} else {\n", e.zero(v, at), at.path, e.runtime)
+	case v.OmitEmpty:
 		fmt.Fprintf(b, "if %s {\n", e.nonZero(v, at))
 	}
 
@@ -189,7 +197,7 @@ func (e *emitter) value(b *bytes.Buffer, v *ValuePlan, at value, depth int) {
 		e.elem(b, v, at, depth)
 	}
 
-	if v.OmitEmpty {
+	if v.Required || v.OmitEmpty {
 		b.WriteString("}\n")
 	}
 }

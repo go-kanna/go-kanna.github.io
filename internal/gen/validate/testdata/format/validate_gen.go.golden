@@ -14,8 +14,9 @@ func (x Contact) Validate() error {
 
 	if x.Email == "" {
 		errs.Add("email", validate.Blank())
+	} else {
+		errs.Add("email", rules.Email{}.Validate(x.Email))
 	}
-	errs.Add("email", rules.Email{}.Validate(x.Email))
 
 	if x.Website != nil {
 		errs.Add("website", rules.URL{}.Validate(*x.Website))

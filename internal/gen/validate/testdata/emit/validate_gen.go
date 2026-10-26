@@ -23,12 +23,13 @@ func (x Request) Validate() error {
 
 	if x.Name == "" {
 		errs.Add("name", validate.Blank())
-	}
-	if utf8.RuneCountInString(x.Name) < 1 {
-		errs.Add("name", validate.TooShort(1))
-	}
-	if utf8.RuneCountInString(x.Name) > 50 {
-		errs.Add("name", validate.TooLong(50))
+	} else {
+		if utf8.RuneCountInString(x.Name) < 1 {
+			errs.Add("name", validate.TooShort(1))
+		}
+		if utf8.RuneCountInString(x.Name) > 50 {
+			errs.Add("name", validate.TooLong(50))
+		}
 	}
 
 	if x.Age < 18 {
@@ -44,9 +45,10 @@ func (x Request) Validate() error {
 
 	if x.Role == "" {
 		errs.Add("role", validate.Blank())
-	}
-	if x.Role != "admin" && x.Role != "member" {
-		errs.Add("role", validate.Inclusion())
+	} else {
+		if x.Role != "admin" && x.Role != "member" {
+			errs.Add("role", validate.Inclusion())
+		}
 	}
 
 	if x.Level != 1 && x.Level != 2 && x.Level != 3 {
@@ -65,9 +67,10 @@ func (x Request) Validate() error {
 	for i := range x.Tags {
 		if x.Tags[i] == "" {
 			errs.Add(validate.Index("tags", i), validate.Blank())
-		}
-		if utf8.RuneCountInString(x.Tags[i]) > 20 {
-			errs.Add(validate.Index("tags", i), validate.TooLong(20))
+		} else {
+			if utf8.RuneCountInString(x.Tags[i]) > 20 {
+				errs.Add(validate.Index("tags", i), validate.TooLong(20))
+			}
 		}
 	}
 

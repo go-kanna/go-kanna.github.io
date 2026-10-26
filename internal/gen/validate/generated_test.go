@@ -60,10 +60,10 @@ func TestGenerated(t *testing.T) {
 		{
 			name:   "zero value",
 			modify: func(r *emit.Request) { *r = emit.Request{} },
-			want: `{"name":[{"error":"blank"},{"error":"too_short","count":1}],` +
+			want: `{"name":[{"error":"blank"}],` +
 				`"age":[{"error":"greater_than_or_equal_to","count":18}],` +
 				`"score":[{"error":"greater_than","count":0}],` +
-				`"role":[{"error":"blank"},{"error":"inclusion"}],` +
+				`"role":[{"error":"blank"}],` +
 				`"level":[{"error":"inclusion"}],` +
 				`"code":[{"error":"invalid"}],` +
 				`"password":[{"error":"blank"}],` +
