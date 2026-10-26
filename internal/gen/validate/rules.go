@@ -191,31 +191,47 @@ func ResolveRule(r Rule, t types.Type, siblings []Sibling) (Check, error) {
 }
 
 func resolveRequired(t types.Type) (Check, error) {
+	zero, ok := zeroTestOf(t)
+	if !ok {
+		return nil, cannotTellEmpty("required", t)
+	}
+	return RequiredCheck{Zero: zero}, nil
+}
+
+// zeroTestOf returns how generated code tells the zero value of t, and false
+// when it cannot.
+func zeroTestOf(t types.Type) (ZeroTest, bool) {
 	// A nil pointer or interface cannot have IsZero called on it, so these are
 	// compared with nil even when what they hold has the method.
 	switch t.Underlying().(type) {
 	case *types.Pointer, *types.Interface, *types.Slice, *types.Map, *types.Chan, *types.Signature:
-		return RequiredCheck{Zero: ZeroNil}, nil
+		return ZeroNil, true
 	}
 	if hasIsZero(t) {
-		return RequiredCheck{Zero: ZeroMethod}, nil
+		return ZeroMethod, true
 	}
 
 	if b, ok := t.Underlying().(*types.Basic); ok {
 		switch info := b.Info(); {
 		case info&types.IsString != 0:
-			return RequiredCheck{Zero: ZeroString}, nil
+			return ZeroString, true
 		case info&types.IsNumeric != 0:
-			return RequiredCheck{Zero: ZeroNumber}, nil
+			return ZeroNumber, true
 		case info&types.IsBoolean != 0:
-			return RequiredCheck{Zero: ZeroBool}, nil
+			return ZeroBool, true
 		}
 	}
 	if types.Comparable(t) {
-		return RequiredCheck{Zero: ZeroComposite}, nil
+		return ZeroComposite, true
 	}
-	return nil, &RuleError{
-		Msg: fmt.Sprintf("required cannot tell whether %s is empty", typeString(t)),
+	return 0, false
+}
+
+// cannotTellEmpty reports a rule that needs to tell the zero value of t, which
+// has no way to.
+func cannotTellEmpty(rule string, t types.Type) error {
+	return &RuleError{
+		Msg: fmt.Sprintf("%s cannot tell whether %s is empty", rule, typeString(t)),
 		Hints: []string{
 			"it is not comparable and has no IsZero() bool method; give it one, or use a pointer",
 		},
