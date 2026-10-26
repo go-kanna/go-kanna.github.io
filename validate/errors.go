@@ -102,6 +102,13 @@ func Index(field string, i int) string {
 	return field + "[" + strconv.Itoa(i) + "]"
 }
 
+// Key returns the path to the value under key in the map at field, such as
+// "labels.primary": a map is a JSON object, so its keys are spelled as the
+// names of an object are, as DecodeJSON reports them.
+func Key[K comparable](field string, key K) string {
+	return field + "." + fmt.Sprint(key)
+}
+
 // Err returns e, or nil when nothing broke. Returning e itself would hand the
 // caller a non-nil error holding nothing.
 func (e Errors) Err() error {

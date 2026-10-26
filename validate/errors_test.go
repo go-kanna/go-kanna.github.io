@@ -106,6 +106,25 @@ func TestErrors_Nest(t *testing.T) {
 	}
 }
 
+func TestPaths(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		got, want string
+	}{
+		{got: validate.Index("tags", 2), want: "tags[2]"},
+		{got: validate.Key("labels", "primary"), want: "labels.primary"},
+		{got: validate.Key("scores", 3), want: "scores.3"},
+		{got: validate.Index(validate.Key("groups", "a"), 0), want: "groups.a[0]"},
+	}
+
+	for _, tt := range tests {
+		if tt.got != tt.want {
+			t.Errorf("path = %q, want %q", tt.got, tt.want)
+		}
+	}
+}
+
 func TestErrors_Err(t *testing.T) {
 	t.Parallel()
 
