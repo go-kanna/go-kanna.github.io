@@ -1,6 +1,7 @@
 package validate
 
 var (
-	Suggest  = suggest
-	Distance = distance
+	Suggest   = suggest
+	Distance  = distance
+	RawString = rawString
 )
