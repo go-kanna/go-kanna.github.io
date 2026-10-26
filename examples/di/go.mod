@@ -1,8 +1,8 @@
 module github.com/go-kanna/kanna/examples/di
 
-go 1.26.0
+go 1.27.0
 
-toolchain go1.26.9
+toolchain go1.27.3
 
 tool github.com/go-kanna/kanna/cmd/kanna-di
 
