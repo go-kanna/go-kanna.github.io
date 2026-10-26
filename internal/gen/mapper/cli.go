@@ -218,9 +218,9 @@ func parseTypeRef(s string) (TypeRef, error) {
 	var ref TypeRef
 	rest := strings.TrimPrefix(s, "*")
 	ref.Pointer = rest != s
-	if i := strings.LastIndex(rest, "."); i >= 0 {
-		ref.Pkg = rest[:i]
-		ref.Name = rest[i+1:]
+	if pkg, name, ok := strings.CutLast(rest, "."); ok {
+		ref.Pkg = pkg
+		ref.Name = name
 	}
 	if ref.Name == "" {
 		ref.Name = rest
@@ -238,11 +238,10 @@ func parseTypeRef(s string) (TypeRef, error) {
 }
 
 func parseFieldRef(s string) (FieldRef, error) {
-	i := strings.LastIndex(s, ".")
-	if i < 0 {
+	typeSpec, field, ok := strings.CutLast(s, ".")
+	if !ok {
 		return FieldRef{}, fmt.Errorf("invalid -exclude entry %q: want TYPE.FIELD", s)
 	}
-	typeSpec, field := s[:i], s[i+1:]
 	if !token.IsIdentifier(field) {
 		return FieldRef{}, fmt.Errorf("invalid -exclude entry %q: %q is not a valid field name", s, field)
 	}
