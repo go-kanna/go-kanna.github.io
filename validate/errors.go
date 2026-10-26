@@ -73,7 +73,8 @@ func (e *Errors) Add(field string, err error) {
 // Nest records what validating the value of field reported. The fields of
 // Errors are moved under field ("address" and "zip" make "address.zip"), and an
 // empty field leaves them where they are, as for an embedded struct. Any other
-// error is recorded on field itself. A nil err is ignored.
+// error is recorded on field itself, or on Base when field is empty. A nil err
+// is ignored.
 func (e *Errors) Nest(field string, err error) {
 	if err == nil {
 		return
@@ -81,6 +82,9 @@ func (e *Errors) Nest(field string, err error) {
 
 	nested, ok := errors.AsType[Errors](err)
 	if !ok {
+		if field == "" {
+			field = Base
+		}
 		e.Add(field, err)
 		return
 	}

@@ -85,6 +85,12 @@ func TestErrors_Nest(t *testing.T) {
 			err:   plain,
 			want:  validate.Errors{{Field: "address", Err: plain}},
 		},
+		{
+			name:  "error without a field lands on base",
+			field: "",
+			err:   validate.Fail("unknown_area"),
+			want:  validate.Errors{{Field: validate.Base, Err: validate.Fail("unknown_area")}},
+		},
 	}
 
 	for _, tt := range tests {
