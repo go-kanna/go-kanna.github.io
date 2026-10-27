@@ -2,43 +2,42 @@
 
 ## The mark
 
-The mark is a *kanna-kuzu* — the shaving a hand plane lifts off a board.
+The mark is a *kanna*, a Japanese hand plane, seen from the side: the wooden block (the *dai*), the blade set through it
+with its edge on the sole and its head standing proud of the top, and the cap iron lying along its face. A kanna is
+pulled, not pushed, so the blade leans back toward the user.
 
-The plane itself is the obvious thing to draw and the wrong one: a wooden block with an angled blade collapses into an
-unreadable smudge below about 40px. The shaving survives, and it says more. A shaving thin enough to see through is
-exactly what the tool is judged by, which is the same claim the generators make about their output.
+It is drawn as three flat shapes and nothing finer, so that it still reads as a plane at 20px: a dark slab, and a light
+bar cutting through it at an angle. The blade beds at 47° rather than the ~38° of a real kanna, which keeps the head
+inside the square without flattening the slab. The cap iron is the only detail below that size, and losing it costs
+nothing.
 
-The curl is a logarithmic spiral, so the angle between the curve and the radius stays constant as it winds in — that is
-what makes the coil read as something that grew rather than something that was drawn. Width decays geometrically over
-the same sweep: thinnest at the tip that curled first, thickest at the mouth. The mouth is raked back on a slant because
-a blade leaves an angled face, never a square one.
-
-Shaving and ground are the only two colors. There is no wood brown anywhere: drawn in Go's cyan, what is being cut is
-not timber but Go itself.
+There is no wood brown anywhere: drawn in Go's cyan, what the blade works is not timber but Go itself.
 
 ## Files
 
-| File                     | Use                                                                             |
-|--------------------------|---------------------------------------------------------------------------------|
-| `avatar-blade.png`       | **Org avatar.** 1000×1000, square corners                                       |
-| `avatar-ink.png`         | Same, dark ground                                                               |
-| `avatar-white.png`       | Same, white ground                                                              |
-| `mark-blade-rounded.svg` | Rounded, for READMEs and docs                                                   |
-| `mark-ink-rounded.svg`   | Same, dark ground                                                               |
-| `mark-transparent.svg`   | No ground; fill is `currentColor`, so it takes the color of whatever it sits in |
-| `generate.py`            | Regenerates every SVG above                                                     |
+| File                     | Use                                                                                         |
+|--------------------------|---------------------------------------------------------------------------------------------|
+| `avatar-blade.png`       | **Org avatar.** 1000×1000, square corners                                                   |
+| `avatar-ink.png`         | Same, dark ground                                                                           |
+| `avatar-white.png`       | Same, white ground                                                                          |
+| `mark-blade-rounded.svg` | Rounded, for READMEs and docs                                                               |
+| `mark-ink-rounded.svg`   | Same, dark ground                                                                           |
+| `mark-transparent.svg`   | No ground and one color, `currentColor`; a gap cut around the blade tells it from the block |
+| `generate.py`            | Regenerates every SVG above                                                                 |
 
 Prefer the blade ground for anything that lands on GitHub. GitHub's dark theme sits at `#0d1117`, close enough to the
-ink ground that the avatar's silhouette disappears into the page and only the shaving is left floating. The cyan ground
-holds its edge in both themes.
+ink ground that the avatar's edge disappears into the page and the plane is left floating. The cyan ground holds its edge
+in both themes.
 
 ## Palette
 
-|       | Hex       |                                          |
-|-------|-----------|------------------------------------------|
-| ink   | `#0B1A21` | ground, and the shaving on cyan          |
-| blade | `#00ADD8` | Go cyan; the shaving on ink              |
-| paper | `#F2F6F7` | cool off-white, for surrounding surfaces |
+|       | Hex       |                                                             |
+|-------|-----------|-------------------------------------------------------------|
+| ink   | `#0B1A21` | the block on cyan and white; the ground of the dark variant |
+| blade | `#00ADD8` | Go cyan; the ground, the block on ink, the blade on white   |
+| white | `#FFFFFF` | the blade on cyan and ink                                   |
+| steel | `#7F98A3` | the cap iron                                                |
+| paper | `#F2F6F7` | cool off-white, for surrounding surfaces                    |
 
 ## Regenerating
 
@@ -46,8 +45,8 @@ holds its edge in both themes.
 python3 generate.py
 ```
 
-Geometry lives in the constants at the top of the script — turns, radii, band width, and the rake of the mouth. Nothing
-else needs editing.
+Geometry lives in the constants at the top of the script — the block, the bedding angle, the blade's taper, and the
+padding that keeps the mark inside GitHub's circular crop. Nothing else needs editing.
 
 Rasterizing is left out of the script so it stays dependency-free. With `rsvg-convert`:
 
