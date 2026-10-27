@@ -1,5 +1,9 @@
 .DS_Store
 .idea/
+__pycache__/
+
+# the assembled site, written by pages/render.py
+_site/
 
 # temporary files
 tmp/
