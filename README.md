@@ -8,20 +8,27 @@ that needs a runtime ships a small one in the same module, so the two never drif
 
 This repository is its site: **https://go-kanna.github.io/kanna/**
 
-| Repository                                                  | What it is                                                                   |
-|-------------------------------------------------------------|------------------------------------------------------------------------------|
-| [go-kanna/validate](https://github.com/go-kanna/validate)   | kanna-validate: `Validate` methods from struct tags, with Rails' error codes |
-| [go-kanna/validated](https://github.com/go-kanna/validated) | Values held to a rule wherever they go                                       |
-| [go-kanna/i18n](https://github.com/go-kanna/i18n)           | kanna-i18n: typed message constructors, the translations compiled in         |
-| [go-kanna/fixture](https://github.com/go-kanna/fixture)     | kanna-fixture: a constructor for every struct, every field filled            |
-| [go-kanna/mapper](https://github.com/go-kanna/mapper)       | kanna-mapper: the functions you declare between domain and wire types        |
-
-kanna-di is on its way.
+| Repository                                                  | What it is                                                                              |
+|-------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| [go-kanna/validate](https://github.com/go-kanna/validate)   | kanna-validate: `Validate` methods from struct tags, with Rails' error codes            |
+| [go-kanna/i18n](https://github.com/go-kanna/i18n)           | kanna-i18n: typed message constructors, the translations compiled in                    |
+| [go-kanna/fixture](https://github.com/go-kanna/fixture)     | kanna-fixture: a constructor for every struct, every field filled                       |
+| [go-kanna/di](https://github.com/go-kanna/di)               | kanna-di: the constructor of a container struct, from the functions next to your types |
+| [go-kanna/mapper](https://github.com/go-kanna/mapper)       | kanna-mapper: the functions you declare between domain and wire types                   |
+| [go-kanna/validated](https://github.com/go-kanna/validated) | Values held to a rule wherever they go                                                  |
 
 ## What is here
 
-- `index.html` is the page. There is no build step: open it in a browser to preview it, and push to `main` to publish it
-  with GitHub Pages.
+- `index.html` is the landing page. Open it in a browser to preview it.
+- Each tool's page, `validate/` and so on, is its README: `pages/render.py` fetches the README of each repository's
+  default branch through the GitHub API, renders it into `pages/page.html`, and fills in the versions on the landing
+  page from the latest tags. None of that is committed. The Pages workflow runs the script on every push to `main` and
+  once a day, so the site follows the repositories. To preview the whole site, with the gh CLI logged in:
+
+  ```sh
+  python3 pages/render.py && python3 -m http.server -d _site
+  ```
+
 - [`assets/logo`](assets/logo) holds the mark and the script that draws it.
 
 The Go module that used to live here, kanna v0.2.x with kanna-orm, is kept on the
