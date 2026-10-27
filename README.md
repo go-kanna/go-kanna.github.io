@@ -2,8 +2,9 @@
 
 # kanna
 
-kanna is a family of code generators for Go. Each one reads the structs you already have and writes the plain Go you
-would otherwise write by hand: no reflection, no runtime to learn, nothing hidden from review.
+kanna is a family of code generators for Go. Each one reads what you have already written, from struct tags to locale
+files, and writes the plain Go you would otherwise write by hand: no reflection, nothing hidden from review. A generator
+that needs a runtime ships a small one in the same module, so the two never drift apart.
 
 This repository is its site: **https://go-kanna.github.io/kanna/**
 
