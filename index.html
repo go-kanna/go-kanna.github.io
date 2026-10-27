@@ -308,14 +308,14 @@
           <p>Writes a constructor for every struct of a package with every field filled: numbered so that no two collide, within the rules its <code>validate</code> tags declare, or from a gofakeit template. A test states only what it cares about.</p>
           <div class="status"><a href="https://github.com/go-kanna/fixture/tags">v0.0.1</a><code>go get -tool github.com/go-kanna/fixture/cmd/kanna-fixture</code></div>
         </li>
+        <li class="tool">
+          <h3><a href="https://github.com/go-kanna/mapper">kanna-mapper</a></h3>
+          <p>Writes the functions you declare between your domain types and the wire types you do not control, calling the conversions you list, <code>uuid.Parse</code> and <code>(*timestamppb.Timestamp).AsTime</code> as they are.</p>
+          <div class="status"><a href="https://github.com/go-kanna/mapper/tags">v0.0.1</a><code>go get -tool github.com/go-kanna/mapper/cmd/kanna-mapper</code></div>
+        </li>
         <li class="tool soon">
           <h3>kanna-di</h3>
           <p>Wires a container struct from the providers it finds, and writes a plain constructor.</p>
-          <div class="status">Coming soon</div>
-        </li>
-        <li class="tool soon">
-          <h3>kanna-mapper</h3>
-          <p>Writes the functions between your domain types and the wire types you do not control.</p>
           <div class="status">Coming soon</div>
         </li>
       </ul>

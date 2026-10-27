@@ -14,8 +14,9 @@ This repository is its site: **https://go-kanna.github.io/kanna/**
 | [go-kanna/validated](https://github.com/go-kanna/validated) | Values held to a rule wherever they go                                       |
 | [go-kanna/i18n](https://github.com/go-kanna/i18n)           | kanna-i18n: typed message constructors, the translations compiled in         |
 | [go-kanna/fixture](https://github.com/go-kanna/fixture)     | kanna-fixture: a constructor for every struct, every field filled            |
+| [go-kanna/mapper](https://github.com/go-kanna/mapper)       | kanna-mapper: the functions you declare between domain and wire types        |
 
-kanna-di and kanna-mapper are on their way.
+kanna-di is on its way.
 
 ## What is here
 
