@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>kanna — Go code generators that write the code you would</title>
+<meta name="description" content="kanna is a family of Go code generators. Each reads the structs you already have and writes the plain Go you would otherwise write by hand.">
+<meta property="og:title" content="kanna">
+<meta property="og:description" content="Go code generators that read your structs and write plain Go: no reflection, nothing to learn at run time.">
+<meta property="og:image" content="https://raw.githubusercontent.com/go-kanna/kanna/main/assets/logo/avatar-blade.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0B1A21">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Crect width='256' height='256' rx='56' fill='%2300ADD8'/%3E%3Cg transform='translate(5.22 4.12) scale(0.9592)'%3E%3Cpolygon points='34,184 222,184 226,180 226,137 213,124 43,124 30,137 30,180' fill='%230B1A21'/%3E%3Cpolygon points='96,184 116.5,184 214,97.1 213.7,88.6 198.3,74.3' fill='%23fff'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0B1A21;
+    --blade: #00ADD8;
+    --deep: #00708A;
+    --steel: #7F98A3;
+    --paper: #F2F6F7;
+    --white: #FFFFFF;
+    --rule: #D3DFE3;
+    --grain: #16303B;
+
+    --sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+    --measure: 34rem;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    font-stretch: 100%;
+  }
+
+  p code, dd code { font-family: var(--mono); font-size: 0.86em; }
+
+  a { color: var(--deep); text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+  a:hover { color: var(--ink); }
+  :focus-visible { outline: 3px solid var(--blade); outline-offset: 3px; border-radius: 2px; }
+
+  .wrap { max-width: 76rem; margin: 0 auto; padding: 0 var(--gutter); }
+
+  /* Header */
+  .bar { padding-block: 1.5rem; padding-top: calc(1.5rem + env(safe-area-inset-top, 0px)); }
+  .bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
+  .brand { display: inline-flex; align-items: center; gap: 0.7rem; color: var(--ink); text-decoration: none; }
+  .brand svg { width: 2.25rem; height: 2.25rem; display: block; }
+  .brand span { font-weight: 800; font-stretch: 110%; font-size: 1.35rem; letter-spacing: -0.01em; }
+  .bar nav { display: flex; gap: 1.75rem; font-size: 1rem; }
+  .bar nav a { color: var(--ink); text-decoration: none; }
+  .bar nav a:hover { color: var(--deep); text-decoration: underline; }
+
+  /* Hero */
+  .hero { padding-block: clamp(2.5rem, 7vw, 6rem) clamp(4rem, 9vw, 7.5rem); }
+  .hero .wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(2.5rem, 5vw, 5rem);
+    align-items: center;
+  }
+  h1 {
+    margin: 0 0 1.75rem;
+    font-weight: 800;
+    font-stretch: 110%;
+    font-size: clamp(2.6rem, 5.4vw, 4.6rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    max-width: 12ch;
+  }
+  .lede { margin: 0 0 2.25rem; max-width: var(--measure); font-size: 1.25rem; line-height: 1.55; color: #213943; }
+
+  .install {
+    display: flex; align-items: stretch;
+    max-width: 100%;
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .install code {
+    flex: 1; min-width: 0;
+    padding: 0.85rem 1rem;
+    font-family: var(--mono); font-size: 0.875rem; line-height: 1.5;
+    white-space: nowrap; overflow-x: auto;
+  }
+  .install code::before { content: "$ "; color: var(--steel); }
+  .install button {
+    flex: none;
+    border: 0; border-left: 1px solid var(--rule);
+    background: var(--white); color: var(--ink);
+    font: 600 0.875rem var(--sans);
+    padding: 0 1.1rem; cursor: pointer;
+  }
+  .install button:hover { background: var(--paper); }
+  .install-note { margin: 0.85rem 0 0; font-size: 0.9375rem; color: #4A606A; }
+
+  /* The bench: a struct, the plane, and what it lifts off */
+  .bench {
+    margin: 0;
+    background: var(--ink);
+    color: #D6E2E7;
+    clip-path: polygon(22px 0, calc(100% - 22px) 0, 100% 22px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 22px);
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    line-height: 1.65;
+  }
+  .pane { padding: 1.4rem 1.6rem 1.5rem; }
+  .file { display: block; margin-bottom: 0.9rem; font-family: var(--sans); font-size: 0.8125rem; color: var(--steel); }
+  .pane pre { margin: 0; overflow-x: auto; tab-size: 4; }
+  .pane code { font-family: inherit; }
+  .seam { position: relative; height: 2px; background: var(--grain); margin: 0 1.6rem; }
+  .plane {
+    position: absolute; left: 0; bottom: 1px;
+    width: 4.5rem; height: auto;
+    transform: translateX(calc(var(--seam-width, 0px) - 100%));
+  }
+  .out { position: relative; }
+
+  .k { color: var(--blade); }
+  .s { color: #8FD4E6; }
+  .c { color: var(--steel); }
+  .t { color: var(--white); }
+  .f { color: #F0F6F8; font-weight: 500; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .js .bench .plane { animation: plane 1.9s cubic-bezier(.55, .05, .25, 1) .35s both; }
+    .js .bench .out .lift { animation: lift 1.9s cubic-bezier(.55, .05, .25, 1) .35s both; }
+  }
+  @keyframes plane {
+    from { transform: translateX(-30%); }
+    to { transform: translateX(calc(var(--seam-width, 0px) - 100%)); }
+  }
+  @keyframes lift {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0 0 0 0); }
+  }
+
+  /* Sections */
+  section h2 {
+    margin: 0 0 1rem;
+    font-weight: 800; font-stretch: 110%;
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    line-height: 1.15; letter-spacing: -0.02em;
+  }
+  .intro { margin: 0 0 3rem; max-width: var(--measure); color: #213943; }
+
+  .family { padding-block: clamp(4rem, 8vw, 6.5rem); background: var(--white); }
+  .tools { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+  .tool {
+    display: grid;
+    grid-template-columns: minmax(10rem, 3fr) minmax(0, 6fr) minmax(12rem, 4fr);
+    gap: 0.5rem 2.5rem;
+    padding: 1.6rem 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: baseline;
+  }
+  .tool h3 { margin: 0; font-size: 1.25rem; font-weight: 700; font-stretch: 104%; letter-spacing: -0.01em; }
+  .tool h3 a { color: inherit; text-decoration: none; }
+  .tool h3 a:hover { color: var(--deep); text-decoration: underline; }
+  .tool p { margin: 0; max-width: 38rem; }
+  .tool .status { font-size: 0.9375rem; }
+  .tool .status code {
+    display: block; margin-top: 0.35rem;
+    font-family: var(--mono); font-size: 0.75rem; color: #3D5560;
+    overflow-wrap: anywhere;
+  }
+  .tool.soon { color: #5B717B; }
+  .tool.soon h3 { color: #3D5560; }
+  .tool.soon .status { color: var(--steel); }
+
+  .promise { padding-block: clamp(4rem, 8vw, 6.5rem); }
+  .promises { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem clamp(2rem, 4vw, 3.5rem); margin: 0; }
+  .promises div { border-top: 3px solid var(--ink); padding-top: 1.1rem; }
+  .promises dt { font-weight: 700; font-stretch: 104%; font-size: 1.125rem; margin-bottom: 0.5rem; }
+  .promises dd { margin: 0; color: #2E4651; }
+
+  .why { padding-block: clamp(4rem, 8vw, 6.5rem); background: var(--ink); color: #D6E2E7; }
+  .why .wrap { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
+  .why h2 { color: var(--white); }
+  .why p { margin: 0 0 1.1rem; max-width: var(--measure); }
+  .why p:last-child { margin-bottom: 0; }
+  .why .mark { width: 100%; max-width: 26rem; height: auto; display: block; }
+  .why a { color: #8FD4E6; }
+  .why a:hover { color: var(--white); }
+
+  footer { padding-block: 2.5rem; padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px)); font-size: 0.9375rem; color: #4A606A; }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; }
+
+  @media (max-width: 60rem) {
+    .hero .wrap, .why .wrap { grid-template-columns: minmax(0, 1fr); }
+    .tool { grid-template-columns: minmax(0, 1fr); }
+    .promises { grid-template-columns: minmax(0, 1fr); }
+    .why .mark { max-width: 16rem; }
+  }
+  @media (max-width: 30rem) {
+    .bar nav { gap: 1.1rem; font-size: 0.9375rem; }
+    .bar nav .wide { display: none; }
+    .pane { padding: 1.2rem 1.1rem 1.25rem; }
+    .bench { font-size: 0.75rem; }
+    .seam { margin: 0 1.1rem; }
+  }
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="./" aria-label="kanna home">
+      <svg viewBox="0 0 256 256" aria-hidden="true"><rect width="256" height="256" rx="56" fill="#00ADD8"/><g transform="translate(5.22 4.12) scale(0.9592)"><polygon points="34,184 222,184 226,180 226,137 213,124 43,124 30,137 30,180" fill="#0B1A21"/><polygon points="96,184 116.5,184 214,97.1 213.7,88.6 198.3,74.3" fill="#FFFFFF"/><polygon points="116.5,162.1 183.3,90.4 178.2,85.6 111.3,157.3" fill="#7F98A3"/></g></svg>
+      <span>kanna</span>
+    </a>
+    <nav aria-label="Site">
+      <a href="#tools">Tools</a>
+      <a class="wide" href="#why">Why a plane</a>
+      <a href="https://github.com/go-kanna">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <h1>Your structs are the source of truth.</h1>
+        <p class="lede">kanna is a family of code generators for Go. Each one reads the structs you already have and writes the plain Go you would otherwise write by hand: no reflection, no runtime to learn, nothing hidden from review.</p>
+        <div class="install">
+          <code id="install-validate">go get -tool github.com/go-kanna/validate/cmd/kanna-validate</code>
+          <button type="button" data-copy="install-validate">Copy</button>
+        </div>
+        <p class="install-note">Start with kanna-validate. It needs Go 1.27.</p>
+      </div>
+
+      <figure class="bench" aria-label="A struct marked for kanna-validate, and the Validate method it generates">
+        <div class="pane">
+          <span class="file">user.go</span>
+<pre><code><span class="c">//go:generate go tool kanna-validate</span>
+
+<span class="c">//kanna:validate</span>
+<span class="k">type</span> <span class="t">CreateUserRequest</span> <span class="k">struct</span> {
+	Name <span class="t">string</span> <span class="s">`json:"name" validate:"required,max=50"`</span>
+	Age  <span class="t">int</span>    <span class="s">`json:"age"  validate:"gte=18"`</span>
+}</code></pre>
+        </div>
+        <div class="seam">
+          <svg class="plane" viewBox="26 70 204 118" aria-hidden="true"><polygon points="34,184 222,184 226,180 226,137 213,124 43,124 30,137 30,180" fill="#00ADD8"/><polygon points="96,184 116.5,184 214,97.1 213.7,88.6 198.3,74.3" fill="#FFFFFF"/><polygon points="116.5,162.1 183.3,90.4 178.2,85.6 111.3,157.3" fill="#7F98A3"/></svg>
+        </div>
+        <div class="pane out">
+          <div class="lift">
+          <span class="file">validate_gen.go</span>
+<pre><code><span class="k">func</span> (x <span class="t">CreateUserRequest</span>) <span class="f">Validate</span>() <span class="t">error</span> {
+	<span class="k">var</span> errs validate.<span class="t">Errors</span>
+
+	<span class="k">if</span> x.Name == <span class="s">""</span> {
+		errs.Add(<span class="s">"name"</span>, validate.Blank())
+	} <span class="k">else</span> {
+		<span class="k">if</span> utf8.RuneCountInString(x.Name) > <span class="s">50</span> {
+			errs.Add(<span class="s">"name"</span>, validate.TooLong(<span class="s">50</span>))
+		}
+	}
+
+	<span class="k">if</span> x.Age < <span class="s">18</span> {
+		errs.Add(<span class="s">"age"</span>, validate.GreaterThanOrEqualTo(<span class="s">18</span>))
+	}
+
+	<span class="k">return</span> errs.Err()
+}</code></pre>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <section class="family" id="tools">
+    <div class="wrap">
+      <h2>The family</h2>
+      <p class="intro">Each tool is a module of its own: install the ones you need, and each leaves nothing behind but Go source you can read.</p>
+      <ul class="tools">
+        <li class="tool">
+          <h3><a href="https://github.com/go-kanna/validate">kanna-validate</a></h3>
+          <p>Generates a <code>Validate</code> method from the <code>validate</code> tags of a struct, and reports what breaks under Rails' error codes, keyed by the fields' JSON names.</p>
+          <div class="status"><a href="https://github.com/go-kanna/validate/tags">v0.0.1</a><code>go get -tool github.com/go-kanna/validate/cmd/kanna-validate</code></div>
+        </li>
+        <li class="tool">
+          <h3><a href="https://github.com/go-kanna/validated">validated</a></h3>
+          <p>Values held to a rule wherever they go: built, decoded from JSON, or scanned from a database. An email address that is a <code>validated.String[rules.Email]</code> is an email address.</p>
+          <div class="status"><a href="https://github.com/go-kanna/validated/tags">v0.0.2</a><code>go get github.com/go-kanna/validated</code></div>
+        </li>
+        <li class="tool soon">
+          <h3>kanna-di</h3>
+          <p>Wires a container struct from the providers it finds, and writes a plain constructor.</p>
+          <div class="status">Coming soon</div>
+        </li>
+        <li class="tool soon">
+          <h3>kanna-i18n</h3>
+          <p>Compiles locale files into typed message constructors, so nothing is parsed at run time.</p>
+          <div class="status">Coming soon</div>
+        </li>
+        <li class="tool soon">
+          <h3>kanna-fixture</h3>
+          <p>Writes one constructor per struct with every field filled, so a test states only what it cares about.</p>
+          <div class="status">Coming soon</div>
+        </li>
+        <li class="tool soon">
+          <h3>kanna-mapper</h3>
+          <p>Writes the functions between your domain types and the wire types you do not control.</p>
+          <div class="status">Coming soon</div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="promise" aria-labelledby="promise-title">
+    <div class="wrap">
+      <h2 id="promise-title">What every generator holds to</h2>
+      <p class="intro">The tools do different jobs, and keep the same three rules.</p>
+      <dl class="promises">
+        <div>
+          <dt>Code you would have written</dt>
+          <dd>The output is plain <code>if</code> statements and function calls. Step through it in a debugger, and see every change of a rule in a diff.</dd>
+        </div>
+        <div>
+          <dt>Mistakes stop go generate</dt>
+          <dd>A rule that does not exist or does not fit its field fails generation, with the file and line, instead of the first request that meets it.</dd>
+        </div>
+        <div>
+          <dt>Nothing at run time</dt>
+          <dd>No reflection, no registry, and no struct tags read in production. What runs is what you see in the generated file.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="why" id="why">
+    <div class="wrap">
+      <svg class="mark" viewBox="26 70 204 118" role="img" aria-label="A kanna, the Japanese hand plane, seen from the side"><polygon points="34,184 222,184 226,180 226,137 213,124 43,124 30,137 30,180" fill="#00ADD8"/><polygon points="96,184 116.5,184 214,97.1 213.7,88.6 198.3,74.3" fill="#FFFFFF"/><polygon points="116.5,162.1 183.3,90.4 178.2,85.6 111.3,157.3" fill="#7F98A3"/></svg>
+      <div>
+        <h2>Why a plane</h2>
+        <p>A kanna (鉋) is the Japanese hand plane: a block of oak with a blade set through it, pulled toward you across a board. A good one lifts a shaving thin enough to read through and leaves a surface that needs nothing more.</p>
+        <p>That is the job we hold a generator to. It takes off exactly the code you would have written, and leaves the rest of your program alone.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>MIT licensed.</span>
+    <a href="https://github.com/go-kanna">github.com/go-kanna</a>
+  </div>
+</footer>
+
+<script>
+  document.documentElement.classList.add("js");
+
+  // The plane travels the length of the seam, whatever the width of the bench.
+  const seam = document.querySelector(".seam");
+  const measure = () => seam && seam.style.setProperty("--seam-width", seam.clientWidth + "px");
+  measure();
+  window.addEventListener("resize", measure);
+
+  for (const button of document.querySelectorAll("[data-copy]")) {
+    button.addEventListener("click", async () => {
+      const text = document.getElementById(button.dataset.copy).textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+        button.textContent = "Copied";
+      } catch {
+        button.textContent = "Select and copy";
+      }
+      setTimeout(() => { button.textContent = "Copy"; }, 2000);
+    });
+  }
+</script>
+</body>
+</html>
