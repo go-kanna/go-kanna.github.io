@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """Generate the go-kanna mark.
 
-The mark is a kanna-kuzu -- the shaving a hand plane lifts off a board. A real
-shaving curls as a logarithmic spiral: the angle between the curve and the
-radius stays constant as it winds in, which is why the coil reads as something
-that grew rather than something that was drawn. Width decays geometrically over
-the same sweep, so the band is thinnest at the tip that curled first and
-thickest at the mouth where the blade is still cutting.
+The mark is a kanna -- a Japanese hand plane -- seen from the side: a wooden
+block (the dai) with the blade set through it, its edge on the sole and its head
+standing proud of the top, the cap iron lying along its face. The user pulls a
+kanna toward themselves, so the blade leans back toward the right, where they
+stand.
 
 Run with no arguments to rewrite every SVG in this directory:
 
@@ -18,75 +17,71 @@ not depend on. See README.md for the one-liner.
 import math
 import os
 
-# Geometry. All values are in the 256x256 design canvas.
+# Geometry. All values are in the 256x256 design canvas, before the mark is
+# fitted inside the padding.
 CANVAS = 256
-CENTER = (128, 128)
-R_START = 90        # radius at the mouth
-R_END = 23          # radius at the curled tip
-TURNS = 1.06
-PHASE = 214         # degrees; where the mouth sits on the circle
-W_START = 34        # band width at the mouth
-W_END = 12          # band width at the tip
-SLANT = 44          # arc length the inner edge starts late by, raking the mouth
-PAD = 34            # keeps the mark clear of the corners GitHub crops
-CORNER = 56         # radius of the rounded variants
+SOLE, TOP = 184, 124  # the bottom and top of the dai
+FRONT, REAR = 30, 226  # its ends; the user stands at the rear
+CHAMFER = 13  # the top edges of the dai are taken off
+FOOT = 4  # and the bottom ones eased
+ANGLE = 47  # degrees between the blade and the sole; a real kanna beds at ~38
+EDGE_X = 96  # where the cutting edge meets the sole
+LENGTH = 150  # the blade, from the sole to its head
+W_EDGE, W_HEAD = 15, 27  # the blade thickens toward its head
+HEAD_BEVEL = 6  # the rear corner of the head is struck off
+CAP = 7  # thickness of the cap iron
+CAP_FROM, CAP_SHORT = 30, 22  # where it starts up the blade, and how far short of the head it stops
+GAP = 5  # the knockout around the blade in the one-colour mark
+PAD = 34  # keeps the mark clear of the circle GitHub crops avatars to
+CORNER = 56  # radius of the rounded variants
 
 INK = "#0B1A21"
 BLADE = "#00ADD8"
 WHITE = "#FFFFFF"
+STEEL = "#7F98A3"
 
-SAMPLES = 200
-
-
-def centreline():
-    theta_max = TURNS * 2 * math.pi
-    k = math.log(R_END / R_START) / theta_max
-    phase = math.radians(PHASE)
-    pts = []
-    for i in range(SAMPLES + 1):
-        t = theta_max * i / SAMPLES
-        r = R_START * math.exp(k * t)
-        a = t + phase
-        pts.append((CENTER[0] + r * math.cos(a), CENTER[1] + r * math.sin(a)))
-    return pts
+U = (math.cos(math.radians(ANGLE)), -math.sin(math.radians(ANGLE)))  # up the blade
+N = (math.sin(math.radians(ANGLE)), math.cos(math.radians(ANGLE)))  # across it, toward the rear
 
 
-def boundary(pts):
-    """Offset the centreline into a closed band."""
-    total = 0.0
-    acc = [0.0]
-    for a, b in zip(pts, pts[1:]):
-        total += math.hypot(b[0] - a[0], b[1] - a[1])
-        acc.append(total)
-
-    ratio = W_END / W_START
-    left, right = [], []
-    for i, p in enumerate(pts):
-        if i == 0:
-            tx, ty = pts[1][0] - p[0], pts[1][1] - p[1]
-        elif i == len(pts) - 1:
-            tx, ty = p[0] - pts[-2][0], p[1] - pts[-2][1]
-        else:
-            tx, ty = pts[i + 1][0] - pts[i - 1][0], pts[i + 1][1] - pts[i - 1][1]
-        n = math.hypot(tx, ty) or 1
-        nx, ny = -ty / n, tx / n
-        w = W_START * (ratio ** (acc[i] / total)) / 2
-        left.append((p[0] + nx * w, p[1] + ny * w))
-        right.append((p[0] - nx * w, p[1] - ny * w))
-
-    # The angled face at the mouth comes from starting the inner edge further
-    # along the centreline, not from displacing an endpoint: a point pushed
-    # past its own neighbours makes the boundary double back into a sliver.
-    start = 0
-    while start < len(acc) - 2 and acc[start] < SLANT:
-        start += 1
-    return left + list(reversed(right[start:]))
+def along(p, d, t):
+    return (p[0] + d[0] * t, p[1] + d[1] * t)
 
 
-def fit(pts):
-    """Scale and centre the band inside the padded canvas."""
-    xs = [p[0] for p in pts]
-    ys = [p[1] for p in pts]
+def dai():
+    return [
+        (FRONT + FOOT, SOLE), (REAR - FOOT, SOLE), (REAR, SOLE - FOOT),
+        (REAR, TOP + CHAMFER), (REAR - CHAMFER, TOP),
+        (FRONT + CHAMFER, TOP), (FRONT, TOP + CHAMFER), (FRONT, SOLE - FOOT),
+    ]
+
+
+def blade():
+    """The blade as a wedge: its front face (the ura) runs straight from the
+    edge, its back widens toward a head square to its length."""
+    edge = (EDGE_X, SOLE)
+    head = along(edge, U, LENGTH)
+    heel = (EDGE_X + W_EDGE / math.sin(math.radians(ANGLE)), SOLE)
+    back = along(head, N, W_HEAD)
+    return [
+        edge, heel,
+        along(back, U, -HEAD_BEVEL),
+        along(head, N, W_HEAD - HEAD_BEVEL),
+        head,
+    ]
+
+
+def cap_iron():
+    """The cap iron, lying on the front face of the blade below its head."""
+    start = along((EDGE_X, SOLE), U, CAP_FROM)
+    end = along((EDGE_X, SOLE), U, LENGTH - CAP_SHORT)
+    return [start, end, along(end, N, -CAP), along(start, N, -CAP)]
+
+
+def fit(shapes):
+    """Scale and centre the mark inside the padded canvas."""
+    xs = [x for s in shapes for x, _ in s]
+    ys = [y for s in shapes for _, y in s]
     avail = CANVAS - 2 * PAD
     s = min(avail / (max(xs) - min(xs)), avail / (max(ys) - min(ys)))
     return (s,
@@ -94,44 +89,62 @@ def fit(pts):
             CANVAS / 2 - s * (min(ys) + max(ys)) / 2)
 
 
-def svg(pts, size, ground, fg, corner):
-    s, tx, ty = fit(pts)
-    d = "M " + " L ".join("%.1f %.1f" % p for p in pts) + " Z"
+def points(ps):
+    return " ".join("%.1f,%.1f" % p for p in ps)
+
+
+def svg(size, ground, body, steel, corner):
+    shapes = {"dai": dai(), "blade": blade(), "cap": cap_iron()}
+    s, tx, ty = fit(shapes.values())
     rect = ""
     if ground:
-        rect = '<rect width="%d" height="%d" rx="%d" fill="%s"/>' % (
-            CANVAS, CANVAS, corner, ground)
+        rect = '<rect width="%d" height="%d" rx="%d" fill="%s"/>' % (CANVAS, CANVAS, corner, ground)
+
+    if steel:
+        mark = (
+            '<polygon points="%s" fill="%s"/>' % (points(shapes["dai"]), body)
+            + '<polygon points="%s" fill="%s"/>' % (points(shapes["blade"]), steel)
+            + '<polygon points="%s" fill="%s"/>' % (points(shapes["cap"]), STEEL)
+        )
+    else:
+        # One colour: the blade is told from the dai by a gap cut around it.
+        mark = (
+            '<mask id="blade-gap" maskUnits="userSpaceOnUse" x="0" y="0" width="%d" height="%d">'
+            '<rect width="%d" height="%d" fill="white"/>'
+            '<polygon points="%s" fill="black" stroke="black" stroke-width="%d" stroke-linejoin="round"/>'
+            '</mask>' % (CANVAS, CANVAS, CANVAS, CANVAS, points(shapes["blade"]), 2 * GAP)
+            + '<polygon points="%s" fill="%s" mask="url(#blade-gap)"/>' % (points(shapes["dai"]), body)
+            + '<polygon points="%s" fill="%s"/>' % (points(shapes["blade"]), body)
+        )
+
     return (
-        '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" '
-        'viewBox="0 0 %d %d">%s'
-        '<g transform="translate(%.2f %.2f) scale(%.4f)">'
-        '<path d="%s" fill="%s"/></g></svg>'
-        % (size, size, CANVAS, CANVAS, rect, tx, ty, s, d, fg)
+        '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">%s'
+        '<g transform="translate(%.2f %.2f) scale(%.4f)">%s</g></svg>\n'
+        % (size, size, CANVAS, CANVAS, rect, tx, ty, s, mark)
     )
 
 
-# (filename, ground, foreground, size, corner radius)
+# (filename, ground, body, blade, size, corner radius)
 #
 # The avatars carry no corner radius: GitHub rounds an org avatar itself, and a
 # radius baked into the upload leaves a sliver of the ground colour inside
 # GitHub's own crop.
 OUTPUTS = [
-    ("avatar-blade", BLADE, INK, 1000, 0),
-    ("avatar-ink", INK, BLADE, 1000, 0),
-    ("avatar-white", WHITE, INK, 1000, 0),
-    ("mark-blade-rounded", BLADE, INK, CANVAS, CORNER),
-    ("mark-ink-rounded", INK, BLADE, CANVAS, CORNER),
-    ("mark-transparent", None, "currentColor", CANVAS, 0),
+    ("avatar-blade", BLADE, INK, WHITE, 1000, 0),
+    ("avatar-ink", INK, BLADE, WHITE, 1000, 0),
+    ("avatar-white", WHITE, INK, BLADE, 1000, 0),
+    ("mark-blade-rounded", BLADE, INK, WHITE, CANVAS, CORNER),
+    ("mark-ink-rounded", INK, BLADE, WHITE, CANVAS, CORNER),
+    ("mark-transparent", None, "currentColor", None, CANVAS, 0),
 ]
 
 
 def main():
     here = os.path.dirname(os.path.abspath(__file__))
-    pts = boundary(centreline())
-    for name, ground, fg, size, corner in OUTPUTS:
+    for name, ground, body, steel, size, corner in OUTPUTS:
         path = os.path.join(here, name + ".svg")
         with open(path, "w") as f:
-            f.write(svg(pts, size, ground, fg, corner))
+            f.write(svg(size, ground, body, steel, corner))
         print("wrote", name + ".svg")
 
 
