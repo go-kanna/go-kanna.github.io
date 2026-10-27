@@ -1,0 +1,179 @@
+#!/usr/bin/env python3
+"""Assemble the site: the landing page, the logo, and a page per tool, rendered
+from the README on its repository's default branch.
+
+    python3 pages/render.py [--out DIR]
+
+The tool pages are not committed. The Pages workflow runs this on every push to
+main and once a day, so the pages follow the READMEs, and the versions on the
+landing page follow the tags. To preview locally:
+
+    python3 pages/render.py && python3 -m http.server -d _site
+
+Needs the gh CLI, logged in: the READMEs are fetched and rendered through the
+GitHub API, which keeps the pages looking as they do on GitHub.
+"""
+import argparse
+import html
+import json
+import re
+import shutil
+import subprocess
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+TEMPLATE = Path(__file__).resolve().parent / "page.html"
+ORG = "go-kanna"
+
+# Each repository's page is at its name, headed with the tool's name.
+TOOLS = [
+    ("validate", "kanna-validate"),
+    ("validated", "validated"),
+    ("i18n", "kanna-i18n"),
+    ("fixture", "kanna-fixture"),
+    ("di", "kanna-di"),
+    ("mapper", "kanna-mapper"),
+]
+
+TAGS = re.compile(r"<[^>]+>")
+
+
+def gh(*args, stdin=None):
+    return subprocess.run(["gh", "api", *args], check=True, capture_output=True, text=True, input=stdin).stdout
+
+
+def readme(repo):
+    return gh(f"repos/{ORG}/{repo}/readme", "-H", "Accept: application/vnd.github.raw+json")
+
+
+def render_markdown(text):
+    # The markdown mode renders as GitHub renders a README; the gfm mode is for
+    # comments, where every line break is one.
+    return gh("markdown", "--input", "-", stdin=json.dumps({"text": text, "mode": "markdown"}))
+
+
+def latest_tag(repo):
+    names = gh(f"repos/{ORG}/{repo}/tags", "--paginate", "--jq", ".[].name").split()
+    versions = [n for n in names if re.fullmatch(r"v\d+\.\d+\.\d+", n)]
+    return max(versions, key=lambda v: tuple(map(int, v[1:].split(".")))) if versions else None
+
+
+def unwrap_headings(body):
+    """Drop the permalink anchors GitHub puts beside headings, and the h1, which the page has its own of."""
+    body = re.sub(r'<a id="user-content-[^"]*" class="anchor".*?</a>', "", body, flags=re.S)
+    body = re.sub(r'<div class="markdown-heading">(<h[1-6].*?</h[1-6]>)</div>', r"\1", body, flags=re.S)
+    return re.sub(r"\s*<h1[^>]*>.*?</h1>\s*", "", body, count=1, flags=re.S)
+
+
+def scroll_tables(body):
+    """Box each table, so that a wide one scrolls on a narrow screen instead of the page."""
+    return re.sub(r"<table>.*?</table>", lambda m: f'<div class="table">{m.group(0)}</div>', body, flags=re.S)
+
+
+def absolutize(body, repo):
+    """Point the README's relative links at the repository, since the page is not in it."""
+
+    def absolute(m):
+        attr, url = m.groups()
+        if re.match(r"[a-z][a-z0-9+.-]*:|#|//", url):
+            return m.group(0)
+        host = "https://raw.githubusercontent.com" if attr == "src" else "https://github.com"
+        path = "main" if attr == "src" else "blob/main"
+        return f'{attr}="{host}/{ORG}/{repo}/{path}/{url.removeprefix("./")}"'
+
+    return re.sub(r'\b(href|src)="([^"]*)"', absolute, body)
+
+
+def slugify(heading):
+    """The id GitHub gives a heading, so that the README's own links keep working."""
+    text = html.unescape(TAGS.sub("", heading)).strip().lower()
+    return re.sub(r"[^\w\- ]", "", text).replace(" ", "-")
+
+
+def anchor_headings(body):
+    seen = {}
+    toc = []
+
+    def anchor(m):
+        level, attrs, inner = m.groups()
+        slug = slugify(inner)
+        n = seen.get(slug, 0)
+        seen[slug] = n + 1
+        if n:
+            slug = f"{slug}-{n}"
+        if level in ("2", "3"):
+            toc.append((int(level), slug, inner))
+        return f'<h{level} id="{slug}"{attrs}>{inner}</h{level}>'
+
+    return re.sub(r"<h([1-6])([^>]*)>(.*?)</h\1>", anchor, body, flags=re.S), toc
+
+
+def render_toc(toc):
+    sections = []
+    for level, slug, inner in toc:
+        if level == 2 or not sections:
+            sections.append((slug, inner, []))
+        else:
+            sections[-1][2].append((slug, inner))
+
+    def item(slug, inner, children=()):
+        sub = f"<ol>{''.join(item(*c) for c in children)}</ol>" if children else ""
+        return f'<li><a href="#{slug}">{inner}</a>{sub}</li>'
+
+    return f"<ol>{''.join(item(*s) for s in sections)}</ol>"
+
+
+def description(body):
+    """The first paragraph that is text, after the badges."""
+    for m in re.finditer(r"<p[^>]*>(.*?)</p>", body, flags=re.S):
+        text = " ".join(html.unescape(TAGS.sub("", m.group(1))).split())
+        if text:
+            return text
+    return ""
+
+
+def render_page(template, repo, name):
+    body = scroll_tables(unwrap_headings(render_markdown(readme(repo))))
+    body = absolutize(body, repo)
+    body, toc = anchor_headings(body)
+    page = template
+    for key, value in {
+        "name": name,
+        "repo": repo,
+        "description": html.escape(description(body), quote=True),
+        "toc": render_toc(toc),
+        "body": body,
+    }.items():
+        page = page.replace("{{" + key + "}}", value)
+    return page
+
+
+def stamp_versions(page):
+    """Fill the versions on the landing page from the latest tag of each repository."""
+
+    def stamp(m):
+        tag = latest_tag(m.group(2).split("/")[1])
+        return f"{m.group(1)}{tag or 'Coming soon'}{m.group(3)}"
+
+    return re.sub(r'(<a[^>]*\bdata-tag="([^"]+)"[^>]*>)[^<]*(</a>)', stamp, page)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Assemble the site into a directory.")
+    parser.add_argument("--out", type=Path, default=ROOT / "_site", help="directory to write (default: _site)")
+    out = parser.parse_args().out
+
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "index.html").write_text(stamp_versions((ROOT / "index.html").read_text()))
+    shutil.copytree(
+        ROOT / "assets", out / "assets", dirs_exist_ok=True, ignore=shutil.ignore_patterns("*.py", "*.md", ".DS_Store")
+    )
+    template = TEMPLATE.read_text()
+    for repo, name in TOOLS:
+        (out / repo).mkdir(exist_ok=True)
+        (out / repo / "index.html").write_text(render_page(template, repo, name))
+        print(f"{repo}/index.html")
+
+
+if __name__ == "__main__":
+    main()
