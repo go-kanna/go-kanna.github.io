@@ -11,8 +11,9 @@ This repository is its site: **https://go-kanna.github.io/kanna/**
 |-------------------------------------------------------------|------------------------------------------------------------------------------|
 | [go-kanna/validate](https://github.com/go-kanna/validate)   | kanna-validate: `Validate` methods from struct tags, with Rails' error codes |
 | [go-kanna/validated](https://github.com/go-kanna/validated) | Values held to a rule wherever they go                                       |
+| [go-kanna/i18n](https://github.com/go-kanna/i18n)           | kanna-i18n: typed message constructors, the translations compiled in         |
 
-kanna-di, kanna-i18n, kanna-fixture, and kanna-mapper are on their way.
+kanna-di, kanna-fixture, and kanna-mapper are on their way.
 
 ## What is here
 
