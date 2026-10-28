@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Assemble the site: the landing page, the logo, and a page per tool, rendered
-from the README on its repository's default branch.
+"""Assemble the site: the landing page, the assets, and a page per tool,
+rendered from the README on its repository's default branch.
 
     python3 pages/render.py [--out DIR]
 
 The tool pages are not committed. The Pages workflow runs this on every push to
 main and once a day, so the pages follow the READMEs, and the versions on the
-landing page follow the tags. To preview locally:
+landing page follow the tags and the go.mod files. To preview locally:
 
     python3 pages/render.py && python3 -m http.server -d _site
 
@@ -14,6 +14,7 @@ Needs the gh CLI, logged in: the READMEs are fetched and rendered through the
 GitHub API, which keeps the pages looking as they do on GitHub.
 """
 import argparse
+import functools
 import html
 import json
 import re
@@ -52,10 +53,19 @@ def render_markdown(text):
     return gh("markdown", "--input", "-", stdin=json.dumps({"text": text, "mode": "markdown"}))
 
 
+@functools.cache
 def latest_tag(repo):
     names = gh(f"repos/{ORG}/{repo}/tags", "--paginate", "--jq", ".[].name").split()
     versions = [n for n in names if re.fullmatch(r"v\d+\.\d+\.\d+", n)]
     return max(versions, key=lambda v: tuple(map(int, v[1:].split(".")))) if versions else None
+
+
+@functools.cache
+def go_version(repo):
+    """The Go the module asks for, from the go directive of its go.mod."""
+    gomod = gh(f"repos/{ORG}/{repo}/contents/go.mod", "-H", "Accept: application/vnd.github.raw+json")
+    m = re.search(r"^go (\d+\.\d+)", gomod, flags=re.M)
+    return f"Go {m.group(1)}" if m else None
 
 
 def unwrap_headings(body):
@@ -141,6 +151,8 @@ def render_page(template, repo, name):
         "name": name,
         "repo": repo,
         "description": html.escape(description(body), quote=True),
+        "version": latest_tag(repo) or "Coming soon",
+        "go": go_version(repo) or "",
         "toc": render_toc(toc),
         "body": body,
     }.items():
@@ -148,23 +160,32 @@ def render_page(template, repo, name):
     return page
 
 
-def stamp_versions(page):
-    """Fill the versions on the landing page from the latest tag of each repository."""
+def stamp(page):
+    """Fill in what the landing page says of each repository: the latest tag
+    where an element carries data-tag, and the Go its go.mod asks for where one
+    carries data-go. What the page says already stands when the lookup finds
+    nothing."""
 
-    def stamp(m):
-        tag = latest_tag(m.group(2).split("/")[1])
-        return f"{m.group(1)}{tag or 'Coming soon'}{m.group(3)}"
+    def fill(lookup, m):
+        start, repo, text, end = m.groups()
+        return f"{start}{lookup(repo.split('/')[1]) or text}{end}"
 
-    return re.sub(r'(<a[^>]*\bdata-tag="([^"]+)"[^>]*>)[^<]*(</a>)', stamp, page)
+    page = re.sub(r'(<a[^>]*\bdata-tag="([^"]+)"[^>]*>)([^<]*)(</a>)', lambda m: fill(latest_tag, m), page)
+    return re.sub(r'(<span[^>]*\bdata-go="([^"]+)"[^>]*>)([^<]*)(</span>)', lambda m: fill(go_version, m), page)
 
 
 def main():
     parser = argparse.ArgumentParser(description="Assemble the site into a directory.")
     parser.add_argument("--out", type=Path, default=ROOT / "_site", help="directory to write (default: _site)")
-    out = parser.parse_args().out
+    parser.add_argument("--base", default="/kanna/",
+                        help="path the site is served under, which the 404 page needs to find the rest (default: /kanna/)")
+    args = parser.parse_args()
+    out = args.out
 
     out.mkdir(parents=True, exist_ok=True)
-    (out / "index.html").write_text(stamp_versions((ROOT / "index.html").read_text()))
+    (out / "index.html").write_text(stamp((ROOT / "index.html").read_text()))
+    # Served for any path under the site, so it finds the rest from the root.
+    (out / "404.html").write_text(TEMPLATE.with_name("404.html").read_text().replace("{{base}}", args.base))
     shutil.copytree(
         ROOT / "assets", out / "assets", dirs_exist_ok=True, ignore=shutil.ignore_patterns("*.py", "*.md", ".DS_Store")
     )
