@@ -15,7 +15,7 @@ This repository is its site: **https://go-kanna.github.io/kanna/**
 | [go-kanna/fixture](https://github.com/go-kanna/fixture)     | kanna-fixture: a constructor for every struct, every field filled                       |
 | [go-kanna/di](https://github.com/go-kanna/di)               | kanna-di: the constructor of a container struct, from the functions next to your types |
 | [go-kanna/mapper](https://github.com/go-kanna/mapper)       | kanna-mapper: the functions you declare between domain and wire types                   |
-| [go-kanna/validated](https://github.com/go-kanna/validated) | Values held to a rule wherever they go                                                  |
+| [go-kanna/value](https://github.com/go-kanna/value)         | kanna-value: value types held to their rule wherever their values come from             |
 
 ## What is here
 
