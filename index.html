@@ -11,239 +11,10 @@
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0B1A21">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Crect width='256' height='256' rx='56' fill='%2300ADD8'/%3E%3Cg transform='translate(5.22 4.12) scale(0.9592)'%3E%3Cpolygon points='34,184 222,184 226,180 226,137 213,124 43,124 30,137 30,180' fill='%230B1A21'/%3E%3Cpolygon points='96,184 116.5,184 214,97.1 213.7,88.6 198.3,74.3' fill='%23fff'/%3E%3C/g%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --ink: #0B1A21;
-    --blade: #00ADD8;
-    --deep: #00708A;
-    --steel: #7F98A3;
-    --paper: #F2F6F7;
-    --white: #FFFFFF;
-    --rule: #D3DFE3;
-    --grain: #16303B;
-
-    --sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
-    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-
-    --measure: 34rem;
-    --gutter: clamp(1.25rem, 4vw, 3rem);
-  }
-
-  * { box-sizing: border-box; }
-
-  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
-
-  body {
-    margin: 0;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 1.125rem;
-    line-height: 1.6;
-    font-stretch: 100%;
-  }
-
-  p code, dd code, li code { font-family: var(--mono); font-size: 0.86em; }
-
-  a { color: var(--deep); text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
-  a:hover { color: var(--ink); }
-  :focus-visible { outline: 3px solid var(--blade); outline-offset: 3px; border-radius: 2px; }
-
-  .wrap { max-width: 76rem; margin: 0 auto; padding: 0 var(--gutter); }
-
-  /* Header */
-  .bar { padding-block: 1.5rem; padding-top: calc(1.5rem + env(safe-area-inset-top, 0px)); }
-  .bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
-  .brand { display: inline-flex; align-items: center; gap: 0.7rem; color: var(--ink); text-decoration: none; }
-  .brand svg { width: 2.25rem; height: 2.25rem; display: block; }
-  .brand span { font-weight: 800; font-stretch: 110%; font-size: 1.35rem; letter-spacing: -0.01em; }
-  .bar nav { display: flex; gap: 1.75rem; font-size: 1rem; }
-  .bar nav a { color: var(--ink); text-decoration: none; }
-  .bar nav a:hover { color: var(--deep); text-decoration: underline; }
-
-  /* Hero */
-  .hero { padding-block: clamp(2.5rem, 7vw, 6rem) clamp(4rem, 9vw, 7.5rem); }
-  .hero .wrap {
-    display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: clamp(2.5rem, 5vw, 5rem);
-    align-items: center;
-  }
-  h1 {
-    margin: 0 0 1.75rem;
-    font-weight: 800;
-    font-stretch: 110%;
-    font-size: clamp(2.6rem, 5.4vw, 4.6rem);
-    line-height: 1.02;
-    letter-spacing: -0.03em;
-    max-width: 12ch;
-  }
-  .lede { margin: 0 0 2.25rem; max-width: var(--measure); font-size: 1.25rem; line-height: 1.55; color: #213943; }
-
-  .install {
-    display: flex; align-items: stretch;
-    max-width: 100%;
-    background: var(--white);
-    border: 1px solid var(--rule);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  .install code {
-    flex: 1; min-width: 0;
-    padding: 0.85rem 1rem;
-    font-family: var(--mono); font-size: 0.875rem; line-height: 1.5;
-    white-space: nowrap; overflow-x: auto;
-  }
-  .install code::before { content: "$ "; color: var(--steel); }
-  .install button {
-    flex: none;
-    border: 0; border-left: 1px solid var(--rule);
-    background: var(--white); color: var(--ink);
-    font: 600 0.875rem var(--sans);
-    padding: 0 1.1rem; cursor: pointer;
-  }
-  .install button:hover { background: var(--paper); }
-  .install-note { margin: 0.85rem 0 0; font-size: 0.9375rem; color: #4A606A; }
-
-  /* The bench: a struct, the plane, and what it lifts off */
-  .bench {
-    margin: 0;
-    background: var(--ink);
-    color: #D6E2E7;
-    clip-path: polygon(22px 0, calc(100% - 22px) 0, 100% 22px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 22px);
-    font-family: var(--mono);
-    font-size: 0.8125rem;
-    line-height: 1.65;
-  }
-  .pane { padding: 1.4rem 1.6rem 1.5rem; }
-  .file { display: block; margin-bottom: 0.9rem; font-family: var(--sans); font-size: 0.8125rem; color: var(--steel); }
-  .pane pre { margin: 0; overflow-x: auto; tab-size: 4; }
-  .pane code { font-family: inherit; }
-  .seam { position: relative; height: 2px; background: var(--grain); margin: 0 1.6rem; }
-  .plane {
-    position: absolute; left: 0; bottom: 1px;
-    width: 4.5rem; height: auto;
-    transform: translateX(calc(var(--seam-width, 0px) - 100%));
-  }
-  .out { position: relative; }
-
-  .k { color: var(--blade); }
-  .s { color: #8FD4E6; }
-  .c { color: var(--steel); }
-  .t { color: var(--white); }
-  .f { color: #F0F6F8; font-weight: 500; }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .js .bench .plane { animation: plane 1.9s cubic-bezier(.55, .05, .25, 1) .35s both; }
-    .js .bench .out .lift { animation: lift 1.9s cubic-bezier(.55, .05, .25, 1) .35s both; }
-  }
-  @keyframes plane {
-    from { transform: translateX(-30%); }
-    to { transform: translateX(calc(var(--seam-width, 0px) - 100%)); }
-  }
-  @keyframes lift {
-    from { clip-path: inset(0 100% 0 0); }
-    to { clip-path: inset(0 0 0 0); }
-  }
-
-  /* Sections */
-  section h2 {
-    margin: 0 0 1rem;
-    font-weight: 800; font-stretch: 110%;
-    font-size: clamp(1.75rem, 3vw, 2.25rem);
-    line-height: 1.15; letter-spacing: -0.02em;
-  }
-  .intro { margin: 0 0 3rem; max-width: var(--measure); color: #213943; }
-
-  /* Spotlights: three more jobs, each shown as what you write and what it writes */
-  .spots { padding-block: clamp(4rem, 8vw, 6.5rem); background: var(--white); }
-  .spot {
-    display: grid;
-    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
-    gap: clamp(2rem, 5vw, 5rem);
-    align-items: start;
-    padding-block: clamp(2.5rem, 5vw, 4rem);
-    border-top: 1px solid var(--rule);
-  }
-  .spot:last-child { padding-bottom: 0; }
-  .spot .eyebrow { margin: 0 0 0.75rem; font-family: var(--mono); font-size: 0.875rem; color: var(--deep); }
-  .spot .eyebrow a { color: inherit; text-decoration: none; }
-  .spot .eyebrow a:hover { text-decoration: underline; }
-  .spot h3 {
-    margin: 0 0 1rem;
-    font-weight: 800; font-stretch: 110%;
-    font-size: clamp(1.6rem, 2.6vw, 2.1rem);
-    line-height: 1.1; letter-spacing: -0.02em;
-  }
-  .spot p { margin: 0 0 1.1rem; color: #213943; }
-  .spot .more { display: flex; flex-wrap: wrap; gap: 0.4rem 1.5rem; font-size: 1rem; }
-
-  /* The family: every tool, side by side */
-  .family { padding-block: clamp(4rem, 8vw, 6.5rem); }
-  .tools {
-    list-style: none; margin: 0; padding: 0;
-    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem;
-  }
-  .tool {
-    display: flex; flex-direction: column; gap: 0.8rem;
-    padding: 1.5rem 1.5rem 1.4rem;
-    background: var(--white);
-    border: 1px solid var(--rule);
-    border-radius: 12px;
-  }
-  .tool h3 { margin: 0; font-size: 1.25rem; font-weight: 700; font-stretch: 104%; letter-spacing: -0.01em; }
-  .tool h3 a { color: inherit; text-decoration: none; }
-  .tool h3 a:hover { color: var(--deep); text-decoration: underline; }
-  .tool p { flex: 1; margin: 0; font-size: 1rem; color: #213943; }
-  .tool .status { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.9375rem; color: #4A606A; }
-  .tool .status a { color: var(--ink); font-weight: 600; text-decoration: none; }
-  .tool .status a:hover { color: var(--deep); text-decoration: underline; }
-  .tool .install-line {
-    display: block; margin: 0;
-    font-family: var(--mono); font-size: 0.75rem; line-height: 1.5; color: #3D5560;
-    overflow-wrap: anywhere;
-  }
-  .tool .install-line::before { content: "$ "; color: var(--steel); }
-  .tool .links { display: flex; gap: 1.25rem; font-size: 0.9375rem; }
-
-  .promise { padding-block: clamp(4rem, 8vw, 6.5rem); background: var(--white); }
-  .promises { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem clamp(2rem, 4vw, 3.5rem); margin: 0; }
-  .promises div { border-top: 3px solid var(--ink); padding-top: 1.1rem; }
-  .promises dt { font-weight: 700; font-stretch: 104%; font-size: 1.125rem; margin-bottom: 0.5rem; }
-  .promises dd { margin: 0; color: #2E4651; }
-
-  .why { padding-block: clamp(4rem, 8vw, 6.5rem); background: var(--ink); color: #D6E2E7; }
-  .why .wrap { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
-  .why h2 { color: var(--white); }
-  .why p { margin: 0 0 1.1rem; max-width: var(--measure); }
-  .why p:last-child { margin-bottom: 0; }
-  .why .mark { width: 100%; max-width: 26rem; height: auto; display: block; }
-  .why a { color: #8FD4E6; }
-  .why a:hover { color: var(--white); }
-
-  footer { padding-block: 2.5rem; padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px)); font-size: 0.9375rem; color: #4A606A; }
-  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; }
-
-  @media (max-width: 60rem) {
-    .hero .wrap, .why .wrap, .spot { grid-template-columns: minmax(0, 1fr); }
-    .tools { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .promises { grid-template-columns: minmax(0, 1fr); }
-    .why .mark { max-width: 16rem; }
-  }
-  @media (max-width: 40rem) {
-    .tools { grid-template-columns: minmax(0, 1fr); }
-  }
-  @media (max-width: 30rem) {
-    .bar nav { gap: 1.1rem; font-size: 0.9375rem; }
-    .bar nav .wide { display: none; }
-    .pane { padding: 1.2rem 1.1rem 1.25rem; }
-    .bench { font-size: 0.75rem; }
-    .seam { margin: 0 1.1rem; }
-  }
-</style>
+<link rel="preload" href="assets/fonts/Go-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/Go-Bold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/Go-Mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
 <header class="bar">
@@ -264,13 +35,13 @@
   <section class="hero">
     <div class="wrap">
       <div>
-        <h1>Generated Go, not magic Go.</h1>
+        <h1>Generated Go,<br>not magic Go.</h1>
         <p class="lede">kanna is a family of code generators for Go. Each one reads what you have already written, from struct tags to locale files, and writes the plain Go you would otherwise write by hand: no reflection, nothing hidden from review. A generator that needs a runtime ships a small one in the same module, so the two never drift apart.</p>
         <div class="install">
-          <code id="install-validate">go get -tool github.com/go-kanna/validate/cmd/kanna-validate</code>
-          <button type="button" data-copy="install-validate">Copy</button>
+          <code id="install-hero">go get -tool github.com/go-kanna/validate/cmd/kanna-validate</code>
+          <button type="button" class="copy" data-copy="install-hero">Copy</button>
         </div>
-        <p class="install-note">Start with <a href="validate/">kanna-validate</a>. It needs Go 1.27.</p>
+        <p class="install-note">Start with <a href="validate/">kanna-validate</a>. It needs <span data-go="go-kanna/validate">Go 1.27</span>.</p>
       </div>
 
       <figure class="bench" aria-label="A struct marked for kanna-validate, and the Validate method it generates">
@@ -287,7 +58,7 @@
         <div class="seam">
           <svg class="plane" viewBox="26 70 204 118" aria-hidden="true"><polygon points="34,184 222,184 226,180 226,137 213,124 43,124 30,137 30,180" fill="#00ADD8"/><polygon points="96,184 116.5,184 214,97.1 213.7,88.6 198.3,74.3" fill="#FFFFFF"/><polygon points="116.5,162.1 183.3,90.4 178.2,85.6 111.3,157.3" fill="#7F98A3"/></svg>
         </div>
-        <div class="pane out">
+        <div class="pane">
           <div class="lift">
           <span class="file">validate_gen.go</span>
 <pre><code><span class="k">func</span> (x <span class="t">CreateUserRequest</span>) <span class="f">Validate</span>() <span class="t">error</span> {
@@ -320,7 +91,7 @@
 
       <article class="spot">
         <div>
-          <p class="eyebrow"><a href="di/">kanna-di</a></p>
+          <p class="tool-name"><a href="di/">kanna-di</a></p>
           <h3>Dependency injection with nothing registered.</h3>
           <p>Mark the struct your program is made of, and kanna-di writes its constructor: each field from the function next to its type, or next to the container, in the order they need each other. What a provider opens, it closes, through the one cleanup the constructor returns.</p>
           <p>A test container embeds the real one and swaps a single dependency. The rest is promoted, <code>routes()</code> included.</p>
@@ -369,7 +140,7 @@
 
       <article class="spot">
         <div>
-          <p class="eyebrow"><a href="i18n/">kanna-i18n</a></p>
+          <p class="tool-name"><a href="i18n/">kanna-i18n</a></p>
           <h3>Messages as functions, translations compiled in.</h3>
           <p>One YAML file per language becomes a typed constructor per message: a placeholder is a parameter, a plural message takes its count, and every translation is in the binary. Nothing is read or parsed at run time, and the text of a message shows in your editor where it is called.</p>
           <p>A translation that does not fit the default language, with a key or a placeholder it does not have, stops generation rather than the first request that meets it.</p>
@@ -426,7 +197,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
 
       <article class="spot">
         <div>
-          <p class="eyebrow"><a href="fixture/">kanna-fixture</a></p>
+          <p class="tool-name"><a href="fixture/">kanna-fixture</a></p>
           <h3>A test states only what it cares about.</h3>
           <p>Every struct of a package gets a constructor with every field filled: numbered so that no two fixtures collide, within the rules its <code>validate</code> tags declare, from the first constant of its type, or from a gofakeit template where you ask for one. A fixture is valid as made, so a test of one rule changes one field.</p>
           <p>The fixtures are a package of their own, so the models sqlc or protoc wrote get them too.</p>
@@ -481,52 +252,82 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
     </div>
   </section>
 
-  <section class="family" id="tools">
+  <section class="family" id="tools" aria-labelledby="tools-title">
     <div class="wrap">
-      <h2>Every tool</h2>
+      <h2 id="tools-title">Every tool</h2>
       <p class="intro">Each is a module of its own: install the ones you need, and each leaves nothing behind but Go source you can read. Each page here is the tool's README.</p>
       <ul class="tools">
         <li class="tool">
-          <h3><a href="validate/">kanna-validate</a></h3>
-          <p>Generates a <code>Validate</code> method from the <code>validate</code> tags of a struct, and reports what breaks under Rails' error codes, keyed by the fields' JSON names. Decodes a request and reports everything wrong with it at once.</p>
-          <div class="status"><a href="https://github.com/go-kanna/validate/tags" data-tag="go-kanna/validate">v0.0.1</a><span>Go 1.27</span></div>
-          <code class="install-line">go get -tool github.com/go-kanna/validate/cmd/kanna-validate</code>
-          <p class="links"><a href="validate/">Docs</a> <a href="https://github.com/go-kanna/validate">GitHub</a></p>
+          <div class="id">
+            <h3 class="name"><a href="validate/">kanna-validate</a></h3>
+            <p class="links"><a href="https://github.com/go-kanna/validate">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/validate">pkg.go.dev</a></p>
+          </div>
+          <p class="what">Generates a <code>Validate</code> method from the <code>validate</code> tags of a struct, and reports what breaks under Rails' error codes, keyed by the fields' JSON names. Decodes a request and reports everything wrong with it at once.</p>
+          <div class="install">
+            <code id="install-validate">go get -tool github.com/go-kanna/validate/cmd/kanna-validate</code>
+            <button type="button" class="copy" data-copy="install-validate">Copy</button>
+          </div>
+          <p class="status"><a href="https://github.com/go-kanna/validate/tags" data-tag="go-kanna/validate">v0.0.1</a> <span data-go="go-kanna/validate">Go 1.27</span></p>
         </li>
         <li class="tool">
-          <h3><a href="i18n/">kanna-i18n</a></h3>
-          <p>Compiles a directory of locale files into a typed constructor for every message, with the translations themselves compiled in, so nothing is read or parsed at run time. CLDR plurals, locale-formatted numbers, and a <code>Localizer</code> that takes an Accept-Language value.</p>
-          <div class="status"><a href="https://github.com/go-kanna/i18n/tags" data-tag="go-kanna/i18n">v0.0.1</a><span>Go 1.26</span></div>
-          <code class="install-line">go get -tool github.com/go-kanna/i18n/cmd/kanna-i18n</code>
-          <p class="links"><a href="i18n/">Docs</a> <a href="https://github.com/go-kanna/i18n">GitHub</a></p>
+          <div class="id">
+            <h3 class="name"><a href="i18n/">kanna-i18n</a></h3>
+            <p class="links"><a href="https://github.com/go-kanna/i18n">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/i18n">pkg.go.dev</a></p>
+          </div>
+          <p class="what">Compiles a directory of locale files into a typed constructor for every message, with the translations themselves compiled in, so nothing is read or parsed at run time. CLDR plurals, locale-formatted numbers, and a <code>Localizer</code> that takes an Accept-Language value.</p>
+          <div class="install">
+            <code id="install-i18n">go get -tool github.com/go-kanna/i18n/cmd/kanna-i18n</code>
+            <button type="button" class="copy" data-copy="install-i18n">Copy</button>
+          </div>
+          <p class="status"><a href="https://github.com/go-kanna/i18n/tags" data-tag="go-kanna/i18n">v0.0.1</a> <span data-go="go-kanna/i18n">Go 1.26</span></p>
         </li>
         <li class="tool">
-          <h3><a href="fixture/">kanna-fixture</a></h3>
-          <p>Writes a constructor for every struct of a package with every field filled: numbered so that no two collide, within the rules its <code>validate</code> tags declare, or from a gofakeit template, which is checked while generating.</p>
-          <div class="status"><a href="https://github.com/go-kanna/fixture/tags" data-tag="go-kanna/fixture">v0.0.2</a><span>Go 1.26</span></div>
-          <code class="install-line">go get -tool github.com/go-kanna/fixture/cmd/kanna-fixture</code>
-          <p class="links"><a href="fixture/">Docs</a> <a href="https://github.com/go-kanna/fixture">GitHub</a></p>
+          <div class="id">
+            <h3 class="name"><a href="fixture/">kanna-fixture</a></h3>
+            <p class="links"><a href="https://github.com/go-kanna/fixture">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/fixture">pkg.go.dev</a></p>
+          </div>
+          <p class="what">Writes a constructor for every struct of a package with every field filled: numbered so that no two collide, within the rules its <code>validate</code> tags declare, or from a gofakeit template, which is checked while generating.</p>
+          <div class="install">
+            <code id="install-fixture">go get -tool github.com/go-kanna/fixture/cmd/kanna-fixture</code>
+            <button type="button" class="copy" data-copy="install-fixture">Copy</button>
+          </div>
+          <p class="status"><a href="https://github.com/go-kanna/fixture/tags" data-tag="go-kanna/fixture">v0.0.2</a> <span data-go="go-kanna/fixture">Go 1.26</span></p>
         </li>
         <li class="tool">
-          <h3><a href="di/">kanna-di</a></h3>
-          <p>Writes the constructor of a container struct from the functions next to your types and next to the container: nothing registered, an interface bound to its implementation with one tag, cleanups returned as one, and nothing to import at run time.</p>
-          <div class="status"><a href="https://github.com/go-kanna/di/tags" data-tag="go-kanna/di">v0.0.1</a><span>Go 1.26</span></div>
-          <code class="install-line">go get -tool github.com/go-kanna/di/cmd/kanna-di</code>
-          <p class="links"><a href="di/">Docs</a> <a href="https://github.com/go-kanna/di">GitHub</a></p>
+          <div class="id">
+            <h3 class="name"><a href="di/">kanna-di</a></h3>
+            <p class="links"><a href="https://github.com/go-kanna/di">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/di">pkg.go.dev</a></p>
+          </div>
+          <p class="what">Writes the constructor of a container struct from the functions next to your types and next to the container: nothing registered, an interface bound to its implementation with one tag, cleanups returned as one, and nothing to import at run time.</p>
+          <div class="install">
+            <code id="install-di">go get -tool github.com/go-kanna/di/cmd/kanna-di</code>
+            <button type="button" class="copy" data-copy="install-di">Copy</button>
+          </div>
+          <p class="status"><a href="https://github.com/go-kanna/di/tags" data-tag="go-kanna/di">v0.0.1</a> <span data-go="go-kanna/di">Go 1.26</span></p>
         </li>
         <li class="tool">
-          <h3><a href="mapper/">kanna-mapper</a></h3>
-          <p>Writes the functions between your domain types and the wire types you do not control. You declare the signatures; it writes the bodies, field by field, calling the conversions you list, <code>uuid.Parse</code> and <code>timestamppb.New</code> as they are, and handles protobuf oneofs.</p>
-          <div class="status"><a href="https://github.com/go-kanna/mapper/tags" data-tag="go-kanna/mapper">v0.0.1</a><span>Go 1.26</span></div>
-          <code class="install-line">go get -tool github.com/go-kanna/mapper/cmd/kanna-mapper</code>
-          <p class="links"><a href="mapper/">Docs</a> <a href="https://github.com/go-kanna/mapper">GitHub</a></p>
+          <div class="id">
+            <h3 class="name"><a href="mapper/">kanna-mapper</a></h3>
+            <p class="links"><a href="https://github.com/go-kanna/mapper">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/mapper">pkg.go.dev</a></p>
+          </div>
+          <p class="what">Writes the functions between your domain types and the wire types you do not control. You declare the signatures; it writes the bodies, field by field, calling the conversions you list, <code>uuid.Parse</code> and <code>timestamppb.New</code> as they are, and handles protobuf oneofs.</p>
+          <div class="install">
+            <code id="install-mapper">go get -tool github.com/go-kanna/mapper/cmd/kanna-mapper</code>
+            <button type="button" class="copy" data-copy="install-mapper">Copy</button>
+          </div>
+          <p class="status"><a href="https://github.com/go-kanna/mapper/tags" data-tag="go-kanna/mapper">v0.0.1</a> <span data-go="go-kanna/mapper">Go 1.26</span></p>
         </li>
         <li class="tool">
-          <h3><a href="validated/">validated</a></h3>
-          <p>Values held to a rule wherever they go: built, decoded from JSON, or scanned from a database. An email address that is a <code>validated.String[rules.Email]</code> is an email address. A library, not a generator; the <code>email</code>, <code>url</code>, and <code>uuid</code> tags of kanna-validate call its rules.</p>
-          <div class="status"><a href="https://github.com/go-kanna/validated/tags" data-tag="go-kanna/validated">v0.0.2</a><span>Go 1.26</span></div>
-          <code class="install-line">go get github.com/go-kanna/validated</code>
-          <p class="links"><a href="validated/">Docs</a> <a href="https://github.com/go-kanna/validated">GitHub</a></p>
+          <div class="id">
+            <h3 class="name"><a href="validated/">validated</a></h3>
+            <p class="links"><a href="https://github.com/go-kanna/validated">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/validated">pkg.go.dev</a></p>
+          </div>
+          <p class="what">Values held to a rule wherever they go: built, decoded from JSON, or scanned from a database. An email address that is a <code>validated.String[rules.Email]</code> is an email address. A library, not a generator; the <code>email</code>, <code>url</code>, and <code>uuid</code> tags of kanna-validate call its rules.</p>
+          <div class="install">
+            <code id="install-validated">go get github.com/go-kanna/validated</code>
+            <button type="button" class="copy" data-copy="install-validated">Copy</button>
+          </div>
+          <p class="status"><a href="https://github.com/go-kanna/validated/tags" data-tag="go-kanna/validated">v0.0.2</a> <span data-go="go-kanna/validated">Go 1.26</span></p>
         </li>
       </ul>
     </div>
@@ -553,11 +354,11 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
     </div>
   </section>
 
-  <section class="why" id="why">
+  <section class="why" id="why" aria-labelledby="why-title">
     <div class="wrap">
       <svg class="mark" viewBox="26 70 204 118" role="img" aria-label="A kanna, the Japanese hand plane, seen from the side"><polygon points="34,184 222,184 226,180 226,137 213,124 43,124 30,137 30,180" fill="#00ADD8"/><polygon points="96,184 116.5,184 214,97.1 213.7,88.6 198.3,74.3" fill="#FFFFFF"/><polygon points="116.5,162.1 183.3,90.4 178.2,85.6 111.3,157.3" fill="#7F98A3"/></svg>
       <div>
-        <h2>Why a plane</h2>
+        <h2 id="why-title">Why a plane</h2>
         <p>A kanna (鉋) is the Japanese hand plane: a block of oak with a blade set through it, pulled toward you across a board. A good one lifts a shaving thin enough to read through and leaves a surface that needs nothing more.</p>
         <p>That is the job we hold a generator to. It takes off exactly the code you would have written, and leaves the rest of your program alone.</p>
       </div>
@@ -572,27 +373,6 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
   </div>
 </footer>
 
-<script>
-  document.documentElement.classList.add("js");
-
-  // The plane travels the length of the seam, whatever the width of the bench.
-  const seam = document.querySelector(".hero .seam");
-  const measure = () => seam && seam.style.setProperty("--seam-width", seam.clientWidth + "px");
-  measure();
-  window.addEventListener("resize", measure);
-
-  for (const button of document.querySelectorAll("[data-copy]")) {
-    button.addEventListener("click", async () => {
-      const text = document.getElementById(button.dataset.copy).textContent;
-      try {
-        await navigator.clipboard.writeText(text);
-        button.textContent = "Copied";
-      } catch {
-        button.textContent = "Select and copy";
-      }
-      setTimeout(() => { button.textContent = "Copy"; }, 2000);
-    });
-  }
-</script>
+<script src="assets/site.js"></script>
 </body>
 </html>
