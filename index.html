@@ -320,15 +320,15 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
         </li>
         <li class="tool">
           <div class="id">
-            <h3 class="name"><a href="validated/">validated</a></h3>
-            <p class="links"><a href="https://github.com/go-kanna/validated">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/validated">pkg.go.dev</a></p>
+            <h3 class="name"><a href="value/">kanna-value</a></h3>
+            <p class="links"><a href="https://github.com/go-kanna/value">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/value">pkg.go.dev</a></p>
           </div>
-          <p class="what">Values held to a rule wherever they go: built, decoded from JSON, or scanned from a database. An email address that is a <code>validated.String[rules.Email]</code> is an email address. A library, not a generator; the <code>email</code>, <code>url</code>, and <code>uuid</code> tags of kanna-validate call its rules.</p>
+          <p class="what">Turns a struct holding one value and a <code>validate</code> method into a value type, with constructors, an accessor, and JSON and SQL methods that hold every value to the rule wherever it comes from. A type of your own, so it takes your methods; the <code>email</code>, <code>url</code>, and <code>uuid</code> tags of kanna-validate call the same rules.</p>
           <div class="install">
-            <code id="install-validated">go get github.com/go-kanna/validated</code>
-            <button type="button" class="copy" data-copy="install-validated">Copy</button>
+            <code id="install-value">go get -tool github.com/go-kanna/value/cmd/kanna-value</code>
+            <button type="button" class="copy" data-copy="install-value">Copy</button>
           </div>
-          <p class="status"><a href="https://github.com/go-kanna/validated/tags" data-tag="go-kanna/validated">v0.0.2</a> <span data-go="go-kanna/validated">Go 1.26</span></p>
+          <p class="status"><a href="https://github.com/go-kanna/value/tags" data-tag="go-kanna/value">v0.0.2</a> <span data-go="go-kanna/value">Go 1.26</span></p>
         </li>
       </ul>
     </div>
@@ -344,7 +344,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
         <li><a class="name" href="validate/">kanna-validate</a><span>checks what the use cases are given, and the configuration read from the environment</span></li>
         <li><a class="name" href="fixture/">kanna-fixture</a><span>makes the todos the tests start from</span></li>
         <li><a class="name" href="i18n/">kanna-i18n</a><span>compiles the service's messages, in English and Japanese</span></li>
-        <li><a class="name" href="validated/">validated</a><span>holds a todo's completion time to its range wherever it goes</span></li>
+        <li><a class="name" href="value/">kanna-value</a><span>holds a todo's completion time to its range wherever it goes</span></li>
       </ul>
       <p class="more"><a href="https://github.com/go-kanna/showcase">Read the code on GitHub</a></p>
     </div>

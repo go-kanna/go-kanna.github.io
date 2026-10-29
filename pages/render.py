@@ -29,7 +29,7 @@ ORG = "go-kanna"
 # Each repository's page is at its name, headed with the tool's name.
 TOOLS = [
     ("validate", "kanna-validate"),
-    ("validated", "validated"),
+    ("value", "kanna-value"),
     ("i18n", "kanna-i18n"),
     ("fixture", "kanna-fixture"),
     ("di", "kanna-di"),
