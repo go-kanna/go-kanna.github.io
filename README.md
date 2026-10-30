@@ -12,7 +12,7 @@ This repository is its site: **https://go-kanna.github.io/kanna/**
 | Repository                                                | What it is                                                                                   |
 |-----------------------------------------------------------|----------------------------------------------------------------------------------------------|
 | [go-kanna/validate](https://github.com/go-kanna/validate) | kanna-validate: `Validate` methods from struct tags, with Rails' error codes                 |
-| [go-kanna/value](https://github.com/go-kanna/value)       | kanna-value: value types held to their rule wherever their values come from                  |
+| [go-kanna/value](https://github.com/go-kanna/value)       | kanna-value: value types held to their rule, and enums to their constants                    |
 | [go-kanna/orm](https://github.com/go-kanna/orm)           | kanna-orm: the implementation of your repository interfaces, and a chainable scope per table |
 | [go-kanna/mapper](https://github.com/go-kanna/mapper)     | kanna-mapper: the functions you declare between domain and wire types                        |
 | [go-kanna/i18n](https://github.com/go-kanna/i18n)         | kanna-i18n: typed message constructors, the translations compiled in                         |

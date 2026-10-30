@@ -140,8 +140,8 @@
               </div>
             </figure>
             <div class="about">
-              <p class="what">kanna-value turns a struct holding one value and a <code>validate</code> method into a value type: constructors, an accessor, and JSON and SQL methods that hold every value to the rule, wherever it comes from.</p>
-              <p class="like">The constructor and the four marshaling methods you would otherwise write for every value object, with the rule in one place.</p>
+              <p class="what">kanna-value turns a struct holding one value and a <code>validate</code> method into a value type: constructors, an accessor, and JSON and SQL methods that hold every value to the rule, wherever it comes from. A string type with constants, marked <code>//kanna:enum</code>, becomes an enum that reads in only those.</p>
+              <p class="like">The constructor and the four marshaling methods you would otherwise write for every value object, with the rule in one place, and the check of an enum's constants that every layer would repeat.</p>
               <p class="meta"><a href="value/">Read the docs</a> <a href="https://github.com/go-kanna/value">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/value/tags" data-tag="go-kanna/value">v0.0.4</a><span data-go="go-kanna/value">Go 1.26</span></span></p>
               <div class="install">
                 <code id="install-hero-value">go get -tool github.com/go-kanna/value/cmd/kanna-value</code>
@@ -249,7 +249,7 @@ RETURNING id, customer_id, status, placed_at, note`</span>
               </div>
             </figure>
             <div class="about">
-              <p class="what">kanna-mapper writes the functions between your domain types and the wire types you do not control. You declare the signatures; it writes the bodies, field by field, and handles protobuf oneofs.</p>
+              <p class="what">kanna-mapper writes the functions between your domain types and the wire types you do not control. You declare the signatures; it writes the bodies, field by field, and handles protobuf oneofs and enums.</p>
               <p class="like">Declared much as with goverter. What Go cannot convert by itself, you list as the functions that do, <code>uuid.Parse</code> and <code>timestamppb.New</code> as they are.</p>
               <p class="meta"><a href="mapper/">Read the docs</a> <a href="https://github.com/go-kanna/mapper">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/mapper/tags" data-tag="go-kanna/mapper">v0.0.7</a><span data-go="go-kanna/mapper">Go 1.26</span></span></p>
               <div class="install">
@@ -461,7 +461,13 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
 <span class="k">func</span> (x <span class="t">Email</span>) <span class="f">MarshalJSON</span>() ([]<span class="t">byte</span>, <span class="t">error</span>)
 <span class="k">func</span> (x *<span class="t">Email</span>) <span class="f">UnmarshalJSON</span>(data []<span class="t">byte</span>) <span class="t">error</span>
 <span class="k">func</span> (x <span class="t">Email</span>) <span class="f">Value</span>() (driver.<span class="t">Value</span>, <span class="t">error</span>)
-<span class="k">func</span> (x *<span class="t">Email</span>) <span class="f">Scan</span>(src <span class="t">any</span>) <span class="t">error</span></code></pre>
+<span class="k">func</span> (x *<span class="t">Email</span>) <span class="f">Scan</span>(src <span class="t">any</span>) <span class="t">error</span>
+
+<span class="c">// and for the enum OrderStatus</span>
+<span class="k">func</span> <span class="f">NewOrderStatus</span>(v <span class="t">string</span>) (<span class="t">OrderStatus</span>, <span class="t">error</span>)
+<span class="k">func</span> <span class="f">OrderStatusValues</span>() []<span class="t">OrderStatus</span>
+<span class="k">func</span> (x *<span class="t">OrderStatus</span>) <span class="f">UnmarshalText</span>(text []<span class="t">byte</span>) <span class="t">error</span>
+<span class="k">func</span> (x *<span class="t">OrderStatus</span>) <span class="f">Scan</span>(src <span class="t">any</span>) <span class="t">error</span></code></pre>
         </div>
         <div class="output">
           <h3><a href="mapper/">kanna-mapper</a><span>mapper_gen.go</span></h3>
@@ -554,14 +560,14 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
       <h2 id="showcase-title">Seven tools, one service</h2>
       <p class="intro"><a href="https://github.com/go-kanna/showcase">go-kanna/showcase</a> is a to-do service, gRPC over PostgreSQL, with every tool in its place. What the generators write is committed, so each file can be read beside what it came from: here, on wood.</p>
       <div class="layout">
-<pre class="tree" aria-label="The source tree of go-kanna/showcase, with the files the generators write"><code><span class="d">showcase/</span><span>├── <b>config/</b></span><span class="x">│   ├── api_config.go</span><span class="g">│   └── validate_gen.go                 <i>kanna-validate</i></span><span>├── <b>internal/</b></span><span>│   ├── <b>di/</b></span><span class="x">│   │   ├── infra_di.go</span><span class="g">│   │   └── di_gen.go                   <i>kanna-di</i></span><span>│   ├── <b>feature/todo/</b></span><span>│   │   ├── <b>model/</b></span><span class="x">│   │   │   ├── todo_model.go</span><span class="g">│   │   │   ├── value_gen.go            <i>kanna-value</i></span><span class="g">│   │   │   └── fixture/fixture_gen.go  <i>kanna-fixture</i></span><span>│   │   ├── <b>scopes/</b></span><span class="x">│   │   │   ├── scopes.go</span><span class="g">│   │   │   └── orm_gen.go              <i>kanna-orm</i></span><span>│   │   ├── <b>repository/</b></span><span class="x">│   │   │   ├── todo_repository.go</span><span class="x">│   │   │   └── todo_queries.sql</span><span>│   │   ├── <b>postgres/</b></span><span class="x">│   │   │   ├── postgres_todo_repository.go</span><span class="g">│   │   │   └── orm_gen.go              <i>kanna-orm</i></span><span>│   │   ├── <b>usecase/</b></span><span class="x">│   │   │   ├── *_use_case.go</span><span class="g">│   │   │   ├── di_gen.go               <i>kanna-di</i></span><span class="g">│   │   │   └── validate_gen.go         <i>kanna-validate</i></span><span>│   │   ├── <b>mapper/</b></span><span class="x">│   │   │   ├── todo_mapper.go</span><span class="g">│   │   │   └── mapper_gen.go           <i>kanna-mapper</i></span><span>│   │   └── <b>handler/</b></span><span class="x">│   │       ├── todo_handler.go</span><span class="g">│   │       └── di_gen.go               <i>kanna-di</i></span><span>│   └── <b>messages/</b></span><span class="x">│       ├── locales/</span><span class="g">│       └── i18n_gen.go                 <i>kanna-i18n</i></span><span class="x">└── kanna-orm.snapshot.json</span></code></pre>
+<pre class="tree" aria-label="The source tree of go-kanna/showcase, with the files the generators write"><code><span class="d">showcase/</span><span>├── <b>config/</b></span><span class="x">│   ├── api_config.go</span><span class="g">│   └── validate_gen.go                 <i>kanna-validate</i></span><span>├── <b>internal/</b></span><span>│   ├── <b>di/</b></span><span class="x">│   │   ├── infra_di.go</span><span class="g">│   │   └── di_gen.go                   <i>kanna-di</i></span><span>│   ├── <b>feature/todo/</b></span><span>│   │   ├── <b>model/</b></span><span class="x">│   │   │   ├── todo_model.go</span><span class="g">│   │   │   ├── value_gen.go            <i>kanna-value</i></span><span class="g">│   │   │   └── fixture/fixture_gen.go  <i>kanna-fixture</i></span><span>│   │   ├── <b>scopes/</b></span><span class="x">│   │   │   ├── scopes.go</span><span class="g">│   │   │   └── orm_gen.go              <i>kanna-orm</i></span><span>│   │   ├── <b>repository/</b></span><span class="x">│   │   │   └── todo_repository.go</span><span>│   │   ├── <b>postgres/</b></span><span class="x">│   │   │   ├── postgres_todo_repository.go</span><span class="x">│   │   │   ├── todo_queries.sql</span><span class="g">│   │   │   └── orm_gen.go              <i>kanna-orm</i></span><span>│   │   ├── <b>usecase/</b></span><span class="x">│   │   │   ├── *_use_case.go</span><span class="g">│   │   │   ├── di_gen.go               <i>kanna-di</i></span><span class="g">│   │   │   └── validate_gen.go         <i>kanna-validate</i></span><span>│   │   ├── <b>mapper/</b></span><span class="x">│   │   │   ├── todo_mapper.go</span><span class="g">│   │   │   └── mapper_gen.go           <i>kanna-mapper</i></span><span>│   │   └── <b>handler/</b></span><span class="x">│   │       ├── todo_handler.go</span><span class="g">│   │       └── di_gen.go               <i>kanna-di</i></span><span>│   └── <b>messages/</b></span><span class="x">│       ├── locales/</span><span class="g">│       └── i18n_gen.go                 <i>kanna-i18n</i></span><span class="x">└── kanna-orm.snapshot.json</span></code></pre>
         <div>
           <ul class="uses">
             <li><a class="name" href="di/">kanna-di</a><span>builds the infrastructure once, and each use case and handler from what it bundles</span></li>
             <li><a class="name" href="validate/">kanna-validate</a><span>checks what the use cases are given, and the settings read from the environment</span></li>
-            <li><a class="name" href="value/">kanna-value</a><span>holds a to-do's completion time between 2000 and 2100, wherever it goes</span></li>
+            <li><a class="name" href="value/">kanna-value</a><span>holds a to-do's completion time between 2000 and 2100, wherever it goes, and its priority to the three it declares</span></li>
             <li><a class="name" href="orm/">kanna-orm</a><span>implements the repository the use cases depend on, and the scopes it reads through, as <code>scopes.Todos().CreatedAtAsc()</code></span></li>
-            <li><a class="name" href="mapper/">kanna-mapper</a><span>maps a to-do to its protobuf message</span></li>
+            <li><a class="name" href="mapper/">kanna-mapper</a><span>maps a to-do to its protobuf message, and the input of <code>PutTodo</code> back from one, priorities by name</span></li>
             <li><a class="name" href="fixture/">kanna-fixture</a><span>makes the to-dos the tests start from</span></li>
             <li><a class="name" href="i18n/">kanna-i18n</a><span>compiles the service's messages, and the texts of validation errors, in English and Japanese</span></li>
           </ul>
@@ -593,7 +599,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <h3><a href="value/">kanna-value</a></h3>
             <p class="links"><a href="https://github.com/go-kanna/value">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/value">pkg.go.dev</a></p>
           </div>
-          <p class="what">Turns a struct holding one value and a <code>validate</code> method into a value type, with constructors, an accessor, and JSON and SQL methods that hold every value to the rule wherever it comes from. A type of your own, so it takes your methods; the <code>email</code>, <code>url</code>, and <code>uuid</code> tags of kanna-validate call the same rules.</p>
+          <p class="what">Turns a struct holding one value and a <code>validate</code> method into a value type, with constructors, an accessor, and JSON and SQL methods that hold every value to the rule wherever it comes from. A type of your own, so it takes your methods; the <code>email</code>, <code>url</code>, and <code>uuid</code> tags of kanna-validate call the same rules. A string type with constants becomes an enum that reads in only those, from JSON, text, and a database.</p>
           <div class="install">
             <code id="install-value">go get -tool github.com/go-kanna/value/cmd/kanna-value</code>
             <button type="button" class="copy" data-copy="install-value">Copy</button>
@@ -617,7 +623,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <h3><a href="mapper/">kanna-mapper</a></h3>
             <p class="links"><a href="https://github.com/go-kanna/mapper">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/mapper">pkg.go.dev</a></p>
           </div>
-          <p class="what">Writes the functions between your domain types and the wire types you do not control. You declare the signatures; it writes the bodies, field by field, calling the conversions you list, <code>uuid.Parse</code> and <code>timestamppb.New</code> as they are, and handles protobuf oneofs.</p>
+          <p class="what">Writes the functions between your domain types and the wire types you do not control. You declare the signatures; it writes the bodies, field by field, calling the conversions you list, <code>uuid.Parse</code> and <code>timestamppb.New</code> as they are, and handles protobuf oneofs. An enum of kanna-value maps to a protobuf enum by the names of their constants.</p>
           <div class="install">
             <code id="install-mapper">go get -tool github.com/go-kanna/mapper/cmd/kanna-mapper</code>
             <button type="button" class="copy" data-copy="install-mapper">Copy</button>
