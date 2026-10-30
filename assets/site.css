@@ -1,70 +1,92 @@
 /* The one stylesheet of the site: the landing page and every tool page share it.
-   Set in Go's own typeface, by Bigelow & Holmes (fonts/LICENSE), in the
-   palette of the mark (logo/README.md). */
+   Set in M PLUS 1 and M PLUS 1 Code, from the M+ FONTS Project (fonts/LICENSE),
+   in the palette of the mark (logo/README.md).
 
-@font-face { font-family: "Go"; src: url(fonts/Go-Regular.woff2) format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "Go"; src: url(fonts/Go-Italic.woff2) format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
-@font-face { font-family: "Go"; src: url(fonts/Go-Bold.woff2) format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
-@font-face { font-family: "Go Mono"; src: url(fonts/Go-Mono.woff2) format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+   Code is shown on two woods: what you write sits on indigo, what a generator
+   writes sits on the color of the shaving. */
+
+@font-face { font-family: "M PLUS 1"; src: url(fonts/MPLUS1.woff2) format("woff2"); font-weight: 100 900; font-display: swap; unicode-range: U+0020-00FF, U+2010-203A, U+2122; }
+@font-face { font-family: "M PLUS 1"; src: url(fonts/MPLUS1-ja.woff2) format("woff2"); font-weight: 100 900; font-display: swap; unicode-range: U+3000-30FF, U+4E00-9FFF, U+FF01-FF5E; }
+@font-face { font-family: "M PLUS 1 Code"; src: url(fonts/MPLUS1Code.woff2) format("woff2"); font-weight: 100 700; font-display: swap; unicode-range: U+0020-00FF, U+2010-203A, U+2122, U+2500-257F; }
+@font-face { font-family: "M PLUS 1 Code"; src: url(fonts/MPLUS1Code-ja.woff2) format("woff2"); font-weight: 100 700; font-display: swap; unicode-range: U+3000-30FF, U+4E00-9FFF, U+FF01-FF5E; }
 
 :root {
   color-scheme: light;
 
-  --blade: #00ADD8;
-  --ink: #0B1A21;
-  --steel: #7F98A3;
-  --paper: #F2F6F7;
+  --kachi: #141B3D;
+  --kon: #1F2C5C;
+  --ruri: #3355D1;
+  --steel: #8C94B0;
+  --hinoki: #F3DCA4;
+  --shaving: #FAF0D7;
+  --grain: #8A5A10;
+  --mist: #F3F4F8;
   --white: #FFFFFF;
 
-  --ground: var(--paper);
-  --surface: var(--white);
-  --text: var(--ink);
-  --muted: #4A606A;
-  --rule: #D3DFE3;
-  --link: #007D9C;
-  --code-bg: #E3EBEE;
+  --ground: var(--white);
+  --ground-2: var(--mist);
+  --text: var(--kachi);
+  --muted: #4A5272;
+  --rule: #DDE0EA;
+  --link: var(--ruri);
+  --code-bg: var(--mist);
 
-  /* The band: the dark section of the landing page. */
-  --band: var(--ink);
-  --band-text: #D6E2E7;
-  --band-link: #8FD4E6;
+  /* Code you write */
+  --mine: var(--kon);
+  --mine-edge: var(--kon);
+  --mine-text: #DDE3F7;
+  --mine-dim: var(--steel);
+  --mine-line: #2E3D73;
+  --mine-k: var(--hinoki);
+  --mine-s: #A9C1FF;
+  --mine-c: var(--steel);
+  --mine-t: var(--white);
+  --mine-f: var(--white);
 
-  /* The bench, where code is shown: dark in both themes, as a terminal is. */
-  --bench: var(--ink);
-  --bench-edge: var(--ink);
-  --bench-text: #D6E2E7;
-  --bench-dim: var(--steel);
-  --seam: #16303B;
-  --kw: var(--blade);
-  --str: #8FD4E6;
-  --cmt: var(--steel);
-  --typ: var(--white);
-  --fn: #F0F6F8;
+  /* Code a generator writes */
+  --gen: var(--shaving);
+  --gen-edge: #EADDB8;
+  --gen-text: var(--kachi);
+  --gen-dim: var(--grain);
+  --gen-k: var(--kon);
+  --gen-s: #9A4A12;
+  --gen-c: #76603C;
+  --gen-t: var(--kachi);
+  --gen-f: var(--ruri);
 
-  --sans: "Go", "Lucida Grande", "Lucida Sans Unicode", "DejaVu Sans", system-ui, sans-serif;
-  --mono: "Go Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --sans: "M PLUS 1", system-ui, "Hiragino Sans", sans-serif;
+  --mono: "M PLUS 1 Code", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
-  --gutter: clamp(1.25rem, 4vw, 3rem);
-  --measure: 36rem;
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --measure: 38rem;
+  --radius: 10px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
 
-    --ground: var(--ink);
-    --surface: #10242D;
-    --text: #D6E2E7;
-    --muted: #93A9B2;
-    --rule: #22404B;
-    --link: #5DC9E2;
-    --code-bg: #1A313B;
+    --ground: #0E1330;
+    --ground-2: #121839;
+    --text: #E4E7F3;
+    --muted: #A3AACA;
+    --rule: #262E5C;
+    --link: #9DB3FF;
+    --code-bg: #1A2148;
 
-    --band: #10242D;
+    --mine: #1A2550;
+    --mine-edge: #2A366B;
+    --mine-line: #2A366B;
 
-    --bench: #10242D;
-    --bench-edge: #22404B;
-    --seam: #2C4C58;
+    --gen: #2A2414;
+    --gen-edge: #3D3520;
+    --gen-text: #F1E4C2;
+    --gen-dim: #C9A65E;
+    --gen-k: var(--hinoki);
+    --gen-s: #E8A86A;
+    --gen-c: #A08C62;
+    --gen-t: #F1E4C2;
+    --gen-f: #9DB3FF;
   }
 }
 
@@ -76,190 +98,266 @@ body {
   margin: 0;
   background: var(--ground);
   color: var(--text);
-  font: 400 1.0625rem/1.6 var(--sans);
+  font: 400 1.0625rem/1.7 var(--sans);
 }
 
-::selection { background: var(--blade); color: var(--ink); }
+::selection { background: var(--hinoki); color: var(--kachi); }
 
 code, kbd, pre, samp { font-family: var(--mono); }
 
-a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
 a:hover { color: var(--text); }
-:focus-visible { outline: 3px solid var(--blade); outline-offset: 3px; border-radius: 2px; }
+:focus-visible { outline: 3px solid var(--ruri); outline-offset: 3px; border-radius: 3px; }
 
-h1, h2, h3, h4 { margin: 0; font-weight: 700; line-height: 1.1; letter-spacing: -0.015em; text-wrap: balance; }
+h1, h2, h3, h4 { margin: 0; line-height: 1.15; text-wrap: balance; }
+h2 { font-size: clamp(1.75rem, 3.2vw, 2.5rem); font-weight: 800; letter-spacing: -0.01em; }
+h3 { font-size: 1.1875rem; font-weight: 700; }
 
-.wrap { max-width: 72rem; margin: 0 auto; padding-inline: var(--gutter); }
+.wrap { max-width: 76rem; margin: 0 auto; padding-inline: var(--gutter); }
 
 /* The bar at the top of every page */
-.bar { padding-block: 1.25rem; padding-top: calc(1.25rem + env(safe-area-inset-top, 0px)); border-bottom: 1px solid var(--rule); }
+.bar { padding-block: 1rem; padding-top: calc(1rem + env(safe-area-inset-top, 0px)); border-bottom: 1px solid var(--rule); }
 .bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
-.brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--text); font-size: 1.25rem; font-weight: 700; text-decoration: none; }
+.brand { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--text); font-size: 1.375rem; font-weight: 800; text-decoration: none; letter-spacing: -0.01em; }
 .brand svg { display: block; width: 2rem; height: 2rem; }
-.bar nav { display: flex; gap: 1.5rem; }
+.bar nav { display: flex; gap: 1.75rem; font-weight: 500; }
 .bar nav a { color: var(--text); text-decoration: none; }
 .bar nav a:hover { color: var(--link); text-decoration: underline; }
-
-/* The bench: a file above, a file below, and the seam the plane runs along */
-.bench {
-  margin: 0;
-  overflow: hidden;
-  background: var(--bench);
-  color: var(--bench-text);
-  border: 1px solid var(--bench-edge);
-  border-radius: 6px;
-  font-family: var(--mono);
-  font-size: 0.8125rem;
-  line-height: 1.6;
-}
-.pane { padding: 1.25rem 1.5rem 1.4rem; }
-.file { display: block; margin-bottom: 0.8rem; font-family: var(--sans); font-size: 0.8125rem; color: var(--bench-dim); }
-.pane pre { margin: 0; overflow-x: auto; tab-size: 4; }
-.pane code { font-family: inherit; }
-.seam { position: relative; height: 2px; margin: 0 1.5rem; background: var(--seam); }
-/* The planed surface, which the plane leaves behind it */
-.seam::before { content: ""; position: absolute; inset: 0; width: 100%; background: var(--blade); }
-.plane { position: absolute; left: 100%; bottom: 1px; width: 4.5rem; height: auto; transform: translateX(-100%); }
-
-.k { color: var(--kw); }
-.s { color: var(--str); }
-.c { color: var(--cmt); }
-.t { color: var(--typ); }
-.f { color: var(--fn); }
-
-@media (prefers-reduced-motion: no-preference) {
-  .hero .plane { animation: plane 1.9s cubic-bezier(0.55, 0.05, 0.25, 1) 0.35s both; }
-  .hero .seam::before { animation: planed 1.9s cubic-bezier(0.55, 0.05, 0.25, 1) 0.35s both; }
-  .hero .lift { animation: lift 1.9s cubic-bezier(0.55, 0.05, 0.25, 1) 0.35s both; }
-}
-@keyframes plane {
-  from { left: 0; transform: translateX(-30%); }
-  to { left: 100%; transform: translateX(-100%); }
-}
-@keyframes planed {
-  from { width: 0; }
-  to { width: 100%; }
-}
-@keyframes lift {
-  from { clip-path: inset(0 100% 0 0); }
-  to { clip-path: inset(0 0 0 0); }
-}
 
 /* Copying a command */
 .copy {
   border: 1px solid var(--rule);
-  border-radius: 4px;
-  background: var(--surface);
+  border-radius: 6px;
+  background: var(--ground);
   color: var(--muted);
-  font: 700 0.75rem/1 var(--sans);
-  padding: 0.35rem 0.6rem;
+  font: 700 0.8125rem/1 var(--sans);
+  padding: 0.4rem 0.7rem;
   cursor: pointer;
 }
 .copy:hover { color: var(--text); }
 
-/* Landing page */
-.hero { padding-block: clamp(2.5rem, 6vw, 5rem) clamp(3rem, 7vw, 6rem); border-top: 0; }
-.hero .wrap {
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-  gap: clamp(2rem, 5vw, 5rem);
-  align-items: center;
-}
-.hero h1 { margin-bottom: 1.5rem; font-size: clamp(2.5rem, 4.2vw, 3.5rem); line-height: 1.05; letter-spacing: -0.02em; }
-.lede { margin: 0 0 2rem; max-width: var(--measure); font-size: 1.1875rem; line-height: 1.55; }
-
 .install {
   display: flex;
-  max-width: 36rem;
   overflow: hidden;
-  background: var(--surface);
+  background: var(--ground);
   border: 1px solid var(--rule);
-  border-radius: 6px;
+  border-radius: 8px;
 }
-.install code { flex: 1; min-width: 0; padding: 0.8rem 1rem; font-size: 0.875rem; line-height: 1.5; white-space: nowrap; overflow-x: auto; }
+.install code { flex: 1; min-width: 0; padding: 0.7rem 0.9rem; font-size: 0.8125rem; line-height: 1.5; white-space: nowrap; overflow-x: auto; }
 .install code::before { content: "$ "; color: var(--steel); }
-.install .copy { flex: none; border: 0; border-left: 1px solid var(--rule); border-radius: 0; padding: 0 1rem; font-size: 0.875rem; }
-.install .copy:hover { background: var(--ground); }
-.install-note { margin: 0.75rem 0 0; font-size: 0.9375rem; color: var(--muted); }
+.install .copy { flex: none; border: 0; border-left: 1px solid var(--rule); border-radius: 0; padding: 0 0.9rem; }
+.install .copy:hover { background: var(--ground-2); }
 
-main > section { padding-block: clamp(3.5rem, 7vw, 6rem); border-top: 1px solid var(--rule); }
-main > section h2 { margin-bottom: 0.75rem; font-size: clamp(1.75rem, 3vw, 2.25rem); }
-.intro { margin: 0 0 2.5rem; max-width: var(--measure); }
-
-/* Spotlights: what you write, and what the tool writes */
-.spot {
-  display: grid;
-  grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
-  gap: clamp(2rem, 5vw, 5rem);
-  align-items: start;
-  padding-block: clamp(2rem, 4vw, 3.5rem);
+/* The bench: code you write on indigo, above the code a generator writes on
+   wood, and the seam between them */
+.bench {
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius);
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  line-height: 1.65;
 }
-.spot + .spot { border-top: 1px solid var(--rule); }
-.spot .tool-name { margin: 0 0 0.6rem; font-family: var(--mono); font-size: 0.9375rem; }
-.spot .tool-name a { text-decoration: none; }
-.spot .tool-name a:hover { text-decoration: underline; }
-.spot h3 { margin-bottom: 0.9rem; font-size: clamp(1.5rem, 2.4vw, 1.875rem); }
-.spot p { margin: 0 0 1rem; }
-.spot .more { display: flex; flex-wrap: wrap; gap: 0.4rem 1.25rem; }
-.spot p code { font-size: 0.875em; }
+.pane { padding: 1rem 1.4rem 1.2rem; }
+.pane pre { margin: 0; overflow-x: auto; tab-size: 4; }
+.pane code { font-family: inherit; }
+.file { display: flex; justify-content: space-between; gap: 1rem; margin: 0 0 0.6rem; font: 500 0.8125rem/1.4 var(--sans); }
+.mine { background: var(--mine); color: var(--mine-text); }
+.mine .file { color: var(--mine-dim); }
+.mine + .mine { border-top: 1px solid var(--mine-line); }
+.gen + .gen { border-top: 1px solid var(--gen-edge); }
+.gen { background: var(--gen); color: var(--gen-text); }
+.gen .file { color: var(--gen-dim); }
+
+.mine .k { color: var(--mine-k); }
+.mine .s { color: var(--mine-s); }
+.mine .c { color: var(--mine-c); }
+.mine .t { color: var(--mine-t); }
+.mine .f { color: var(--mine-f); }
+.gen .k { color: var(--gen-k); font-weight: 700; }
+.gen .s { color: var(--gen-s); }
+.gen .c { color: var(--gen-c); }
+.gen .t { color: var(--gen-t); }
+.gen .f { color: var(--gen-f); }
+
+.seam { position: relative; height: 3px; background: var(--mine-line); }
+/* The cut, which the shaving curls up at the end of */
+.seam::before { content: ""; position: absolute; inset: 0; background: var(--hinoki); }
+.curl { position: absolute; right: 0.6rem; bottom: 1px; width: 2.25rem; height: auto; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .panel .seam::before { animation: cut 1.1s cubic-bezier(0.55, 0.05, 0.25, 1) 0.15s both; }
+  .panel .curl { animation: ride 1.1s cubic-bezier(0.55, 0.05, 0.25, 1) 0.15s both; }
+  .panel .gen { animation: lift 1.1s cubic-bezier(0.55, 0.05, 0.25, 1) 0.15s both; }
+}
+@keyframes cut { from { right: 100%; } to { right: 0; } }
+@keyframes ride { from { right: calc(100% - 2.25rem); opacity: 0; } 15% { opacity: 1; } to { right: 0.6rem; } }
+@keyframes lift { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+
+/* Sections of the landing page */
+main > section { padding-block: clamp(3.5rem, 7vw, 5.5rem); }
+main > section + section { border-top: 1px solid var(--rule); }
+main > section > .wrap > h2 { margin-bottom: 0.9rem; max-width: 40rem; }
+.intro { margin: 0 0 2.75rem; max-width: var(--measure); color: var(--muted); font-size: 1.125rem; }
+.intro code { font-size: 0.875em; }
+
+/* Hero: the headline, written as Go comments, and the workbench */
+.hero { padding-block: clamp(2rem, 4.5vw, 3.5rem) clamp(3rem, 7vw, 5.5rem); }
+.headline {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 1.5rem clamp(2rem, 5vw, 4.5rem);
+  align-items: end;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+.hero h1 { font: 700 clamp(2.4rem, 5.6vw, 4.75rem)/1.02 var(--mono); letter-spacing: -0.03em; }
+.hero h1 .slashes { color: var(--steel); }
+.lede { margin: 0; max-width: 32rem; font-size: 1.1875rem; line-height: 1.6; }
+
+.workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 8fr);
+  gap: clamp(1.5rem, 3.5vw, 3rem);
+  align-items: start;
+}
+.side { position: sticky; top: 1.25rem; }
+.picker { display: grid; border-top: 1px solid var(--rule); }
+.picker a {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: baseline;
+  padding: 0.65rem 0.8rem;
+  border-bottom: 1px solid var(--rule);
+  color: var(--text);
+  text-decoration: none;
+}
+.picker b { font: 700 0.9375rem/1.4 var(--mono); }
+.picker span { font-size: 0.9375rem; line-height: 1.4; color: var(--muted); }
+.picker a:hover b { color: var(--link); }
+.picker a[aria-selected="true"] { background: var(--mine); border-bottom-color: var(--mine); border-radius: 6px; }
+.picker a[aria-selected="true"] b { color: var(--hinoki); }
+.picker a[aria-selected="true"] span { color: var(--mine-text); }
+.picker a[aria-selected="true"] 
+.aside { margin: 1.25rem 0 0; padding-inline: 0.8rem; color: var(--muted); font-size: 0.9375rem; }
+
+.panel[hidden] { display: none; }
+.about { margin-top: 1.25rem; }
+.about p { margin: 0 0 0.5rem; max-width: 46rem; }
+.about .what { font-size: 1.0625rem; font-weight: 500; }
+.about .like { color: var(--muted); }
+.about code { font-size: 0.875em; }
+.meta { display: flex; flex-wrap: wrap; gap: 0.3rem 1.25rem; font-size: 0.9375rem; }
+.about .install { margin-top: 1rem; }
+.meta .version { font-family: var(--mono); color: var(--muted); }
+.meta .version a { color: inherit; text-decoration: none; }
+.meta .version a:hover { color: var(--link); text-decoration: underline; }
+.meta .version span + span, .meta .version a + span { margin-left: 0.75rem; }
+
+/* What each one writes: one sheet of wood, as go doc would list it */
+.sheet {
+  columns: 2;
+  column-gap: clamp(2rem, 4vw, 3.5rem);
+  padding: clamp(1.25rem, 3vw, 2rem) clamp(1.25rem, 3vw, 2.25rem) 0.25rem;
+  background: var(--gen);
+  color: var(--gen-text);
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0 1px var(--gen-edge);
+}
+.output { break-inside: avoid; margin-bottom: 1.75rem; min-width: 0; }
+.output.wide { column-span: all; padding-bottom: 1.75rem; border-bottom: 1px solid var(--gen-edge); }
+.output h3 { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.2rem 1rem; margin-bottom: 0.6rem; font: 700 0.9375rem/1.4 var(--mono); }
+.output h3 a { color: var(--gen-text); text-decoration: none; }
+.output h3 a:hover { color: var(--gen-f); text-decoration: underline; }
+.output h3 span { font-weight: 400; font-size: 0.8125rem; color: var(--gen-dim); }
+.output pre { margin: 0; overflow-x: auto; font-size: 0.8125rem; line-height: 1.65; }
+.output .k { color: var(--gen-k); font-weight: 700; }
+.output .t { color: var(--gen-t); }
+.output .f { color: var(--gen-f); }
+.output .c { color: var(--gen-c); }
+
+/* Every tool works the same way */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem clamp(1.25rem, 2.5vw, 2rem); counter-reset: step; }
+.steps li { counter-increment: step; display: flex; flex-direction: column; gap: 0.75rem; }
+.steps h3::before { content: counter(step); display: block; margin-bottom: 0.6rem; font: 700 0.9375rem/1 var(--mono); color: var(--grain); }
+.steps .cmd { margin: 0; padding: 0.8rem 1rem; white-space: pre-wrap; overflow-wrap: anywhere; background: var(--mine); color: var(--mine-text); border-radius: 8px; font-size: 0.8125rem; line-height: 1.6; }
+.steps .cmd .c { color: var(--mine-c); }
+.steps .cmd .k { color: var(--mine-k); }
+.steps p { margin: 0; color: var(--muted); font-size: 0.9688rem; }
+.steps code { font-size: 0.875em; }
+
+/* The three proverbs */
+.proverbs { list-style: none; margin: 0 0 2rem; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem clamp(2rem, 4vw, 3.5rem); }
+.proverbs blockquote { margin: 0 0 0.9rem; font: 700 1.25rem/1.35 var(--mono); letter-spacing: -0.01em; }
+.proverbs blockquote p { margin: 0; }
+.proverbs blockquote p::before { content: "// "; color: var(--steel); }
+.proverbs li > p { margin: 0; color: var(--muted); }
+.proverbs code { font-size: 0.875em; }
+.credit { margin: 0; font-size: 0.9375rem; color: var(--muted); }
+
+/* The showcase, as its source tree */
+.showcase .layout { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+.tree {
+  margin: 0;
+  padding: 1.1rem 0;
+  overflow-x: auto;
+  background: var(--ground-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+.tree code { display: block; min-width: max-content; }
+.tree span { display: block; padding-inline: 1.25rem; }
+.tree .d { font-weight: 700; }
+.tree .g { background: var(--gen); color: var(--gen-text); }
+.tree .g i { font-style: normal; color: var(--gen-dim); }
+.tree .x { color: var(--muted); }
+.uses { list-style: none; margin: 0 0 1.5rem; padding: 0; border-top: 1px solid var(--rule); }
+.uses li { padding-block: 0.8rem; border-bottom: 1px solid var(--rule); }
+.uses .name { display: block; font: 700 0.9375rem/1.5 var(--mono); color: var(--text); text-decoration: none; }
+.uses .name:hover { color: var(--link); text-decoration: underline; }
+.uses span { color: var(--muted); font-size: 0.9688rem; }
+.uses code { font-size: 0.875em; }
+.showcase .more { margin: 0; }
 
 /* The ledger of every tool */
-.tools { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+.tools { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--text); }
 .tool { display: grid; gap: 0.6rem 2rem; padding-block: 1.4rem; border-bottom: 1px solid var(--rule); }
-.tool .name { margin: 0; font-family: var(--mono); font-size: 1.0625rem; font-weight: 400; letter-spacing: 0; }
-.tool .name a { color: var(--text); text-decoration: none; }
-.tool .name a:hover { color: var(--link); text-decoration: underline; }
+.tool h3 { font: 700 1.0625rem/1.4 var(--mono); letter-spacing: 0; }
+.tool h3 a { color: var(--text); text-decoration: none; }
+.tool h3 a:hover { color: var(--link); text-decoration: underline; }
 .tool .what { margin: 0; }
 .tool .what code { font-size: 0.875em; }
-.tool .install { max-width: none; }
-.tool .install code { font-size: 0.8125rem; }
-.tool .status { display: flex; gap: 1rem; font-family: var(--mono); font-size: 0.875rem; color: var(--muted); white-space: nowrap; }
+.tool .links { display: flex; flex-wrap: wrap; gap: 0.2rem 1.1rem; margin: 0.3rem 0 0; font-size: 0.9375rem; }
+.tool .status { display: flex; gap: 1rem; margin: 0; font-family: var(--mono); font-size: 0.875rem; color: var(--muted); white-space: nowrap; }
 .tool .status a { color: var(--text); text-decoration: none; }
 .tool .status a:hover { color: var(--link); text-decoration: underline; }
-.tool .links { display: flex; gap: 1.25rem; margin: 0.35rem 0 0; font-size: 0.9375rem; }
-@media (min-width: 48rem) {
-  .tool { grid-template-columns: 11rem minmax(0, 1fr) auto; align-items: baseline; }
+@media (min-width: 52rem) {
+  .tool { grid-template-columns: 12rem minmax(0, 1fr) auto; align-items: baseline; }
   .tool .id { grid-column: 1; grid-row: 1 / span 2; }
   .tool .what, .tool .install { grid-column: 2; }
   .tool .status { grid-column: 3; grid-row: 1; }
 }
 
-/* Where each tool works in the showcase */
-.uses { list-style: none; margin: 0 0 1.5rem; padding: 0; border-top: 1px solid var(--rule); }
-.uses li { display: grid; gap: 0.2rem 2rem; padding-block: 0.9rem; border-bottom: 1px solid var(--rule); }
-.uses .name { font-family: var(--mono); color: var(--text); text-decoration: none; }
-.uses .name:hover { color: var(--link); text-decoration: underline; }
-@media (min-width: 48rem) {
-  .uses li { grid-template-columns: 11rem minmax(0, 1fr); align-items: baseline; }
-}
-.showcase .more { margin: 0; }
-
-/* The three rules */
-.promises { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem clamp(2rem, 4vw, 3.5rem); margin: 0; }
-.promises dt { margin-bottom: 0.4rem; font-size: 1.125rem; font-weight: 700; }
-.promises dd { margin: 0; }
-.promises code { font-size: 0.875em; }
-
-/* Why a plane */
-.why { background: var(--band); color: var(--band-text); }
-.why .wrap { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; }
-.why h2 { color: var(--white); }
+/* Why a plane: the one band of indigo */
+main > section.why { background: var(--kon); color: var(--mine-text); border-top: 0; }
+.why .wrap { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: clamp(2rem, 6vw, 5rem); align-items: center; }
+.why h2 { color: var(--white); margin-bottom: 1rem; }
 .why p { margin: 0 0 1rem; max-width: var(--measure); }
 .why p:last-child { margin-bottom: 0; }
-.why a { color: var(--band-link); }
-.why a:hover { color: var(--white); }
-.why .mark { display: block; width: 100%; max-width: 22rem; height: auto; }
+.why .mark { display: block; width: 100%; max-width: 20rem; height: auto; }
 
 footer { padding-block: 2rem; padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--rule); font-size: 0.9375rem; color: var(--muted); }
-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 1rem; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 1.5rem; }
 
 /* Tool pages: a README, with its sections listed beside it */
 .head { padding-block: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 2vw, 1.75rem); }
 .crumb { margin: 0 0 0.6rem; font-family: var(--mono); font-size: 0.875rem; }
 .crumb a { text-decoration: none; }
 .crumb a:hover { text-decoration: underline; }
-.head h1 { font-size: clamp(2.25rem, 4.5vw, 3.25rem); letter-spacing: -0.02em; }
-.head .meta { display: flex; flex-wrap: wrap; gap: 0.4rem 1.5rem; margin: 1rem 0 0; font-family: var(--mono); font-size: 0.875rem; color: var(--muted); }
+.head h1 { font: 700 clamp(2.25rem, 4.5vw, 3.25rem)/1.05 var(--mono); letter-spacing: -0.03em; }
+.head .meta { margin: 1rem 0 0; font-family: var(--mono); font-size: 0.875rem; color: var(--muted); }
 
 .doc {
   display: grid;
@@ -295,27 +393,30 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   margin: 0 0 1.25rem;
   padding: 1.1rem 1.3rem;
   overflow-x: auto;
-  background: var(--bench);
-  color: var(--bench-text);
-  border: 1px solid var(--bench-edge);
-  border-radius: 6px;
-  font-size: 0.8125rem;
-  line-height: 1.6;
+  background: var(--mine);
+  color: var(--mine-text);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  line-height: 1.65;
   tab-size: 4;
 }
 .readme pre code { font-size: inherit; }
 .readme .highlight { position: relative; margin: 0 0 1.25rem; }
 .readme .highlight pre { margin: 0; }
+/* A block of generated code, which render.py marks by its header */
+.readme .highlight.generated pre { background: var(--gen); color: var(--gen-text); box-shadow: inset 0 0 0 1px var(--gen-edge); }
 /* Shown while the pointer is over the block, so that it covers no code until then */
 .readme .highlight .copy {
   position: absolute; top: 0.6rem; right: 0.6rem;
-  background: var(--bench);
-  border-color: var(--seam);
-  color: var(--bench-dim);
+  background: var(--mine);
+  border-color: var(--mine-line);
+  color: var(--mine-dim);
   opacity: 0;
 }
+.readme .highlight.generated .copy { background: var(--gen); border-color: var(--gen-edge); color: var(--gen-dim); }
 .readme .highlight:hover .copy, .readme .highlight:focus-within .copy { opacity: 1; }
-.readme .highlight .copy:hover { color: var(--bench-text); }
+.readme .highlight .copy:hover { color: var(--mine-text); }
+.readme .highlight.generated .copy:hover { color: var(--gen-text); }
 @media (hover: none) {
   .readme .highlight .copy { display: none; }
 }
@@ -323,36 +424,50 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 .readme .table { margin: 0 0 1.25rem; overflow-x: auto; }
 .readme table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; line-height: 1.5; }
 .readme th, .readme td { padding: 0.55rem 0.75rem; border: 1px solid var(--rule); text-align: left; vertical-align: top; }
-.readme th { background: var(--surface); font-weight: 700; }
+.readme th { background: var(--ground-2); font-weight: 700; }
 
 /* Syntax, in GitHub's classes */
-.pl-k { color: var(--kw); }
-.pl-s, .pl-pds, .pl-sr, .pl-cce, .pl-c1 { color: var(--str); }
-.pl-c { color: var(--cmt); }
-.pl-smi, .pl-ent, .pl-v { color: var(--typ); }
-.pl-en { color: var(--fn); }
-.highlight-text-shell-session .pl-s1 { color: var(--typ); }
-.highlight-text-shell-session .pl-c1 { color: var(--bench-text); }
+.pl-k { color: var(--mine-k); }
+.pl-s, .pl-pds, .pl-sr, .pl-cce, .pl-c1 { color: var(--mine-s); }
+.pl-c { color: var(--mine-c); }
+.pl-smi, .pl-ent, .pl-v { color: var(--mine-t); }
+.pl-en { color: var(--mine-f); }
+.highlight-text-shell-session .pl-s1 { color: var(--mine-t); }
+.highlight-text-shell-session .pl-c1 { color: var(--mine-text); }
+.generated .pl-k { color: var(--gen-k); font-weight: 700; }
+.generated .pl-s, .generated .pl-pds, .generated .pl-sr, .generated .pl-cce, .generated .pl-c1 { color: var(--gen-s); }
+.generated .pl-c { color: var(--gen-c); }
+.generated .pl-smi, .generated .pl-ent, .generated .pl-v { color: var(--gen-t); }
+.generated .pl-en { color: var(--gen-f); }
 
 /* Not found */
 .lost { padding-block: clamp(3rem, 8vw, 7rem); }
-.lost h1 { margin-bottom: 1rem; font-size: clamp(2.25rem, 4.5vw, 3.25rem); }
+.lost h1 { margin-bottom: 1rem; font: 700 clamp(2.25rem, 4.5vw, 3.25rem)/1.05 var(--mono); letter-spacing: -0.03em; }
 .lost p { margin: 0; max-width: var(--measure); }
 
 @media (max-width: 64rem) {
   .doc { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
-  .toc { position: static; order: -1; padding: 1rem 1.25rem; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; }
+  .toc { position: static; order: -1; padding: 1rem 1.25rem; background: var(--ground-2); border: 1px solid var(--rule); border-radius: 8px; }
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .workbench { grid-template-columns: minmax(0, 1fr); }
+  .side { position: static; }
+  .picker { grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); border-top: 0; gap: 0.4rem; }
+  .picker a { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 0.5rem 0.75rem; border: 1px solid var(--rule); border-radius: 6px; }
+  .picker a[aria-selected="true"] { border-color: var(--mine); }
 }
-@media (max-width: 60rem) {
-  .hero .wrap, .spot, .why .wrap { grid-template-columns: minmax(0, 1fr); }
-  .promises { grid-template-columns: minmax(0, 1fr); }
-  .why .mark { max-width: 14rem; }
+@media (max-width: 52rem) {
+  .headline, .showcase .layout, .why .wrap { grid-template-columns: minmax(0, 1fr); }
+  .sheet { columns: 1; }
+  .proverbs { grid-template-columns: minmax(0, 1fr); }
+  .why .mark { max-width: 10rem; }
 }
-@media (max-width: 30rem) {
+@media (max-width: 34rem) {
   .bar nav { gap: 1.1rem; font-size: 0.9375rem; }
   .bar nav .wide { display: none; }
-  .pane { padding: 1.1rem 1rem 1.2rem; }
-  .seam { margin: 0 1rem; }
-  .bench, .readme pre { font-size: 0.75rem; }
+  .steps { grid-template-columns: minmax(0, 1fr); }
+  .picker { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .picker span { display: none; }
+  .pane { padding: 0.9rem 1rem 1rem; }
+  .bench, .readme pre { font-size: 0.8125rem; }
   .readme pre { padding: 1rem 1.1rem; }
 }
