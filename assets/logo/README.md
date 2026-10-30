@@ -2,42 +2,45 @@
 
 ## The mark
 
-The mark is a *kanna*, a Japanese hand plane, seen from the side: the wooden block (the *dai*), the blade set through it
-with its edge on the sole and its head standing proud of the top, and the cap iron lying along its face. A kanna is
-pulled, not pushed, so the blade leans back toward the user.
+The mark is a shaving: *kanna-kuzu*, what a Japanese hand plane lifts off a board. One ribbon, flat where it lay on the
+board and curled where it came off.
 
-It is drawn as three flat shapes and nothing finer, so that it still reads as a plane at 20px: a dark slab, and a light
-bar cutting through it at an angle. The blade beds at 47° rather than the ~38° of a real kanna, which keeps the head
-inside the square without flattening the slab. The cap iron is the only detail below that size, and losing it costs
-nothing.
+It is one stroke: a straight run, then a spiral of quarter turns, each tighter than the one before. Nothing in it is
+finer than the ribbon itself, so it reads the same at 16px as at 1000.
 
-There is no wood brown anywhere: drawn in Go's cyan, what the blade works is not timber but Go itself.
+The ribbon is the color of planed hinoki, and on the site that color means the same thing: code kanna wrote. What you
+write sits on indigo, what a generator writes sits on wood.
 
 ## Files
 
-| File                     | Use                                                                                         |
-|--------------------------|---------------------------------------------------------------------------------------------|
-| `avatar-blade.png`       | **Org avatar.** 1000×1000, square corners                                                   |
-| `avatar-ink.png`         | Same, dark ground                                                                           |
-| `avatar-white.png`       | Same, white ground                                                                          |
-| `mark-blade-rounded.svg` | Rounded, for READMEs and docs                                                               |
-| `mark-ink-rounded.svg`   | Same, dark ground                                                                           |
-| `mark-transparent.svg`   | No ground and one color, `currentColor`; a gap cut around the blade tells it from the block |
-| `generate.py`            | Regenerates every SVG above                                                                 |
+| File                      | Use                                       |
+|---------------------------|-------------------------------------------|
+| `avatar-kon.png`          | **Org avatar.** 1000×1000, square corners |
+| `avatar-hinoki.png`       | Same, wood ground                         |
+| `avatar-white.png`        | Same, white ground                        |
+| `mark-kon-rounded.svg`    | Rounded, for READMEs and docs             |
+| `mark-hinoki-rounded.svg` | Same, wood ground                         |
+| `mark-transparent.svg`    | No ground and one color, `currentColor`   |
+| `generate.py`             | Regenerates every SVG above               |
 
-Prefer the blade ground for anything that lands on GitHub. GitHub's dark theme sits at `#0d1117`, close enough to the
-ink ground that the avatar's edge disappears into the page and the plane is left floating. The cyan ground holds its edge
-in both themes.
+Prefer the indigo ground for anything that lands on GitHub: it holds its edge against GitHub's dark theme (`#0d1117`)
+and its light one alike. Hinoki on white does not, so the white variant draws the ribbon in indigo.
 
 ## Palette
 
-|       | Hex       |                                                             |
-|-------|-----------|-------------------------------------------------------------|
-| ink   | `#0B1A21` | the block on cyan and white; the ground of the dark variant |
-| blade | `#00ADD8` | Go cyan; the ground, the block on ink, the blade on white   |
-| white | `#FFFFFF` | the blade on cyan and ink                                   |
-| steel | `#7F98A3` | the cap iron                                                |
-| paper | `#F2F6F7` | cool off-white, for surrounding surfaces                    |
+The mark uses the first three; the site uses all of them.
+
+|         | Hex       |                                            |
+|---------|-----------|--------------------------------------------|
+| kon     | `#1F2C5C` | indigo; the ground, and the code you write |
+| hinoki  | `#F3DCA4` | planed cypress; the ribbon                 |
+| white   | `#FFFFFF` |                                            |
+| kachi   | `#141B3D` | the darkest indigo; text                   |
+| ruri    | `#3355D1` | lapis; links                               |
+| steel   | `#8C94B0` | what stays quiet                           |
+| shaving | `#FAF0D7` | the ground of the code kanna writes        |
+| grain   | `#8A5A10` | text on shaving                            |
+| mist    | `#F3F4F8` | cool off-white, for surrounding surfaces   |
 
 ## Regenerating
 
@@ -45,13 +48,13 @@ in both themes.
 python3 generate.py
 ```
 
-Geometry lives in the constants at the top of the script — the block, the bedding angle, the blade's taper, and the
-padding that keeps the mark inside GitHub's circular crop. Nothing else needs editing.
+Geometry lives in the constants at the top of the script: the run, the radius of each quarter turn, the width of the
+ribbon, and the padding that keeps the mark clear of the corners GitHub rounds. Nothing else needs editing.
 
 Rasterizing is left out of the script so it stays dependency-free. With `rsvg-convert`:
 
 ```sh
-for n in avatar-blade avatar-ink avatar-white; do
+for n in avatar-kon avatar-hinoki avatar-white; do
   rsvg-convert -w 1000 -h 1000 "$n.svg" -o "$n.png"
 done
 ```
@@ -59,7 +62,7 @@ done
 Or with headless Chrome, which needs no extra install on macOS:
 
 ```sh
-for n in avatar-blade avatar-ink avatar-white; do
+for n in avatar-kon avatar-hinoki avatar-white; do
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
     --headless --disable-gpu --hide-scrollbars \
     --window-size=1000,1000 --screenshot="$n.png" "file://$PWD/$n.svg"
