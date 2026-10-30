@@ -1,4 +1,4 @@
-<img src="assets/logo/mark-blade-rounded.svg" width="96" height="96" alt="The kanna mark: a Japanese hand plane seen from the side">
+<img src="assets/logo/mark-kon-rounded.svg" width="96" height="96" alt="The kanna mark: a wood shaving, flat and then curled">
 
 # kanna
 
