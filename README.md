@@ -9,7 +9,7 @@ and test data. Each one reads what you have already written, from struct tags to
 you would otherwise write by hand: no reflection, nothing hidden from review. A generator that needs a runtime ships a
 small one in the same module, so the two never drift apart.
 
-This repository is its site: **https://go-kanna.github.io/kanna/**
+This repository is its site: **https://go-kanna.github.io/**
 
 | Repository                                                | What it is                                                                                   |
 |-----------------------------------------------------------|----------------------------------------------------------------------------------------------|
@@ -32,7 +32,7 @@ This repository is its site: **https://go-kanna.github.io/kanna/**
   logged in:
 
   ```sh
-  python3 pages/render.py --base / && python3 -m http.server -d _site
+  python3 pages/render.py && python3 -m http.server -d _site
   ```
 
 - `assets/site.css` and `assets/site.js` are shared by every page. The site is set in
@@ -40,11 +40,12 @@ This repository is its site: **https://go-kanna.github.io/kanna/**
   each cut into its Latin and its Japanese, so that a page loads the Japanese only when it has some. Pages in Japanese
   take a fuller cut, which `assets/fonts/subset.py` makes.
 - [`assets/logo`](assets/logo) holds the mark and the script that draws it.
-- [`DEVELOPING.md`](DEVELOPING.md) says how to change the family across repositories: the workspace of every
-  checkout in [`dev`](dev), a script running every repository's tests against it, and the order releases go in.
+- [`DEVELOPING.md`](https://github.com/go-kanna/kanna/blob/main/DEVELOPING.md) of go-kanna/kanna says how to change the
+  family across repositories: the workspace of every checkout, a script running every repository's tests against it,
+  and the order releases go in.
 
 The Go module that used to live here, kanna v0.2.x with the first kanna-orm, is kept on the
-[`archive/v0.2`](https://github.com/go-kanna/kanna/tree/archive/v0.2) branch and its tags. kanna-orm has since been
+[`archive/v0.2`](https://github.com/go-kanna/go-kanna.github.io/tree/archive/v0.2) branch and its tags. kanna-orm has since been
 written anew, in [go-kanna/orm](https://github.com/go-kanna/orm).
 
 ## How the generated code is checked

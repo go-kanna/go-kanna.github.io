@@ -26,7 +26,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 TEMPLATE = Path(__file__).resolve().parent / "page.html"
 ORG = "go-kanna"
-SITE = "https://go-kanna.github.io/kanna/"
+SITE = "https://go-kanna.github.io/"
 
 # Each repository's page is at its name, headed with the tool's name.
 TOOLS = [
@@ -242,8 +242,8 @@ def stamp(page):
 def main():
     parser = argparse.ArgumentParser(description="Assemble the site into a directory.")
     parser.add_argument("--out", type=Path, default=ROOT / "_site", help="directory to write (default: _site)")
-    parser.add_argument("--base", default="/kanna/",
-                        help="path the site is served under, which the 404 page needs to find the rest (default: /kanna/)")
+    parser.add_argument("--base", default="/",
+                        help="path the site is served under, which the 404 page needs to find the rest (default: /)")
     args = parser.parse_args()
     out = args.out
 

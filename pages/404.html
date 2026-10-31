@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Not found — kanna</title>
+<script>
+  // The site was served under /kanna/ until it moved to the root.
+  const moved = location.pathname.replace(/^\/kanna(?=\/|$)/, "");
+  if (moved !== location.pathname) location.replace((moved || "/") + location.search + location.hash);
+</script>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#1F2C5C">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Crect width='256' height='256' rx='56' fill='%231F2C5C'/%3E%3Cpath transform='translate(16.91 4.57) scale(0.9495)' d='M30 186H148A56 56 0 0 0 204 130A56 56 0 0 0 148 74A40 40 0 0 0 108 114A26 26 0 0 0 134 140A13 13 0 0 0 147 127' fill='none' stroke='%23F3DCA4' stroke-width='24' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -26,7 +31,7 @@
 
 <main class="wrap lost">
   <h1>Nothing here</h1>
-  <p>There is no page at this address. The tools are listed on <a href="{{base}}">the front page</a>, and what used to be the kanna Go module is on its <a href="https://github.com/go-kanna/kanna/tree/archive/v0.2">archive branch</a>.</p>
+  <p>There is no page at this address. The tools are listed on <a href="{{base}}">the front page</a>, and what used to be the kanna Go module is on its <a href="https://github.com/go-kanna/go-kanna.github.io/tree/archive/v0.2">archive branch</a>.</p>
   <p lang="ja">このアドレスにページはありません。ツールの一覧は<a href="{{base}}ja/">日本語のトップページ</a>にあります。</p>
 </main>
 
