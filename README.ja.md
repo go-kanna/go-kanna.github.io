@@ -6,7 +6,7 @@
 
 kanna は、Go のための 7 つのコードジェネレータのファミリーです。バリデーション、値オブジェクト、データベース、マッピング、メッセージ、依存関係の組み立て、テストデータを扱います。いずれも、構造体タグからスキーマまで、すでに書いたものを読み取り、本来手で書くはずの素の Go を生成します。リフレクションはなく、レビューから隠れるものもありません。ランタイムが必要なジェネレータは小さなものを同じモジュールで提供するので、両者がずれることはありません。
 
-このリポジトリはそのサイトです: **https://go-kanna.github.io/kanna/ja/**
+このリポジトリはそのサイトです: **https://go-kanna.github.io/ja/**
 
 | リポジトリ | 内容 |
 |---|---|
@@ -24,14 +24,14 @@ kanna は、Go のための 7 つのコードジェネレータのファミリ�
 - `validate/` などの各ツールのページは README を、`ja/validate/` などは `README.ja.md` を表示します。`pages/render.py` は、これらを各リポジトリのデフォルトブランチから GitHub API で取得して `pages/page.html` に描画し、生成コードのブロックをサイトの他の部分と同じように木の色にし、ランディングページのバージョンを最新のタグと `go.mod` ファイルから埋めます。これらはコミットされません。Pages ワークフローが `main` への push ごとと 1 日 1 回スクリプトを実行するので、サイトはリポジトリに追従します。サイト全体をプレビューするには、gh CLI にログインした状態で次を実行します:
 
   ```sh
-  python3 pages/render.py --base / && python3 -m http.server -d _site
+  python3 pages/render.py && python3 -m http.server -d _site
   ```
 
 - `assets/site.css` と `assets/site.js` はすべてのページで共有します。サイトの書体は [M PLUS 1 と M PLUS 1 Code](https://github.com/coz-m/MPLUS_FONTS) で、`assets/fonts` にライセンスとともに置いています。それぞれラテン文字と日本語に分けてあるので、ページは日本語があるときだけ日本語のフォントを読み込みます。日本語のページは、`assets/fonts/subset.py` が作る、より字数の多いフォントを使います。
 - [`assets/logo`](assets/logo) にはロゴと、それを描くスクリプトがあります。
 - [`DEVELOPING.md`](DEVELOPING.md) には、複数のリポジトリにまたがる変更のしかたを書いています。[`dev`](dev) にある全チェックアウトのワークスペース、それに対して全リポジトリのテストを実行するスクリプト、リリースの順序です。
 
-以前ここにあった Go モジュール（kanna v0.2.x と初代の kanna-orm）は、[`archive/v0.2`](https://github.com/go-kanna/kanna/tree/archive/v0.2) ブランチとそのタグに残しています。kanna-orm はその後 [go-kanna/orm](https://github.com/go-kanna/orm) で新しく書き直されました。
+以前ここにあった Go モジュール（kanna v0.2.x と初代の kanna-orm）は、[`archive/v0.2`](https://github.com/go-kanna/go-kanna.github.io/tree/archive/v0.2) ブランチとそのタグに残しています。kanna-orm はその後 [go-kanna/orm](https://github.com/go-kanna/orm) で新しく書き直されました。
 
 ## 生成コードのチェック
 
