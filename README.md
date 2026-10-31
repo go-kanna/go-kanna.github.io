@@ -41,6 +41,19 @@ The Go module that used to live here, kanna v0.2.x with the first kanna-orm, is 
 [`archive/v0.2`](https://github.com/go-kanna/kanna/tree/archive/v0.2) branch and its tags. kanna-orm has since been
 written anew, in [go-kanna/orm](https://github.com/go-kanna/orm).
 
+## How the generated code is checked
+
+A generator checks what it is given, and the hand-written code calling what it writes, before it writes anything. That
+what it writes compiles and does what it says is checked in two places beyond it:
+
+- Each generator's tests compile the code it generates for a package of every kind it handles, and call it.
+- [go-kanna/showcase](https://github.com/go-kanna/showcase) runs all seven together. Its CI checks that the generated
+  code and the protobuf code are what is committed, deletes what the generators wrote and has one run write it all
+  again and vet it, and tests the service against PostgreSQL.
+
+A change to [go-kanna/internal](https://github.com/go-kanna/internal), which every generator is built on, runs each
+generator's tests against it before it is tagged.
+
 ## License
 
 [MIT](LICENSE)
