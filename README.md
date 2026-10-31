@@ -2,6 +2,8 @@
 
 # kanna
 
+[![日本語](https://img.shields.io/badge/lang-%E6%97%A5%E6%9C%AC%E8%AA%9E-blue.svg)](README.ja.md)
+
 kanna is a family of seven code generators for Go: validation, value types, the database, mapping, messages, wiring,
 and test data. Each one reads what you have already written, from struct tags to your schema, and writes the plain Go
 you would otherwise write by hand: no reflection, nothing hidden from review. A generator that needs a runtime ships a
@@ -21,12 +23,13 @@ This repository is its site: **https://go-kanna.github.io/kanna/**
 
 ## What is here
 
-- `index.html` is the landing page. Open it in a browser to preview it.
-- Each tool's page, `validate/` and so on, is its README: `pages/render.py` fetches the README of each repository's
-  default branch through the GitHub API, renders it into `pages/page.html`, sets its blocks of generated code on wood,
-  as the rest of the site does, and fills in the versions on the landing page from the latest tags and the `go.mod`
-  files. None of that is committed. The Pages workflow runs the script on every push to `main` and once a day, so the
-  site follows the repositories. To preview the whole site, with the gh CLI logged in:
+- `index.html` is the landing page, and `ja/index.html` the same in Japanese. Open either in a browser to preview it.
+- Each tool's page, `validate/` and so on, is its README, and `ja/validate/` its `README.ja.md`: `pages/render.py`
+  fetches them from each repository's default branch through the GitHub API, renders each into `pages/page.html`, sets
+  its blocks of generated code on wood, as the rest of the site does, and fills in the versions on the landing page
+  from the latest tags and the `go.mod` files. None of that is committed. The Pages workflow runs the script on every
+  push to `main` and once a day, so the site follows the repositories. To preview the whole site, with the gh CLI
+  logged in:
 
   ```sh
   python3 pages/render.py --base / && python3 -m http.server -d _site
@@ -34,7 +37,8 @@ This repository is its site: **https://go-kanna.github.io/kanna/**
 
 - `assets/site.css` and `assets/site.js` are shared by every page. The site is set in
   [M PLUS 1 and M PLUS 1 Code](https://github.com/coz-m/MPLUS_FONTS), which `assets/fonts` holds with their license,
-  each cut into its Latin and its Japanese, so that a page loads the Japanese only when it has some.
+  each cut into its Latin and its Japanese, so that a page loads the Japanese only when it has some. Pages in Japanese
+  take a fuller cut, which `assets/fonts/subset.py` makes.
 - [`assets/logo`](assets/logo) holds the mark and the script that draws it.
 - [`DEVELOPING.md`](DEVELOPING.md) says how to change the family across repositories: the workspace of every
   checkout in [`dev`](dev), a script running every repository's tests against it, and the order releases go in.
