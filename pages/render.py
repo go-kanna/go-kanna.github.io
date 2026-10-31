@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Assemble the site: the landing page, the assets, and a page per tool,
-rendered from the README on its repository's default branch.
+rendered from the README on its repository's default branch, each in English
+and in Japanese.
 
     python3 pages/render.py [--out DIR]
 
@@ -25,6 +26,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 TEMPLATE = Path(__file__).resolve().parent / "page.html"
 ORG = "go-kanna"
+SITE = "https://go-kanna.github.io/kanna/"
 
 # Each repository's page is at its name, headed with the tool's name.
 TOOLS = [
@@ -37,6 +39,41 @@ TOOLS = [
     ("fixture", "kanna-fixture"),
 ]
 
+# What differs between the languages of the site: where a language's pages sit,
+# the README they come from, and what the template says around it.
+LANGS = {
+    "en": {
+        "dir": "",
+        "readme": "README.md",
+        "root": "../",
+        "home": "../",
+        "locale": "en_US",
+        "brand": "kanna home",
+        "site_nav": "Site",
+        "tools": "Tools",
+        "on_this_page": "On this page",
+        "licensed": "MIT licensed.",
+        "coming_soon": "Coming soon",
+        "source": 'This page is the <a href="https://github.com/go-kanna/{{repo}}#readme">README of go-kanna/{{repo}}</a>.',
+        "switch": '<a href="../ja/{{repo}}/" hreflang="ja" lang="ja">日本語</a>',
+    },
+    "ja": {
+        "dir": "ja/",
+        "readme": "README.ja.md",
+        "root": "../../",
+        "home": "../",
+        "locale": "ja_JP",
+        "brand": "kanna ホーム",
+        "site_nav": "サイト",
+        "tools": "ツール",
+        "on_this_page": "目次",
+        "licensed": "MIT ライセンスです。",
+        "coming_soon": "近日公開",
+        "source": 'このページは <a href="https://github.com/go-kanna/{{repo}}/blob/main/README.ja.md">go-kanna/{{repo}} の README</a> です。',
+        "switch": '<a href="../../{{repo}}/" hreflang="en" lang="en">English</a>',
+    },
+}
+
 TAGS = re.compile(r"<[^>]+>")
 
 
@@ -44,8 +81,8 @@ def gh(*args, stdin=None):
     return subprocess.run(["gh", "api", *args], check=True, capture_output=True, text=True, input=stdin).stdout
 
 
-def readme(repo):
-    return gh(f"repos/{ORG}/{repo}/readme", "-H", "Accept: application/vnd.github.raw+json")
+def readme(repo, lang):
+    return gh(f"repos/{ORG}/{repo}/contents/{LANGS[lang]['readme']}", "-H", "Accept: application/vnd.github.raw+json")
 
 
 def render_markdown(text):
@@ -94,11 +131,15 @@ def mark_generated(body):
     return re.sub(r'<div class="(highlight[^"]*)"><pre>(.*?)</pre></div>', mark, body, flags=re.S)
 
 
-def absolutize(body, repo):
-    """Point the README's relative links at the repository, since the page is not in it."""
+def absolutize(body, repo, lang):
+    """Point the README's relative links at the repository, since the page is not
+    in it, and its badge for the other language at that language's page."""
+    pages = {conf["readme"]: f"{LANGS[lang]['root']}{conf['dir']}{repo}/" for conf in LANGS.values()}
 
     def absolute(m):
         attr, url = m.groups()
+        if url in pages:
+            return f'{attr}="{pages[url]}"'
         if re.match(r"[a-z][a-z0-9+.-]*:|#|//", url):
             return m.group(0)
         host = "https://raw.githubusercontent.com" if attr == "src" else "https://github.com"
@@ -156,16 +197,26 @@ def description(body):
     return ""
 
 
-def render_page(template, repo, name):
-    body = mark_generated(scroll_tables(unwrap_headings(render_markdown(readme(repo)))))
-    body = absolutize(body, repo)
+def alternates(repo):
+    """The links telling a search engine which page is which language's."""
+    links = [(lang, f"{SITE}{conf['dir']}{repo}/") for lang, conf in LANGS.items()]
+    links.append(("x-default", f"{SITE}{repo}/"))
+    return "\n".join(f'<link rel="alternate" hreflang="{lang}" href="{url}">' for lang, url in links)
+
+
+def render_page(template, repo, name, lang):
+    body = mark_generated(scroll_tables(unwrap_headings(render_markdown(readme(repo, lang)))))
+    body = absolutize(body, repo, lang)
     body, toc = anchor_headings(body)
     page = template
     for key, value in {
+        "lang": lang,
+        **LANGS[lang],
         "name": name,
         "repo": repo,
+        "alternates": alternates(repo),
         "description": html.escape(description(body), quote=True),
-        "version": latest_tag(repo) or "Coming soon",
+        "version": latest_tag(repo) or LANGS[lang]["coming_soon"],
         "go": go_version(repo) or "",
         "toc": render_toc(toc),
         "body": body,
@@ -197,7 +248,9 @@ def main():
     out = args.out
 
     out.mkdir(parents=True, exist_ok=True)
-    (out / "index.html").write_text(stamp((ROOT / "index.html").read_text()))
+    (out / "ja").mkdir(exist_ok=True)
+    for landing in ("index.html", "ja/index.html"):
+        (out / landing).write_text(stamp((ROOT / landing).read_text()))
     # Served for any path under the site, so it finds the rest from the root.
     (out / "404.html").write_text(TEMPLATE.with_name("404.html").read_text().replace("{{base}}", args.base))
     shutil.copytree(
@@ -205,9 +258,11 @@ def main():
     )
     template = TEMPLATE.read_text()
     for repo, name in TOOLS:
-        (out / repo).mkdir(exist_ok=True)
-        (out / repo / "index.html").write_text(render_page(template, repo, name))
-        print(f"{repo}/index.html")
+        for lang, conf in LANGS.items():
+            page = out / conf["dir"] / repo / "index.html"
+            page.parent.mkdir(exist_ok=True)
+            page.write_text(render_page(template, repo, name, lang))
+            print(page.relative_to(out))
 
 
 if __name__ == "__main__":

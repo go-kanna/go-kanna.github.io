@@ -3,15 +3,19 @@
 // block of its README. Without this script, each tab of the workbench is a link
 // to its panel, and every panel shows.
 (function () {
+  const label = document.documentElement.lang === "ja"
+    ? { copy: "コピー", copied: "コピーしました", select: "選択してコピーしてください" }
+    : { copy: "Copy", copied: "Copied", select: "Select and copy" };
+
   function copyButton(text, button) {
     button.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(text());
-        button.textContent = "Copied";
+        button.textContent = label.copied;
       } catch {
-        button.textContent = "Select and copy";
+        button.textContent = label.select;
       }
-      setTimeout(() => { button.textContent = "Copy"; }, 2000);
+      setTimeout(() => { button.textContent = label.copy; }, 2000);
     });
   }
 
@@ -25,7 +29,7 @@
     const button = document.createElement("button");
     button.type = "button";
     button.className = "copy";
-    button.textContent = "Copy";
+    button.textContent = label.copy;
     copyButton(() => pre.textContent, button);
     block.append(button);
   }
