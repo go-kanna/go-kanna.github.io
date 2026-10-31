@@ -36,6 +36,13 @@ make test GOWORK=$HOME/ghq/github.com/go-kanna/kanna/dev/go-kanna.work
 
 A pull request to go-kanna/internal also runs each generator's tests against it, in its `generators` job.
 
+## Translating
+
+Each README has a `README.ja.md` beside it, and `index.html` has `ja/index.html`. A change to one goes to the other in
+the same pull request. A translation leaves code blocks as they are and keeps the headings, which
+`pages/check_translations.py` checks in the Pages workflow. Each of its paragraphs is one line, since a line break in
+Japanese text renders as a space.
+
 ## Releasing
 
 A change reaches users through tags, from the bottom up, each step a pull request merged after its CI passes:
