@@ -36,6 +36,8 @@ This repository is its site: **https://go-kanna.github.io/kanna/**
   [M PLUS 1 and M PLUS 1 Code](https://github.com/coz-m/MPLUS_FONTS), which `assets/fonts` holds with their license,
   each cut into its Latin and its Japanese, so that a page loads the Japanese only when it has some.
 - [`assets/logo`](assets/logo) holds the mark and the script that draws it.
+- [`DEVELOPING.md`](DEVELOPING.md) says how to change the family across repositories: the workspace of every
+  checkout in [`dev`](dev), a script running every repository's tests against it, and the order releases go in.
 
 The Go module that used to live here, kanna v0.2.x with the first kanna-orm, is kept on the
 [`archive/v0.2`](https://github.com/go-kanna/kanna/tree/archive/v0.2) branch and its tags. kanna-orm has since been

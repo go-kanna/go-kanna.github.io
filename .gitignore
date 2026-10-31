@@ -7,3 +7,6 @@ _site/
 
 # temporary files
 tmp/
+
+# what the family workspace has resolved, which follows each checkout
+dev/go-kanna.work.sum
