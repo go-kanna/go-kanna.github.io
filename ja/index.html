@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>kanna — 手で書くのと同じ Go を生成するコードジェネレータ</title>
+<meta name="description" content="kanna は 7 つの Go コードジェネレータのファミリーです。バリデーション、値オブジェクト、データベース、マッピング、メッセージ、依存関係の組み立て、テストデータ。すでに書いたコードを読み取り、本来手で書くはずの素の Go を生成します。">
+<meta property="og:title" content="kanna: 魔法ではない、生成された Go">
+<meta property="og:description" content="すでに書いたコードを読み取り、素の Go を生成する 7 つのコードジェネレータ。リフレクションはなく、レビューから隠れるものもありません。">
+<meta property="og:image" content="https://raw.githubusercontent.com/go-kanna/kanna/main/assets/logo/avatar-kon.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<link rel="alternate" hreflang="en" href="https://go-kanna.github.io/kanna/">
+<link rel="alternate" hreflang="ja" href="https://go-kanna.github.io/kanna/ja/">
+<link rel="alternate" hreflang="x-default" href="https://go-kanna.github.io/kanna/">
+<meta name="theme-color" content="#1F2C5C">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Crect width='256' height='256' rx='56' fill='%231F2C5C'/%3E%3Cpath transform='translate(16.91 4.57) scale(0.9495)' d='M30 186H148A56 56 0 0 0 204 130A56 56 0 0 0 148 74A40 40 0 0 0 108 114A26 26 0 0 0 134 140A13 13 0 0 0 147 127' fill='none' stroke='%23F3DCA4' stroke-width='24' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preload" href="../assets/fonts/MPLUS1.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/MPLUS1Code.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="./" aria-label="kanna ホーム">
+      <svg viewBox="0 0 256 256" aria-hidden="true"><rect width="256" height="256" rx="56" fill="#1F2C5C"/><path transform="translate(16.91 4.57) scale(0.9495)" d="M 30 186 H 148 A 56 56 0 0 0 204 130 A 56 56 0 0 0 148 74 A 40 40 0 0 0 108 114 A 26 26 0 0 0 134 140 A 13 13 0 0 0 147 127" fill="none" stroke="#F3DCA4" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>kanna</span>
+    </a>
+    <nav aria-label="サイト">
+      <a href="#tools">ツール</a>
+      <a class="wide" href="#how">仕組み</a>
+      <a class="wide" href="#showcase">ショーケース</a>
+      <a href="https://github.com/go-kanna">GitHub</a>
+      <a href="../" hreflang="en" lang="en">English</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div class="headline">
+        <h1 id="hero-title"><span class="slashes" aria-hidden="true">// </span>魔法ではない、<br><span class="slashes" aria-hidden="true">// </span>生成された Go。</h1>
+        <p class="lede">バリデーション、値オブジェクト、データベース、マッピング、メッセージ、依存関係の組み立て、テストデータ。Go のサービスならどこでも繰り返すものを引き受ける、7 つのコードジェネレータです。構造体タグからスキーマまで、すでに書いたものを読み取り、本来手で書くはずの素の Go を生成します。</p>
+      </div>
+
+      <div class="workbench">
+        <div class="side">
+          <div class="picker" role="tablist" aria-label="ツール" aria-orientation="vertical">
+            <a href="#validate-panel" id="validate-tab" role="tab" aria-controls="validate-panel" aria-selected="true"><b>kanna-validate</b><span>構造体タグからバリデーション</span></a>
+            <a href="#value-panel" id="value-tab" role="tab" aria-controls="value-panel" aria-selected="false"><b>kanna-value</b><span>ルールを守る値オブジェクト</span></a>
+            <a href="#orm-panel" id="orm-tab" role="tab" aria-controls="orm-panel" aria-selected="false"><b>kanna-orm</b><span>素の SQL のリポジトリ</span></a>
+            <a href="#mapper-panel" id="mapper-tab" role="tab" aria-controls="mapper-panel" aria-selected="false"><b>kanna-mapper</b><span>ドメインからワイヤへ、フィールド単位で</span></a>
+            <a href="#i18n-panel" id="i18n-tab" role="tab" aria-controls="i18n-panel" aria-selected="false"><b>kanna-i18n</b><span>型付き関数になるメッセージ</span></a>
+            <a href="#di-panel" id="di-tab" role="tab" aria-controls="di-panel" aria-selected="false"><b>kanna-di</b><span>登録なしで依存関係を組み立て</span></a>
+            <a href="#fixture-panel" id="fixture-tab" role="tab" aria-controls="fixture-panel" aria-selected="false"><b>kanna-fixture</b><span>全フィールドが埋まったテストデータ</span></a>
+          </div>
+          <p class="aside">それぞれが独立したモジュールです。1 つだけでも、<a href="#showcase">showcase</a> のように 7 つ全部でも使えます。</p>
+        </div>
+
+        <div class="panels">
+          <div class="panel" id="validate-panel" role="tabpanel" aria-labelledby="validate-tab">
+            <figure class="bench" aria-label="kanna-validate 用に印を付けた構造体と、生成される Validate メソッド">
+              <div class="pane mine">
+                <p class="file"><span>user.go</span><span>自分で書く</span></p>
+<pre><code><span class="c">//go:generate go tool kanna-validate</span>
+
+<span class="c">//kanna:validate</span>
+<span class="k">type</span> <span class="t">CreateUserRequest</span> <span class="k">struct</span> {
+	Name <span class="t">string</span> <span class="s">`json:"name" validate:"required,max=50"`</span>
+	Age  <span class="t">int</span>    <span class="s">`json:"age"  validate:"gte=18"`</span>
+}</code></pre>
+              </div>
+              <div class="seam"><svg class="curl" viewBox="16 60 202 140" aria-hidden="true"><path d="M 30 186 H 148 A 56 56 0 0 0 204 130 A 56 56 0 0 0 148 74 A 40 40 0 0 0 108 114 A 26 26 0 0 0 134 140 A 13 13 0 0 0 147 127" fill="none" stroke="#F3DCA4" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="pane gen">
+                <p class="file"><span>validate_gen.go</span><span>kanna-validate が生成</span></p>
+<pre><code><span class="k">func</span> (x <span class="t">CreateUserRequest</span>) <span class="f">Validate</span>() <span class="t">error</span> {
+	<span class="k">var</span> errs validate.<span class="t">Errors</span>
+
+	<span class="k">if</span> x.Name == <span class="s">""</span> {
+		errs.Add(<span class="s">"name"</span>, validate.Blank())
+	} <span class="k">else</span> {
+		<span class="k">if</span> utf8.RuneCountInString(x.Name) &gt; <span class="s">50</span> {
+			errs.Add(<span class="s">"name"</span>, validate.TooLong(<span class="s">50</span>))
+		}
+	}
+
+	<span class="k">if</span> x.Age &lt; <span class="s">18</span> {
+		errs.Add(<span class="s">"age"</span>, validate.GreaterThanOrEqualTo(<span class="s">18</span>))
+	}
+
+	<span class="k">return</span> errs.Err()
+}</code></pre>
+              </div>
+            </figure>
+            <div class="about">
+              <p class="what">kanna-validate は、構造体の <code>validate</code> タグから <code>Validate</code> メソッドを生成し、違反を Rails のエラーコードで、フィールドの JSON 名をキーにして報告します。</p>
+              <p class="like">タグの書き方は go-playground/validator と同じです。ただし呼び出しのたびにリフレクションで読むのではなく、go generate のときに 1 度だけ読みます。</p>
+              <p class="meta"><a href="validate/">ドキュメントを読む</a> <a href="https://github.com/go-kanna/validate">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/validate/tags" data-tag="go-kanna/validate">v0.0.7</a><span data-go="go-kanna/validate">Go 1.27</span></span></p>
+              <div class="install">
+                <code id="install-hero-validate">go get -tool github.com/go-kanna/validate/cmd/kanna-validate</code>
+                <button type="button" class="copy" data-copy="install-hero-validate">コピー</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" id="value-panel" role="tabpanel" aria-labelledby="value-tab">
+            <figure class="bench" aria-label="kanna-value 用に印を付けた構造体と、生成されるメソッドのうち 2 つ">
+              <div class="pane mine">
+                <p class="file"><span>model.go</span><span>自分で書く</span></p>
+<pre><code><span class="c">//go:generate go tool kanna-value</span>
+
+<span class="c">//kanna:value</span>
+<span class="k">type</span> <span class="t">Email</span> <span class="k">struct</span>{ s <span class="t">string</span> }
+
+<span class="k">func</span> (<span class="t">Email</span>) <span class="f">validate</span>(s <span class="t">string</span>) <span class="t">error</span> { <span class="k">return</span> rule.Email(s) }</code></pre>
+              </div>
+              <div class="seam"><svg class="curl" viewBox="16 60 202 140" aria-hidden="true"><path d="M 30 186 H 148 A 56 56 0 0 0 204 130 A 56 56 0 0 0 148 74 A 40 40 0 0 0 108 114 A 26 26 0 0 0 134 140 A 13 13 0 0 0 147 127" fill="none" stroke="#F3DCA4" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="pane gen">
+                <p class="file"><span>value_gen.go</span><span>kanna-value が生成</span></p>
+<pre><code><span class="k">func</span> <span class="f">NewEmail</span>(v <span class="t">string</span>) (<span class="t">Email</span>, <span class="t">error</span>) {
+	<span class="k">if</span> err := (<span class="t">Email</span>{}).validate(v); err != <span class="k">nil</span> {
+		<span class="k">return</span> <span class="t">Email</span>{}, err
+	}
+	<span class="k">return</span> <span class="t">Email</span>{s: v}, <span class="k">nil</span>
+}
+
+<span class="k">func</span> (x *<span class="t">Email</span>) <span class="f">UnmarshalJSON</span>(data []<span class="t">byte</span>) <span class="t">error</span> {
+	<span class="k">if</span> <span class="t">string</span>(data) == <span class="s">"null"</span> {
+		<span class="k">return</span> <span class="k">nil</span>
+	}
+	<span class="k">var</span> v <span class="t">string</span>
+	<span class="k">if</span> err := json.Unmarshal(data, &amp;v); err != <span class="k">nil</span> {
+		<span class="k">return</span> err
+	}
+	y, err := NewEmail(v)
+	<span class="k">if</span> err != <span class="k">nil</span> {
+		<span class="k">return</span> err
+	}
+	*x = y
+	<span class="k">return</span> <span class="k">nil</span>
+}
+
+<span class="c">// MustEmail, String, IsZero, MarshalJSON, Value, and Scan, which checks too.</span></code></pre>
+              </div>
+            </figure>
+            <div class="about">
+              <p class="what">kanna-value は、値を 1 つ保持する構造体と <code>validate</code> メソッドから値オブジェクトを生成します。コンストラクタ、アクセサ、JSON と SQL のメソッドがそろい、値がどこから来てもルールを守らせます。定数を持つ string 型に <code>//kanna:enum</code> を付ければ、定数の値だけを読み込む enum になります。</p>
+              <p class="like">値オブジェクトごとに書くはずのコンストラクタと 4 つのマーシャリングメソッドを、ルールを 1 箇所にまとめて生成します。各レイヤで繰り返すはずの enum の定数チェックも不要になります。</p>
+              <p class="meta"><a href="value/">ドキュメントを読む</a> <a href="https://github.com/go-kanna/value">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/value/tags" data-tag="go-kanna/value">v0.0.4</a><span data-go="go-kanna/value">Go 1.26</span></span></p>
+              <div class="install">
+                <code id="install-hero-value">go get -tool github.com/go-kanna/value/cmd/kanna-value</code>
+                <button type="button" class="copy" data-copy="install-hero-value">コピー</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" id="orm-panel" role="tabpanel" aria-labelledby="orm-tab">
+            <figure class="bench" aria-label="kanna-orm 用に印を付けたリポジトリのインターフェース、生成される実装とスコープのメソッド、スコープをつなげた呼び出し">
+              <div class="pane mine">
+                <p class="file"><span>repository/order.go</span><span>自分で書く</span></p>
+<pre><code><span class="c">//go:generate go tool kanna-orm -destination ../postgres</span>
+
+<span class="c">//kanna:repository</span>
+<span class="k">type</span> <span class="t">OrderRepository</span> <span class="k">interface</span> {
+	List(ctx context.<span class="t">Context</span>, s ...scopes.<span class="t">Order</span>) ([]model.<span class="t">Order</span>, <span class="t">error</span>)
+	Insert(ctx context.<span class="t">Context</span>, o model.<span class="t">Order</span>) (model.<span class="t">Order</span>, <span class="t">error</span>)
+}</code></pre>
+              </div>
+              <div class="seam"><svg class="curl" viewBox="16 60 202 140" aria-hidden="true"><path d="M 30 186 H 148 A 56 56 0 0 0 204 130 A 56 56 0 0 0 148 74 A 40 40 0 0 0 108 114 A 26 26 0 0 0 134 140 A 13 13 0 0 0 147 127" fill="none" stroke="#F3DCA4" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="pane gen">
+                <p class="file"><span>postgres/orm_gen.go</span><span>kanna-orm が生成</span></p>
+<pre><code><span class="k">func</span> (r <span class="t">OrderRepository</span>) <span class="f">Insert</span>(ctx context.<span class="t">Context</span>, o model.<span class="t">Order</span>) (model.<span class="t">Order</span>, <span class="t">error</span>) {
+	<span class="k">const</span> q = <span class="s">`INSERT INTO orders (id, customer_id, status, placed_at, note)
+VALUES ($1, $2, $3, $4, $5)
+RETURNING id, customer_id, status, placed_at, note`</span>
+	<span class="k">var</span> row model.<span class="t">Order</span>
+	err := r.db.QueryRow(ctx, q, o.ID, o.CustomerID, o.Status, o.PlacedAt, o.Memo).
+		Scan(&amp;row.ID, &amp;row.CustomerID, &amp;row.Status, &amp;row.PlacedAt, &amp;row.Memo)
+	<span class="k">if</span> err != <span class="k">nil</span> {
+		<span class="k">return</span> model.<span class="t">Order</span>{}, fmt.Errorf(<span class="s">"insert into orders: %w"</span>, err)
+	}
+	<span class="k">return</span> row, <span class="k">nil</span>
+}</code></pre>
+              </div>
+              <div class="pane gen">
+                <p class="file"><span>scopes/orm_gen.go</span><span>kanna-orm が生成</span></p>
+<pre><code><span class="c">// StatusNe narrows to the rows whose status is not v.</span>
+<span class="k">func</span> (s <span class="t">Order</span>) <span class="f">StatusNe</span>(v model.<span class="t">OrderStatus</span>) <span class="t">Order</span> {
+	<span class="k">return</span> <span class="t">Order</span>{s.q.Where(<span class="s">`status &lt;&gt; `</span>, v)}
+}
+
+<span class="c">// ...a method for each column and relation, and Limit, After, and Cursor.</span></code></pre>
+              </div>
+              <div class="pane mine">
+                <p class="file"><span>handler.go</span><span>自分で呼ぶ</span></p>
+<pre><code>orders, err := repo.List(ctx, scopes.Orders().
+	StatusNe(model.OrderCanceled).
+	PlacedAtDesc().
+	Limit(<span class="s">20</span>))</code></pre>
+              </div>
+            </figure>
+            <div class="about">
+              <p class="what">kanna-orm は、リポジトリのインターフェースの実装を、SQL をリテラルのまま含めて生成します。テーブルごとのスコープ型も生成し、そのメソッドで絞り込み、並べ替え、ページング、リレーションの読み込みができます。</p>
+              <p class="like">スコープは gorm のようにつなげられ、クエリは sqlc のようにスキーマと照合され、生成コードにリフレクションはありません。PostgreSQL（pgx または database/sql 経由）と MySQL 8.4 以降に対応します。</p>
+              <p class="meta"><a href="orm/">ドキュメントを読む</a> <a href="https://github.com/go-kanna/orm">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/orm/tags" data-tag="go-kanna/orm">v0.0.3</a><span data-go="go-kanna/orm">Go 1.26</span></span></p>
+              <div class="install">
+                <code id="install-hero-orm">go get -tool github.com/go-kanna/orm/cmd/kanna-orm</code>
+                <button type="button" class="copy" data-copy="install-hero-orm">コピー</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" id="mapper-panel" role="tabpanel" aria-labelledby="mapper-tab">
+            <figure class="bench" aria-label="kanna-mapper 用に宣言したマッピング関数と、生成される本体の 1 つ">
+              <div class="pane mine">
+                <p class="file"><span>mapper.go</span><span>自分で書く</span></p>
+<pre><code><span class="c">//go:generate go tool kanna-mapper</span>
+
+<span class="c">//kanna:mapper</span>
+<span class="k">type</span> _ <span class="k">interface</span> {
+	EmployeeToProto(model.<span class="t">Employee</span>) *employeev1.<span class="t">Employee</span>
+	EmployeeFromProto(*employeev1.<span class="t">Employee</span>) (model.<span class="t">Employee</span>, <span class="t">error</span>)
+}
+
+<span class="c">//kanna:converter</span>
+<span class="k">var</span> _ = []<span class="t">any</span>{
+	uuid.<span class="t">UUID</span>.String,
+	uuid.Parse,
+	timestamppb.New,
+	(*timestamppb.<span class="t">Timestamp</span>).AsTime,
+}</code></pre>
+              </div>
+              <div class="seam"><svg class="curl" viewBox="16 60 202 140" aria-hidden="true"><path d="M 30 186 H 148 A 56 56 0 0 0 204 130 A 56 56 0 0 0 148 74 A 40 40 0 0 0 108 114 A 26 26 0 0 0 134 140 A 13 13 0 0 0 147 127" fill="none" stroke="#F3DCA4" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="pane gen">
+                <p class="file"><span>mapper_gen.go</span><span>kanna-mapper が生成</span></p>
+<pre><code><span class="k">func</span> <span class="f">EmployeeFromProto</span>(src *employeev1.<span class="t">Employee</span>) (model.<span class="t">Employee</span>, <span class="t">error</span>) {
+	<span class="k">if</span> src == <span class="k">nil</span> {
+		<span class="k">return</span> model.<span class="t">Employee</span>{}, <span class="k">nil</span>
+	}
+	v, err := uuid.Parse(src.GetId())
+	<span class="k">if</span> err != <span class="k">nil</span> {
+		<span class="k">return</span> model.<span class="t">Employee</span>{}, fmt.Errorf(<span class="s">"map model.Employee.ID: %w"</span>, err)
+	}
+	<span class="k">return</span> model.<span class="t">Employee</span>{
+		ID:       v,
+		FullName: src.GetName(),
+		HiredAt:  src.GetHiredAt().AsTime(),
+		Address:  addressToModel(src.GetAddress()),
+	}, <span class="k">nil</span>
+}
+
+<span class="c">// EmployeeToProto, and addressToModel and addressToEmployeev1, which they call.</span></code></pre>
+              </div>
+            </figure>
+            <div class="about">
+              <p class="what">kanna-mapper は、ドメイン型と、自分では管理しないワイヤ型（protobuf などの通信用の型）の間の関数を生成します。シグネチャを宣言すれば、本体をフィールドごとに生成し、protobuf の oneof、enum、直和型も扱います。</p>
+              <p class="like">宣言のしかたは goverter に近いものです。Go が自力で変換できないものは、変換する関数を <code>uuid.Parse</code> や <code>timestamppb.New</code> のまま並べます。</p>
+              <p class="meta"><a href="mapper/">ドキュメントを読む</a> <a href="https://github.com/go-kanna/mapper">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/mapper/tags" data-tag="go-kanna/mapper">v0.0.7</a><span data-go="go-kanna/mapper">Go 1.26</span></span></p>
+              <div class="install">
+                <code id="install-hero-mapper">go get -tool github.com/go-kanna/mapper/cmd/kanna-mapper</code>
+                <button type="button" class="copy" data-copy="install-hero-mapper">コピー</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" id="i18n-panel" role="tabpanel" aria-labelledby="i18n-tab">
+            <figure class="bench" aria-label="2 つのロケールファイル、そこから kanna-i18n が生成するコンストラクタ、それを使うハンドラ">
+              <div class="pane mine">
+                <p class="file"><span>locales/</span><span>自分で書く</span></p>
+<pre><code><span class="c"># en.yaml</span>
+<span class="t">hello</span>: <span class="s">"Hello, {name}!"</span>
+<span class="t">items_count</span>:
+  <span class="t">plural</span>:
+    <span class="t">one</span>: <span class="s">"You have {count} item."</span>
+    <span class="t">other</span>: <span class="s">"You have {count} items."</span>
+
+<span class="c"># ja.yaml</span>
+<span class="t">hello</span>: <span class="s">"こんにちは、{name}さん！"</span>
+<span class="t">items_count</span>:
+  <span class="t">plural</span>:
+    <span class="t">other</span>: <span class="s">"アイテムが{count}個あります。"</span></code></pre>
+              </div>
+              <div class="seam"><svg class="curl" viewBox="16 60 202 140" aria-hidden="true"><path d="M 30 186 H 148 A 56 56 0 0 0 204 130 A 56 56 0 0 0 148 74 A 40 40 0 0 0 108 114 A 26 26 0 0 0 134 140 A 13 13 0 0 0 147 127" fill="none" stroke="#F3DCA4" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="pane gen">
+                <p class="file"><span>messages/i18n_gen.go</span><span>kanna-i18n が生成</span></p>
+<pre><code><span class="c">// Hello returns the message "hello":
+//
+//	Hello, {name}!</span>
+<span class="k">func</span> <span class="f">Hello</span>(name <span class="t">string</span>) i18n.<span class="t">Message</span> {
+	<span class="k">return</span> i18n.<span class="t">Message</span>{Key: <span class="s">"hello"</span>, Args: []i18n.<span class="t">Arg</span>{
+		{Name: <span class="s">"name"</span>, Value: name},
+	}}
+}
+
+<span class="c">// ItemsCount returns the message "items_count", in the form count selects:
+//
+//	one:   You have {count} item.
+//	other: You have {count} items.</span>
+<span class="k">func</span> <span class="f">ItemsCount</span>(count <span class="t">int</span>) i18n.<span class="t">Message</span> {
+	<span class="k">return</span> i18n.<span class="t">Message</span>{Key: <span class="s">"items_count"</span>, Args: []i18n.<span class="t">Arg</span>{
+		{Name: <span class="s">"count"</span>, Value: count},
+	}}
+}</code></pre>
+              </div>
+              <div class="pane mine">
+                <p class="file"><span>handler.go</span><span>自分で呼ぶ</span></p>
+<pre><code>loc := messages.Localizer(r.Header.Get(<span class="s">"Accept-Language"</span>))
+
+<span class="c">// You have 1 item. or アイテムが1個あります。</span>
+fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</code></pre>
+              </div>
+            </figure>
+            <div class="about">
+              <p class="what">kanna-i18n は、ロケールファイルのディレクトリをコンパイルし、メッセージごとに型付きのコンストラクタを生成します。翻訳もコードに組み込まれます。CLDR の複数形、ロケールに合わせた数値の書式、Accept-Language の値を受け取る <code>Localizer</code> を備えています。</p>
+              <p class="like">ロケールファイルは go-i18n と同様ですが、メッセージは実行時に ID で引くものではなく、コンパイラがチェックする関数です。</p>
+              <p class="meta"><a href="i18n/">ドキュメントを読む</a> <a href="https://github.com/go-kanna/i18n">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/i18n/tags" data-tag="go-kanna/i18n">v0.0.7</a><span data-go="go-kanna/i18n">Go 1.26</span></span></p>
+              <div class="install">
+                <code id="install-hero-i18n">go get -tool github.com/go-kanna/i18n/cmd/kanna-i18n</code>
+                <button type="button" class="copy" data-copy="install-hero-i18n">コピー</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" id="di-panel" role="tabpanel" aria-labelledby="di-tab">
+            <figure class="bench" aria-label="kanna-di 用に印を付けたコンテナ構造体と、生成されるコンストラクタ">
+              <div class="pane mine">
+                <p class="file"><span>server.go</span><span>自分で書く</span></p>
+<pre><code><span class="c">//go:generate go tool kanna-di</span>
+
+<span class="c">//kanna:container</span>
+<span class="k">type</span> <span class="t">server</span> <span class="k">struct</span> {
+	_ user.<span class="t">Repository</span> <span class="s">`di:"with=postgres.NewUserRepository"`</span>
+
+	users *handler.<span class="t">User</span>
+}
+
+<span class="k">func</span> <span class="f">openDB</span>(cfg config.<span class="t">Config</span>) (*sql.<span class="t">DB</span>, <span class="k">func</span>(), <span class="t">error</span>)
+<span class="k">func</span> <span class="f">newLogger</span>() *slog.<span class="t">Logger</span></code></pre>
+              </div>
+              <div class="seam"><svg class="curl" viewBox="16 60 202 140" aria-hidden="true"><path d="M 30 186 H 148 A 56 56 0 0 0 204 130 A 56 56 0 0 0 148 74 A 40 40 0 0 0 108 114 A 26 26 0 0 0 134 140 A 13 13 0 0 0 147 127" fill="none" stroke="#F3DCA4" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="pane gen">
+                <p class="file"><span>di_gen.go</span><span>kanna-di が生成</span></p>
+<pre><code><span class="k">func</span> <span class="f">newServer</span>() (*<span class="t">server</span>, <span class="k">func</span>(), <span class="t">error</span>) {
+	cfg, err := config.Load()
+	<span class="k">if</span> err != <span class="k">nil</span> {
+		<span class="k">return</span> <span class="k">nil</span>, <span class="k">nil</span>, err
+	}
+	db, cleanup, err := openDB(cfg)
+	<span class="k">if</span> err != <span class="k">nil</span> {
+		<span class="k">return</span> <span class="k">nil</span>, <span class="k">nil</span>, err
+	}
+	repo := postgres.NewUserRepository(db)
+	log := newLogger()
+	registerUser := usecase.NewRegisterUser(repo, log)
+	getUser := usecase.NewGetUser(repo)
+	users := handler.NewUser(registerUser, getUser)
+
+	<span class="k">return</span> &amp;<span class="t">server</span>{
+		users: users,
+	}, cleanup, <span class="k">nil</span>
+}</code></pre>
+              </div>
+            </figure>
+            <div class="about">
+              <p class="what">kanna-di は、型の隣にある関数から、依存する順に呼び出すコンテナ構造体のコンストラクタを生成します。プロバイダが開いたものは、コンストラクタが返す 1 つのクリーンアップで閉じます。</p>
+              <p class="like">Wire と同じくコンパイル前に生成しますが、管理するプロバイダセットはありません。依存は型の隣にある関数から得られ、インターフェースはタグ 1 つでバインドします。</p>
+              <p class="meta"><a href="di/">ドキュメントを読む</a> <a href="https://github.com/go-kanna/di">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/di/tags" data-tag="go-kanna/di">v0.0.5</a><span data-go="go-kanna/di">Go 1.26</span></span></p>
+              <div class="install">
+                <code id="install-hero-di">go get -tool github.com/go-kanna/di/cmd/kanna-di</code>
+                <button type="button" class="copy" data-copy="install-hero-di">コピー</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" id="fixture-panel" role="tabpanel" aria-labelledby="fixture-tab">
+            <figure class="bench" aria-label="モデルの構造体、kanna-fixture が生成するフィクスチャ、それを使うテスト">
+              <div class="pane mine">
+                <p class="file"><span>model.go</span><span>自分で書く</span></p>
+<pre><code><span class="c">//go:generate go tool kanna-fixture</span>
+
+<span class="k">type</span> <span class="t">User</span> <span class="k">struct</span> {
+	ID        <span class="t">int64</span>
+	Name      <span class="t">string</span> <span class="s">`fake:"{firstname} {lastname}"`</span>
+	Email     <span class="t">string</span> <span class="s">`validate:"required,email"`</span>
+	Age       <span class="t">int</span>    <span class="s">`validate:"gte=18,lte=130"`</span>
+	Role      <span class="t">Role</span>
+	CreatedAt time.<span class="t">Time</span>
+}</code></pre>
+              </div>
+              <div class="seam"><svg class="curl" viewBox="16 60 202 140" aria-hidden="true"><path d="M 30 186 H 148 A 56 56 0 0 0 204 130 A 56 56 0 0 0 148 74 A 40 40 0 0 0 108 114 A 26 26 0 0 0 134 140 A 13 13 0 0 0 147 127" fill="none" stroke="#F3DCA4" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="pane gen">
+                <p class="file"><span>fixture/fixture_gen.go</span><span>kanna-fixture が生成</span></p>
+<pre><code><span class="k">func</span> <span class="f">User</span>(setters ...<span class="k">func</span>(*model.<span class="t">User</span>)) model.<span class="t">User</span> {
+	n := seqUser.Add(<span class="s">1</span>)
+	f := gofakeit.NewFaker(rand.NewPCG(<span class="t">uint64</span>(n), <span class="s">0x5f2c8e0a9d4b7136</span>), <span class="k">false</span>)
+	x := model.<span class="t">User</span>{
+		ID:        n,
+		Name:      mustGenerate(f, <span class="s">"{firstname} {lastname}"</span>),
+		Email:     fmt.Sprintf(<span class="s">"email-%d@example.com"</span>, n),
+		Age:       <span class="t">int</span>(<span class="s">18</span> + (n-<span class="s">1</span>)%<span class="s">113</span>),
+		Role:      model.RoleAdmin,
+		CreatedAt: time.Date(<span class="s">2000</span>, time.January, <span class="s">1</span>, <span class="s">0</span>, <span class="s">0</span>, <span class="t">int</span>(n), <span class="s">0</span>, time.UTC),
+	}
+	<span class="k">for</span> _, set := <span class="k">range</span> setters {
+		set(&amp;x)
+	}
+	<span class="k">return</span> x
+}</code></pre>
+              </div>
+              <div class="pane mine">
+                <p class="file"><span>user_test.go</span><span>自分で呼ぶ</span></p>
+<pre><code>u := fixture.User(<span class="k">func</span>(u *model.<span class="t">User</span>) { u.Age = <span class="s">17</span> })
+<span class="c">// Validating u reports age, and nothing else.</span></code></pre>
+              </div>
+            </figure>
+            <div class="about">
+              <p class="what">kanna-fixture は、パッケージのすべての構造体について、全フィールドが埋まったコンストラクタを生成します。値は衝突しないよう連番にし、<code>validate</code> タグのルールの範囲で埋め、指定すれば gofakeit のテンプレートから作ります。</p>
+              <p class="like">どのテストパッケージでも増えていく <code>newTestUser</code> ヘルパーを、すべての構造体について生成し、構造体の変更にも追従します。フィクスチャは作った時点で有効なので、1 つのルールのテストでは 1 つのフィールドを変えるだけです。</p>
+              <p class="meta"><a href="fixture/">ドキュメントを読む</a> <a href="https://github.com/go-kanna/fixture">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/fixture/tags" data-tag="go-kanna/fixture">v0.0.7</a><span data-go="go-kanna/fixture">Go 1.26</span></span></p>
+              <div class="install">
+                <code id="install-hero-fixture">go get -tool github.com/go-kanna/fixture/cmd/kanna-fixture</code>
+                <button type="button" class="copy" data-copy="install-hero-fixture">コピー</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="outputs" id="outputs" aria-labelledby="outputs-title">
+    <div class="wrap">
+      <h2 id="outputs-title">それぞれが生成するもの</h2>
+      <p class="intro"><code>DO NOT EDIT</code> のヘッダが付いたファイルに書き出される、素の Go の宣言です。各リポジトリのサンプルで生成されるものを、<code>go doc</code> の形式で並べました。</p>
+      <div class="sheet">
+        <div class="output wide">
+          <h3><a href="orm/">kanna-orm</a><span>scopes/orm_gen.go, postgres/orm_gen.go</span></h3>
+<pre><code><span class="k">type</span> <span class="t">Order</span> <span class="k">struct</span>{ q orm.<span class="t">Of</span>[model.<span class="t">Order</span>] }
+<span class="k">func</span> <span class="f">Orders</span>() <span class="t">Order</span>
+<span class="k">func</span> (s <span class="t">Order</span>) <span class="f">StatusEq</span>(v model.<span class="t">OrderStatus</span>) <span class="t">Order</span>
+<span class="k">func</span> (s <span class="t">Order</span>) <span class="f">PlacedAtDesc</span>() <span class="t">Order</span>
+<span class="k">func</span> (s <span class="t">Order</span>) <span class="f">WithLines</span>(sub ...<span class="t">OrderLine</span>) <span class="t">Order</span>
+<span class="k">func</span> (s <span class="t">Order</span>) <span class="f">After</span>(row model.<span class="t">Order</span>) <span class="t">Order</span>
+<span class="k">func</span> (s <span class="t">Order</span>) <span class="f">AfterCursor</span>(cursor <span class="t">string</span>) (<span class="t">Order</span>, <span class="t">error</span>)
+<span class="c">// ...79 methods on Order in all, for its columns, its relations, and paging</span>
+
+<span class="k">type</span> <span class="t">OrderRepository</span> <span class="k">struct</span>{ db <span class="t">DBTX</span> }
+<span class="k">func</span> <span class="f">NewOrderRepository</span>(db <span class="t">DBTX</span>) <span class="t">OrderRepository</span>
+<span class="k">func</span> (r <span class="t">OrderRepository</span>) <span class="f">Get</span>(ctx context.<span class="t">Context</span>, id model.<span class="t">OrderID</span>, s ...scopes.<span class="t">Order</span>) (model.<span class="t">Order</span>, <span class="t">error</span>)
+<span class="k">func</span> (r <span class="t">OrderRepository</span>) <span class="f">List</span>(ctx context.<span class="t">Context</span>, s ...scopes.<span class="t">Order</span>) ([]model.<span class="t">Order</span>, <span class="t">error</span>)
+<span class="k">func</span> (r <span class="t">OrderRepository</span>) <span class="f">Insert</span>(ctx context.<span class="t">Context</span>, o model.<span class="t">Order</span>) (model.<span class="t">Order</span>, <span class="t">error</span>)
+<span class="c">// ...one for each method of the interface</span></code></pre>
+        </div>
+        <div class="output">
+          <h3><a href="validate/">kanna-validate</a><span>validate_gen.go</span></h3>
+<pre><code><span class="k">func</span> (x <span class="t">CreateUserRequest</span>) <span class="f">Validate</span>() <span class="t">error</span>
+<span class="k">func</span> (x <span class="t">Address</span>) <span class="f">Validate</span>() <span class="t">error</span></code></pre>
+        </div>
+        <div class="output">
+          <h3><a href="value/">kanna-value</a><span>value_gen.go</span></h3>
+<pre><code><span class="k">func</span> <span class="f">NewEmail</span>(v <span class="t">string</span>) (<span class="t">Email</span>, <span class="t">error</span>)
+<span class="k">func</span> <span class="f">MustEmail</span>(v <span class="t">string</span>) <span class="t">Email</span>
+<span class="k">func</span> (x <span class="t">Email</span>) <span class="f">String</span>() <span class="t">string</span>
+<span class="k">func</span> (x <span class="t">Email</span>) <span class="f">IsZero</span>() <span class="t">bool</span>
+<span class="k">func</span> (x <span class="t">Email</span>) <span class="f">MarshalJSON</span>() ([]<span class="t">byte</span>, <span class="t">error</span>)
+<span class="k">func</span> (x *<span class="t">Email</span>) <span class="f">UnmarshalJSON</span>(data []<span class="t">byte</span>) <span class="t">error</span>
+<span class="k">func</span> (x <span class="t">Email</span>) <span class="f">Value</span>() (driver.<span class="t">Value</span>, <span class="t">error</span>)
+<span class="k">func</span> (x *<span class="t">Email</span>) <span class="f">Scan</span>(src <span class="t">any</span>) <span class="t">error</span>
+
+<span class="c">// and for the enum OrderStatus</span>
+<span class="k">func</span> <span class="f">NewOrderStatus</span>(v <span class="t">string</span>) (<span class="t">OrderStatus</span>, <span class="t">error</span>)
+<span class="k">func</span> <span class="f">OrderStatusValues</span>() []<span class="t">OrderStatus</span>
+<span class="k">func</span> (x *<span class="t">OrderStatus</span>) <span class="f">UnmarshalText</span>(text []<span class="t">byte</span>) <span class="t">error</span>
+<span class="k">func</span> (x *<span class="t">OrderStatus</span>) <span class="f">Scan</span>(src <span class="t">any</span>) <span class="t">error</span></code></pre>
+        </div>
+        <div class="output">
+          <h3><a href="mapper/">kanna-mapper</a><span>mapper_gen.go</span></h3>
+<pre><code><span class="k">func</span> <span class="f">EmployeeToProto</span>(emp model.<span class="t">Employee</span>) *employeev1.<span class="t">Employee</span>
+<span class="k">func</span> <span class="f">EmployeeFromProto</span>(emp *employeev1.<span class="t">Employee</span>) (model.<span class="t">Employee</span>, <span class="t">error</span>)
+<span class="k">func</span> <span class="f">addressToEmployeev1</span>(src model.<span class="t">Address</span>) *employeev1.<span class="t">Address</span>
+<span class="k">func</span> <span class="f">addressToModel</span>(src *employeev1.<span class="t">Address</span>) model.<span class="t">Address</span>
+<span class="c">// ...and the same two for Contact</span></code></pre>
+        </div>
+        <div class="output">
+          <h3><a href="i18n/">kanna-i18n</a><span>messages/i18n_gen.go</span></h3>
+<pre><code><span class="k">func</span> <span class="f">Hello</span>(name <span class="t">string</span>) i18n.<span class="t">Message</span>
+<span class="k">func</span> <span class="f">ItemsCount</span>(count <span class="t">int</span>) i18n.<span class="t">Message</span>
+<span class="k">func</span> <span class="f">TotalPrice</span>(price <span class="t">float64</span>) i18n.<span class="t">Message</span>
+<span class="k">func</span> <span class="f">UserDeleted</span>(name <span class="t">string</span>) i18n.<span class="t">Message</span>
+<span class="k">func</span> <span class="f">Localizer</span>(langs ...<span class="t">string</span>) i18n.<span class="t">Localizer</span></code></pre>
+        </div>
+        <div class="output">
+          <h3><a href="di/">kanna-di</a><span>di_gen.go</span></h3>
+<pre><code><span class="k">func</span> <span class="f">newServer</span>(logs io.<span class="t">Writer</span>) (*server, <span class="k">func</span>(), <span class="t">error</span>)
+<span class="k">func</span> <span class="f">mustNewServer</span>(logs io.<span class="t">Writer</span>) (*server, <span class="k">func</span>())</code></pre>
+        </div>
+        <div class="output">
+          <h3><a href="fixture/">kanna-fixture</a><span>fixture/fixture_gen.go</span></h3>
+<pre><code><span class="k">func</span> <span class="f">Article</span>(setters ...<span class="k">func</span>(*blog.<span class="t">Article</span>)) blog.<span class="t">Article</span>
+<span class="k">func</span> <span class="f">Author</span>(setters ...<span class="k">func</span>(*blog.<span class="t">Author</span>)) blog.<span class="t">Author</span>
+<span class="k">func</span> <span class="f">SignUp</span>(setters ...<span class="k">func</span>(*blog.<span class="t">SignUp</span>)) blog.<span class="t">SignUp</span></code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how" id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <h2 id="how-title">1 つ覚えれば、7 つとも使える</h2>
+      <p class="intro">どのツールも、インストール、実行、CI でのチェックの手順は同じです。設定するのは、実行する 1 行だけです。</p>
+      <ol class="steps">
+        <li>
+          <h3>モジュールにインストールする</h3>
+<pre class="cmd"><code>go get -tool github.com/go-kanna/validate/cmd/kanna-validate</code></pre>
+          <p>バージョンは <code>go.mod</code> に記録されるので、プロジェクトの全員が同じものを実行します。</p>
+        </li>
+        <li>
+          <h3>読み取る対象に印を付ける</h3>
+<pre class="cmd"><code><span class="c">//go:generate go tool kanna-validate</span>
+
+<span class="c">//kanna:validate</span>
+<span class="k">type</span> CreateUserRequest <span class="k">struct</span> {</code></pre>
+          <p>対象の構造体、インターフェース、ディレクトリの隣にコメントを書きます。kanna がなくても、コードの読み方は変わりません。</p>
+        </li>
+        <li>
+          <h3>生成する</h3>
+<pre class="cmd"><code>go generate ./...</code></pre>
+          <p>各ツールは <code>_gen.go</code> ファイルを書き出し、成功したら何も出力しません。間違いがあれば止まり、ファイルと行、おそらく意図した内容を示します。</p>
+        </li>
+        <li>
+          <h3>CI でチェックする</h3>
+<pre class="cmd"><code>KANNA_CHECK=1 go generate ./...</code></pre>
+          <p>コミットされたファイルが、ジェネレータが今書き出す内容と違えば失敗します。このとき何も書き出しません。</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+
+  <section class="rules" aria-labelledby="rules-title">
+    <div class="wrap">
+      <h2 id="rules-title">すべてのジェネレータが守る、Go の 3 つのことわざ</h2>
+      <p class="intro">ツールの仕事はそれぞれ違っても、守るルールは同じ 3 つです。</p>
+      <ul class="proverbs">
+        <li>
+          <blockquote lang="en"><p>Clear is better than clever.</p></blockquote>
+          <p>ジェネレータが書くのは、自分で書くはずのコードです。<code>if</code> 文、関数呼び出し、文字列リテラルの SQL です。デバッガでステップ実行でき、ルールの変更はすべて diff に現れます。</p>
+        </li>
+        <li>
+          <blockquote lang="en"><p>Reflection is never clear.</p></blockquote>
+          <p>構造体タグ、ディレクティブ、ロケールファイルは、呼び出しのたびにリフレクションで読むのではなく、go generate のときに 1 度だけ読みます。実行されるのは、生成ファイルに書かれているコードそのものです。</p>
+        </li>
+        <li>
+          <blockquote lang="en"><p>A little copying is better than a little dependency.</p></blockquote>
+          <p>生成コードは自分のモジュールの中にある、自分のコードです。kanna-di と kanna-mapper は実行時に何もインポートしません。ランタイムが必要なジェネレータは小さなものを同じモジュールで提供するので、両者がずれることはありません。</p>
+        </li>
+      </ul>
+      <p class="credit">Rob Pike の <a href="https://go-proverbs.github.io/">Go Proverbs</a> より。</p>
+    </div>
+  </section>
+
+  <section class="showcase" id="showcase" aria-labelledby="showcase-title">
+    <div class="wrap">
+      <h2 id="showcase-title">7 つのツール、1 つのサービス</h2>
+      <p class="intro"><a href="https://github.com/go-kanna/showcase">go-kanna/showcase</a> は、PostgreSQL を使う gRPC の ToDo サービスで、すべてのツールがそれぞれの持ち場で働いています。ジェネレータが生成したものはコミットされているので、各ファイルを生成元と並べて読めます。ここでは木の色で示しています。</p>
+      <div class="layout">
+<pre class="tree" aria-label="go-kanna/showcase のソースツリーと、ジェネレータが生成するファイル"><code><span class="d">showcase/</span><span>├── <b>config/</b></span><span class="x">│   ├── api_config.go</span><span class="g">│   └── validate_gen.go                 <i>kanna-validate</i></span><span>├── <b>internal/</b></span><span>│   ├── <b>di/</b></span><span class="x">│   │   ├── infra_di.go</span><span class="g">│   │   └── di_gen.go                   <i>kanna-di</i></span><span>│   ├── <b>feature/todo/</b></span><span>│   │   ├── <b>model/</b></span><span class="x">│   │   │   ├── todo_model.go</span><span class="g">│   │   │   ├── value_gen.go            <i>kanna-value</i></span><span class="g">│   │   │   └── fixture/fixture_gen.go  <i>kanna-fixture</i></span><span>│   │   ├── <b>scopes/</b></span><span class="x">│   │   │   ├── scopes.go</span><span class="g">│   │   │   └── orm_gen.go              <i>kanna-orm</i></span><span>│   │   ├── <b>repository/</b></span><span class="x">│   │   │   └── todo_repository.go</span><span>│   │   ├── <b>postgres/</b></span><span class="x">│   │   │   ├── postgres_todo_repository.go</span><span class="x">│   │   │   ├── todo_queries.sql</span><span class="g">│   │   │   └── orm_gen.go              <i>kanna-orm</i></span><span>│   │   ├── <b>usecase/</b></span><span class="x">│   │   │   ├── *_use_case.go</span><span class="g">│   │   │   ├── di_gen.go               <i>kanna-di</i></span><span class="g">│   │   │   └── validate_gen.go         <i>kanna-validate</i></span><span>│   │   ├── <b>mapper/</b></span><span class="x">│   │   │   ├── todo_mapper.go</span><span class="g">│   │   │   └── mapper_gen.go           <i>kanna-mapper</i></span><span>│   │   └── <b>handler/</b></span><span class="x">│   │       ├── todo_handler.go</span><span class="g">│   │       └── di_gen.go               <i>kanna-di</i></span><span>│   └── <b>messages/</b></span><span class="x">│       ├── locales/</span><span class="g">│       └── i18n_gen.go                 <i>kanna-i18n</i></span><span class="x">└── kanna-orm.snapshot.json</span></code></pre>
+        <div>
+          <ul class="uses">
+            <li><a class="name" href="di/">kanna-di</a><span>インフラを 1 度だけ組み立て、そこからハンドラを作り、ユースケースに渡すリポジトリを選びます</span></li>
+            <li><a class="name" href="validate/">kanna-validate</a><span>ユースケースへの入力と、環境変数から読んだ設定をチェックします</span></li>
+            <li><a class="name" href="value/">kanna-value</a><span>ToDo の完了日時をどこでも 2000 年から 2100 年の間に保ち、優先度を宣言した 3 つのいずれかに保ちます</span></li>
+            <li><a class="name" href="orm/">kanna-orm</a><span>ユースケースが依存するリポジトリと、<code>scopes.Todos().CreatedAtAsc()</code> のように読み取りに使うスコープを実装します</span></li>
+            <li><a class="name" href="mapper/">kanna-mapper</a><span>ToDo を protobuf メッセージに、その逆に <code>PutTodo</code> の入力にマッピングします。優先度は名前で対応させ、oneof である <code>ListTodo</code> のフィルタは直和型にします</span></li>
+            <li><a class="name" href="fixture/">kanna-fixture</a><span>テストの出発点となる ToDo を作ります</span></li>
+            <li><a class="name" href="i18n/">kanna-i18n</a><span>サービスのメッセージとバリデーションエラーの文言を、英語と日本語でコンパイルします</span></li>
+          </ul>
+          <p class="more"><a href="https://github.com/go-kanna/showcase">GitHub でコードを読む</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="family" id="tools" aria-labelledby="tools-title">
+    <div class="wrap">
+      <h2 id="tools-title">すべてのツール</h2>
+      <p class="intro">それぞれが独立したモジュールなので、必要なものだけをインストールできます。各ページの内容は、そのツールの README です。</p>
+      <ul class="tools">
+        <li class="tool">
+          <div class="id">
+            <h3><a href="validate/">kanna-validate</a></h3>
+            <p class="links"><a href="https://github.com/go-kanna/validate">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/validate">pkg.go.dev</a></p>
+          </div>
+          <p class="what">構造体の <code>validate</code> タグから <code>Validate</code> メソッドを生成し、違反を Rails のエラーコードで、フィールドの JSON 名をキーにして報告します。リクエストをデコードし、問題をまとめて一度に報告します。</p>
+          <div class="install">
+            <code id="install-validate">go get -tool github.com/go-kanna/validate/cmd/kanna-validate</code>
+            <button type="button" class="copy" data-copy="install-validate">コピー</button>
+          </div>
+          <p class="status"><a href="https://github.com/go-kanna/validate/tags" data-tag="go-kanna/validate">v0.0.7</a> <span data-go="go-kanna/validate">Go 1.27</span></p>
+        </li>
+        <li class="tool">
+          <div class="id">
+            <h3><a href="value/">kanna-value</a></h3>
+            <p class="links"><a href="https://github.com/go-kanna/value">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/value">pkg.go.dev</a></p>
+          </div>
+          <p class="what">値を 1 つ保持する構造体と <code>validate</code> メソッドから値オブジェクトを生成します。コンストラクタ、アクセサ、JSON と SQL のメソッドがそろい、値がどこから来てもルールを守らせます。独自の型なのでメソッドも追加でき、kanna-validate の <code>email</code>、<code>url</code>、<code>uuid</code> タグも同じルールを呼び出します。定数を持つ string 型は、JSON、テキスト、データベースから定数の値だけを読み込む enum になります。</p>
+          <div class="install">
+            <code id="install-value">go get -tool github.com/go-kanna/value/cmd/kanna-value</code>
+            <button type="button" class="copy" data-copy="install-value">コピー</button>
+          </div>
+          <p class="status"><a href="https://github.com/go-kanna/value/tags" data-tag="go-kanna/value">v0.0.4</a> <span data-go="go-kanna/value">Go 1.26</span></p>
+        </li>
+        <li class="tool">
+          <div class="id">
+            <h3><a href="orm/">kanna-orm</a></h3>
+            <p class="links"><a href="https://github.com/go-kanna/orm">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/orm">pkg.go.dev</a></p>
+          </div>
+          <p class="what">リポジトリのインターフェースの実装を、SQL をリテラルのまま含めて生成します。テーブルごとのスコープ型も生成し、そのメソッドで絞り込み、並べ替え、ページング、リレーションの読み込みができます。マイグレーション済みのデータベースのスナップショットからスキーマを読むので、一致しないカラムや型があれば生成が止まります。PostgreSQL（pgx または database/sql 経由）と MySQL 8.4 以降に対応します。</p>
+          <div class="install">
+            <code id="install-orm">go get -tool github.com/go-kanna/orm/cmd/kanna-orm</code>
+            <button type="button" class="copy" data-copy="install-orm">コピー</button>
+          </div>
+          <p class="status"><a href="https://github.com/go-kanna/orm/tags" data-tag="go-kanna/orm">v0.0.3</a> <span data-go="go-kanna/orm">Go 1.26</span></p>
+        </li>
+        <li class="tool">
+          <div class="id">
+            <h3><a href="mapper/">kanna-mapper</a></h3>
+            <p class="links"><a href="https://github.com/go-kanna/mapper">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/mapper">pkg.go.dev</a></p>
+          </div>
+          <p class="what">ドメイン型と、自分では管理しないワイヤ型の間の関数を生成します。シグネチャを宣言すれば、本体をフィールドごとに生成し、<code>uuid.Parse</code> や <code>timestamppb.New</code> のように並べた変換関数をそのまま呼び出し、protobuf の oneof も扱います。kanna-value の enum は定数名で protobuf の enum にマッピングされ、ドメインの直和型は oneof にマッピングされます。<code>//kanna:mapper strict</code> を付けると、明示的に指定したフィールドだけを埋めます。</p>
+          <div class="install">
+            <code id="install-mapper">go get -tool github.com/go-kanna/mapper/cmd/kanna-mapper</code>
+            <button type="button" class="copy" data-copy="install-mapper">コピー</button>
+          </div>
+          <p class="status"><a href="https://github.com/go-kanna/mapper/tags" data-tag="go-kanna/mapper">v0.0.7</a> <span data-go="go-kanna/mapper">Go 1.26</span></p>
+        </li>
+        <li class="tool">
+          <div class="id">
+            <h3><a href="i18n/">kanna-i18n</a></h3>
+            <p class="links"><a href="https://github.com/go-kanna/i18n">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/i18n">pkg.go.dev</a></p>
+          </div>
+          <p class="what">ロケールファイルのディレクトリをコンパイルし、メッセージごとに型付きのコンストラクタを生成します。翻訳そのものもコードに組み込むので、実行時に読み込みも解析もしません。CLDR の複数形、ロケールに合わせた数値の書式、Accept-Language の値を受け取る <code>Localizer</code> を備えています。</p>
+          <div class="install">
+            <code id="install-i18n">go get -tool github.com/go-kanna/i18n/cmd/kanna-i18n</code>
+            <button type="button" class="copy" data-copy="install-i18n">コピー</button>
+          </div>
+          <p class="status"><a href="https://github.com/go-kanna/i18n/tags" data-tag="go-kanna/i18n">v0.0.7</a> <span data-go="go-kanna/i18n">Go 1.26</span></p>
+        </li>
+        <li class="tool">
+          <div class="id">
+            <h3><a href="di/">kanna-di</a></h3>
+            <p class="links"><a href="https://github.com/go-kanna/di">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/di">pkg.go.dev</a></p>
+          </div>
+          <p class="what">型の隣やコンテナの隣にある関数から、コンテナ構造体のコンストラクタを生成します。登録は不要で、インターフェースはタグ 1 つで実装にバインドでき、クリーンアップは 1 つにまとめて返され、実行時にインポートするものはありません。</p>
+          <div class="install">
+            <code id="install-di">go get -tool github.com/go-kanna/di/cmd/kanna-di</code>
+            <button type="button" class="copy" data-copy="install-di">コピー</button>
+          </div>
+          <p class="status"><a href="https://github.com/go-kanna/di/tags" data-tag="go-kanna/di">v0.0.5</a> <span data-go="go-kanna/di">Go 1.26</span></p>
+        </li>
+        <li class="tool">
+          <div class="id">
+            <h3><a href="fixture/">kanna-fixture</a></h3>
+            <p class="links"><a href="https://github.com/go-kanna/fixture">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/fixture">pkg.go.dev</a></p>
+          </div>
+          <p class="what">パッケージのすべての構造体について、全フィールドが埋まったコンストラクタを生成します。値は衝突しないよう連番にし、<code>validate</code> タグのルールの範囲で埋めるか、gofakeit のテンプレートから作ります。テンプレートは生成時にチェックされます。</p>
+          <div class="install">
+            <code id="install-fixture">go get -tool github.com/go-kanna/fixture/cmd/kanna-fixture</code>
+            <button type="button" class="copy" data-copy="install-fixture">コピー</button>
+          </div>
+          <p class="status"><a href="https://github.com/go-kanna/fixture/tags" data-tag="go-kanna/fixture">v0.0.7</a> <span data-go="go-kanna/fixture">Go 1.26</span></p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="why" id="why" aria-labelledby="why-title">
+    <div class="wrap">
+      <svg class="mark" viewBox="16 60 202 140" role="img" aria-label="kanna のロゴ: 平らなところから巻いていく木の削り屑"><path d="M 30 186 H 148 A 56 56 0 0 0 204 130 A 56 56 0 0 0 148 74 A 40 40 0 0 0 108 114 A 26 26 0 0 0 134 140 A 13 13 0 0 0 147 127" fill="none" stroke="#F3DCA4" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div>
+        <h2 id="why-title">なぜ鉋なのか</h2>
+        <p>鉋（kanna）は、板の上を手前に引いて削る日本の道具です。良い鉋は向こうが透けるほど薄い削り屑を出し、それ以上手を加える必要のない面を残します。</p>
+        <p>ジェネレータに求める仕事も同じです。自分で書くはずのコードだけを、読めるほど薄く削り出し、プログラムの他の部分には手を付けません。削り屑はこのロゴになり、その木の色は、このサイトでジェネレータが書いたものすべての色になっています。</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>MIT ライセンスです。書体は M PLUS 1 と M PLUS 1 Code です。</span>
+    <a href="https://github.com/go-kanna">github.com/go-kanna</a>
+  </div>
+</footer>
+
+<script src="../assets/site.js"></script>
+</body>
+</html>

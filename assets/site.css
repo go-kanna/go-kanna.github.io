@@ -7,6 +7,7 @@
 
 @font-face { font-family: "M PLUS 1"; src: url(fonts/MPLUS1.woff2) format("woff2"); font-weight: 100 900; font-display: swap; unicode-range: U+0020-00FF, U+2010-203A, U+2122; }
 @font-face { font-family: "M PLUS 1"; src: url(fonts/MPLUS1-ja.woff2) format("woff2"); font-weight: 100 900; font-display: swap; unicode-range: U+3000-30FF, U+4E00-9FFF, U+FF01-FF5E; }
+@font-face { font-family: "M PLUS 1 JP"; src: url(fonts/MPLUS1-ja-full.woff2) format("woff2"); font-weight: 100 900; font-display: swap; unicode-range: U+3000-30FF, U+4E00-9FFF, U+FF01-FF5E; }
 @font-face { font-family: "M PLUS 1 Code"; src: url(fonts/MPLUS1Code.woff2) format("woff2"); font-weight: 100 700; font-display: swap; unicode-range: U+0020-00FF, U+2010-203A, U+2122, U+2500-257F; }
 @font-face { font-family: "M PLUS 1 Code"; src: url(fonts/MPLUS1Code-ja.woff2) format("woff2"); font-weight: 100 700; font-display: swap; unicode-range: U+3000-30FF, U+4E00-9FFF, U+FF01-FF5E; }
 
@@ -90,6 +91,17 @@
   }
 }
 
+/* A page in Japanese takes the full cut, and code keeps its own cut, taking the
+   kanji that lacks from the full one, of the same design. A few words of
+   Japanese on a page in English take the system's font, so that the link to the
+   Japanese pages loads no font on every page. */
+:root:lang(ja) {
+  --sans: "M PLUS 1 JP", "M PLUS 1", system-ui, "Hiragino Sans", sans-serif;
+  --mono: "M PLUS 1 Code", "M PLUS 1 JP", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  line-break: strict;
+}
+:lang(en) [lang="ja"] { font-family: system-ui, "Hiragino Sans", sans-serif; }
+
 *, *::before, *::after { box-sizing: border-box; }
 
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
@@ -110,6 +122,7 @@ a:hover { color: var(--text); }
 :focus-visible { outline: 3px solid var(--ruri); outline-offset: 3px; border-radius: 3px; }
 
 h1, h2, h3, h4 { margin: 0; line-height: 1.15; text-wrap: balance; }
+:lang(ja) :is(h1, h2, h3, h4) { line-height: 1.35; word-break: auto-phrase; }
 h2 { font-size: clamp(1.75rem, 3.2vw, 2.5rem); font-weight: 800; letter-spacing: -0.01em; }
 h3 { font-size: 1.1875rem; font-weight: 700; }
 
@@ -212,7 +225,9 @@ main > section > .wrap > h2 { margin-bottom: 0.9rem; max-width: 40rem; }
 }
 .hero h1 { font: 700 clamp(2.4rem, 5.6vw, 4.75rem)/1.02 var(--mono); letter-spacing: -0.03em; }
 .hero h1 .slashes { color: var(--steel); }
+:lang(ja) .hero h1 { font-size: clamp(2rem, 4.6vw, 3.75rem); line-height: 1.25; letter-spacing: 0; }
 .lede { margin: 0; max-width: 32rem; font-size: 1.1875rem; line-height: 1.6; }
+:lang(ja) :is(.lede, .picker span) { word-break: auto-phrase; }
 
 .workbench {
   display: grid;
@@ -444,6 +459,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 .lost { padding-block: clamp(3rem, 8vw, 7rem); }
 .lost h1 { margin-bottom: 1rem; font: 700 clamp(2.25rem, 4.5vw, 3.25rem)/1.05 var(--mono); letter-spacing: -0.03em; }
 .lost p { margin: 0; max-width: var(--measure); }
+.lost p + p { margin-top: 1rem; }
 
 @media (max-width: 64rem) {
   .doc { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
