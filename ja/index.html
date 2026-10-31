@@ -60,6 +60,7 @@
 
         <div class="panels">
           <div class="panel" id="validate-panel" role="tabpanel" aria-labelledby="validate-tab">
+            <a class="read" href="validate/"><b>kanna-validate</b><span>README を読む</span></a>
             <figure class="bench" aria-label="kanna-validate 用に印を付けた構造体と、生成される Validate メソッド">
               <div class="pane mine">
                 <p class="file"><span>user.go</span><span>自分で書く</span></p>
@@ -96,7 +97,7 @@
             <div class="about">
               <p class="what">kanna-validate は、構造体の <code>validate</code> タグから <code>Validate</code> メソッドを生成し、違反を Rails のエラーコードで、フィールドの JSON 名をキーにして報告します。</p>
               <p class="like">タグの書き方は go-playground/validator と同じです。ただし呼び出しのたびにリフレクションで読むのではなく、go generate のときに 1 度だけ読みます。</p>
-              <p class="meta"><a href="validate/">ドキュメントを読む</a> <a href="https://github.com/go-kanna/validate">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/validate/tags" data-tag="go-kanna/validate">v0.0.7</a><span data-go="go-kanna/validate">Go 1.27</span></span></p>
+              <p class="meta"><a href="validate/">README を読む</a> <a href="https://github.com/go-kanna/validate">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/validate/tags" data-tag="go-kanna/validate">v0.0.7</a><span data-go="go-kanna/validate">Go 1.27</span></span></p>
               <div class="install">
                 <code id="install-hero-validate">go get -tool github.com/go-kanna/validate/cmd/kanna-validate</code>
                 <button type="button" class="copy" data-copy="install-hero-validate">コピー</button>
@@ -105,6 +106,7 @@
           </div>
 
           <div class="panel" id="value-panel" role="tabpanel" aria-labelledby="value-tab">
+            <a class="read" href="value/"><b>kanna-value</b><span>README を読む</span></a>
             <figure class="bench" aria-label="kanna-value 用に印を付けた構造体と、生成されるメソッドのうち 2 つ">
               <div class="pane mine">
                 <p class="file"><span>model.go</span><span>自分で書く</span></p>
@@ -147,7 +149,7 @@
             <div class="about">
               <p class="what">kanna-value は、値を 1 つ保持する構造体と <code>validate</code> メソッドから値オブジェクトを生成します。コンストラクタ、アクセサ、JSON と SQL のメソッドがそろい、値がどこから来てもルールを守らせます。定数を持つ string 型に <code>//kanna:enum</code> を付ければ、定数の値だけを読み込む enum になります。</p>
               <p class="like">値オブジェクトごとに書くはずのコンストラクタと 4 つのマーシャリングメソッドを、ルールを 1 箇所にまとめて生成します。各レイヤで繰り返すはずの enum の定数チェックも不要になります。</p>
-              <p class="meta"><a href="value/">ドキュメントを読む</a> <a href="https://github.com/go-kanna/value">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/value/tags" data-tag="go-kanna/value">v0.0.4</a><span data-go="go-kanna/value">Go 1.26</span></span></p>
+              <p class="meta"><a href="value/">README を読む</a> <a href="https://github.com/go-kanna/value">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/value/tags" data-tag="go-kanna/value">v0.0.4</a><span data-go="go-kanna/value">Go 1.26</span></span></p>
               <div class="install">
                 <code id="install-hero-value">go get -tool github.com/go-kanna/value/cmd/kanna-value</code>
                 <button type="button" class="copy" data-copy="install-hero-value">コピー</button>
@@ -156,6 +158,7 @@
           </div>
 
           <div class="panel" id="orm-panel" role="tabpanel" aria-labelledby="orm-tab">
+            <a class="read" href="orm/"><b>kanna-orm</b><span>README を読む</span></a>
             <figure class="bench" aria-label="kanna-orm 用に印を付けたリポジトリのインターフェース、生成される実装とスコープのメソッド、スコープをつなげた呼び出し">
               <div class="pane mine">
                 <p class="file"><span>repository/order.go</span><span>自分で書く</span></p>
@@ -203,7 +206,7 @@ RETURNING id, customer_id, status, placed_at, note`</span>
             <div class="about">
               <p class="what">kanna-orm は、リポジトリのインターフェースの実装を、SQL をリテラルのまま含めて生成します。テーブルごとのスコープ型も生成し、そのメソッドで絞り込み、並べ替え、ページング、リレーションの読み込みができます。</p>
               <p class="like">スコープは gorm のようにつなげられ、クエリは sqlc のようにスキーマと照合され、生成コードにリフレクションはありません。PostgreSQL（pgx または database/sql 経由）と MySQL 8.4 以降に対応します。</p>
-              <p class="meta"><a href="orm/">ドキュメントを読む</a> <a href="https://github.com/go-kanna/orm">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/orm/tags" data-tag="go-kanna/orm">v0.0.3</a><span data-go="go-kanna/orm">Go 1.26</span></span></p>
+              <p class="meta"><a href="orm/">README を読む</a> <a href="https://github.com/go-kanna/orm">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/orm/tags" data-tag="go-kanna/orm">v0.0.3</a><span data-go="go-kanna/orm">Go 1.26</span></span></p>
               <div class="install">
                 <code id="install-hero-orm">go get -tool github.com/go-kanna/orm/cmd/kanna-orm</code>
                 <button type="button" class="copy" data-copy="install-hero-orm">コピー</button>
@@ -212,6 +215,7 @@ RETURNING id, customer_id, status, placed_at, note`</span>
           </div>
 
           <div class="panel" id="mapper-panel" role="tabpanel" aria-labelledby="mapper-tab">
+            <a class="read" href="mapper/"><b>kanna-mapper</b><span>README を読む</span></a>
             <figure class="bench" aria-label="kanna-mapper 用に宣言したマッピング関数と、生成される本体の 1 つ">
               <div class="pane mine">
                 <p class="file"><span>mapper.go</span><span>自分で書く</span></p>
@@ -256,7 +260,7 @@ RETURNING id, customer_id, status, placed_at, note`</span>
             <div class="about">
               <p class="what">kanna-mapper は、ドメイン型と、自分では管理しないワイヤ型（protobuf などの通信用の型）の間の関数を生成します。シグネチャを宣言すれば、本体をフィールドごとに生成し、protobuf の oneof、enum、直和型も扱います。</p>
               <p class="like">宣言のしかたは goverter に近いものです。Go が自力で変換できないものは、変換する関数を <code>uuid.Parse</code> や <code>timestamppb.New</code> のまま並べます。</p>
-              <p class="meta"><a href="mapper/">ドキュメントを読む</a> <a href="https://github.com/go-kanna/mapper">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/mapper/tags" data-tag="go-kanna/mapper">v0.0.7</a><span data-go="go-kanna/mapper">Go 1.26</span></span></p>
+              <p class="meta"><a href="mapper/">README を読む</a> <a href="https://github.com/go-kanna/mapper">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/mapper/tags" data-tag="go-kanna/mapper">v0.0.7</a><span data-go="go-kanna/mapper">Go 1.26</span></span></p>
               <div class="install">
                 <code id="install-hero-mapper">go get -tool github.com/go-kanna/mapper/cmd/kanna-mapper</code>
                 <button type="button" class="copy" data-copy="install-hero-mapper">コピー</button>
@@ -265,6 +269,7 @@ RETURNING id, customer_id, status, placed_at, note`</span>
           </div>
 
           <div class="panel" id="i18n-panel" role="tabpanel" aria-labelledby="i18n-tab">
+            <a class="read" href="i18n/"><b>kanna-i18n</b><span>README を読む</span></a>
             <figure class="bench" aria-label="2 つのロケールファイル、そこから kanna-i18n が生成するコンストラクタ、それを使うハンドラ">
               <div class="pane mine">
                 <p class="file"><span>locales/</span><span>自分で書く</span></p>
@@ -314,7 +319,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <div class="about">
               <p class="what">kanna-i18n は、ロケールファイルのディレクトリをコンパイルし、メッセージごとに型付きのコンストラクタを生成します。翻訳もコードに組み込まれます。CLDR の複数形、ロケールに合わせた数値の書式、Accept-Language の値を受け取る <code>Localizer</code> を備えています。</p>
               <p class="like">ロケールファイルは go-i18n と同様ですが、メッセージは実行時に ID で引くものではなく、コンパイラがチェックする関数です。</p>
-              <p class="meta"><a href="i18n/">ドキュメントを読む</a> <a href="https://github.com/go-kanna/i18n">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/i18n/tags" data-tag="go-kanna/i18n">v0.0.7</a><span data-go="go-kanna/i18n">Go 1.26</span></span></p>
+              <p class="meta"><a href="i18n/">README を読む</a> <a href="https://github.com/go-kanna/i18n">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/i18n/tags" data-tag="go-kanna/i18n">v0.0.7</a><span data-go="go-kanna/i18n">Go 1.26</span></span></p>
               <div class="install">
                 <code id="install-hero-i18n">go get -tool github.com/go-kanna/i18n/cmd/kanna-i18n</code>
                 <button type="button" class="copy" data-copy="install-hero-i18n">コピー</button>
@@ -323,6 +328,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
           </div>
 
           <div class="panel" id="di-panel" role="tabpanel" aria-labelledby="di-tab">
+            <a class="read" href="di/"><b>kanna-di</b><span>README を読む</span></a>
             <figure class="bench" aria-label="kanna-di 用に印を付けたコンテナ構造体と、生成されるコンストラクタ">
               <div class="pane mine">
                 <p class="file"><span>server.go</span><span>自分で書く</span></p>
@@ -365,7 +371,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <div class="about">
               <p class="what">kanna-di は、型の隣にある関数から、依存する順に呼び出すコンテナ構造体のコンストラクタを生成します。プロバイダが開いたものは、コンストラクタが返す 1 つのクリーンアップで閉じます。</p>
               <p class="like">Wire と同じくコンパイル前に生成しますが、管理するプロバイダセットはありません。依存は型の隣にある関数から得られ、インターフェースはタグ 1 つでバインドします。</p>
-              <p class="meta"><a href="di/">ドキュメントを読む</a> <a href="https://github.com/go-kanna/di">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/di/tags" data-tag="go-kanna/di">v0.0.5</a><span data-go="go-kanna/di">Go 1.26</span></span></p>
+              <p class="meta"><a href="di/">README を読む</a> <a href="https://github.com/go-kanna/di">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/di/tags" data-tag="go-kanna/di">v0.0.5</a><span data-go="go-kanna/di">Go 1.26</span></span></p>
               <div class="install">
                 <code id="install-hero-di">go get -tool github.com/go-kanna/di/cmd/kanna-di</code>
                 <button type="button" class="copy" data-copy="install-hero-di">コピー</button>
@@ -374,6 +380,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
           </div>
 
           <div class="panel" id="fixture-panel" role="tabpanel" aria-labelledby="fixture-tab">
+            <a class="read" href="fixture/"><b>kanna-fixture</b><span>README を読む</span></a>
             <figure class="bench" aria-label="モデルの構造体、kanna-fixture が生成するフィクスチャ、それを使うテスト">
               <div class="pane mine">
                 <p class="file"><span>model.go</span><span>自分で書く</span></p>
@@ -417,7 +424,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <div class="about">
               <p class="what">kanna-fixture は、パッケージのすべての構造体について、全フィールドが埋まったコンストラクタを生成します。値は衝突しないよう連番にし、<code>validate</code> タグのルールの範囲で埋め、指定すれば gofakeit のテンプレートから作ります。</p>
               <p class="like">どのテストパッケージでも増えていく <code>newTestUser</code> ヘルパーを、すべての構造体について生成し、構造体の変更にも追従します。フィクスチャは作った時点で有効なので、1 つのルールのテストでは 1 つのフィールドを変えるだけです。</p>
-              <p class="meta"><a href="fixture/">ドキュメントを読む</a> <a href="https://github.com/go-kanna/fixture">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/fixture/tags" data-tag="go-kanna/fixture">v0.0.7</a><span data-go="go-kanna/fixture">Go 1.26</span></span></p>
+              <p class="meta"><a href="fixture/">README を読む</a> <a href="https://github.com/go-kanna/fixture">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/fixture/tags" data-tag="go-kanna/fixture">v0.0.7</a><span data-go="go-kanna/fixture">Go 1.26</span></span></p>
               <div class="install">
                 <code id="install-hero-fixture">go get -tool github.com/go-kanna/fixture/cmd/kanna-fixture</code>
                 <button type="button" class="copy" data-copy="install-hero-fixture">コピー</button>

@@ -257,6 +257,12 @@ main > section > .wrap > h2 { margin-bottom: 0.9rem; max-width: 40rem; }
 .aside { margin: 1.25rem 0 0; padding-inline: 0.8rem; color: var(--muted); font-size: 0.9375rem; }
 
 .panel[hidden] { display: none; }
+/* The way to a tool's page, above its code, so that it is seen before that is scrolled past. */
+.read { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.4rem 1rem; margin-bottom: 0.75rem; padding: 0.55rem 0.55rem 0.55rem 1rem; background: var(--ground-2); border: 1px solid var(--rule); border-radius: var(--radius); color: var(--text); text-decoration: none; }
+.read:hover { border-color: var(--hinoki); }
+.read b { font: 700 0.9375rem/1.4 var(--mono); }
+.read span { padding: 0.35rem 0.9rem; background: var(--hinoki); color: var(--kachi); border-radius: 6px; font-size: 0.9375rem; font-weight: 700; }
+.read span::after { content: " →"; }
 .about { margin-top: 1.25rem; }
 .about p { margin: 0 0 0.5rem; max-width: 46rem; }
 .about .what { font-size: 1.0625rem; font-weight: 500; }
