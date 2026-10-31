@@ -13,7 +13,7 @@ import sys
 
 from render import LANGS, ORG, ROOT, TOOLS, gh
 
-REPOS = [repo for repo, _ in TOOLS] + ["go-kanna.github.io", "internal", "showcase"]
+REPOS = [repo for repo, _ in TOOLS] + ["kanna", "go-kanna.github.io", "internal", "showcase"]
 FENCE = re.compile(r"^[ \t]*```[^\n]*\n.*?^[ \t]*```[ \t]*$", re.M | re.S)
 HEADING = re.compile(r"^(#{1,6}) ", re.M)
 PRE = re.compile(r"<pre[^>]*>(.*?)</pre>", re.S)
