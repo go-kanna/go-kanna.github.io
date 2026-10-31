@@ -29,7 +29,7 @@ kanna は、Go のための 7 つのコードジェネレータのファミリ�
 
 - `assets/site.css` と `assets/site.js` はすべてのページで共有します。サイトの書体は [M PLUS 1 と M PLUS 1 Code](https://github.com/coz-m/MPLUS_FONTS) で、`assets/fonts` にライセンスとともに置いています。それぞれラテン文字と日本語に分けてあるので、ページは日本語があるときだけ日本語のフォントを読み込みます。日本語のページは、`assets/fonts/subset.py` が作る、より字数の多いフォントを使います。
 - [`assets/logo`](assets/logo) にはロゴと、それを描くスクリプトがあります。
-- [`DEVELOPING.md`](DEVELOPING.md) には、複数のリポジトリにまたがる変更のしかたを書いています。[`dev`](dev) にある全チェックアウトのワークスペース、それに対して全リポジトリのテストを実行するスクリプト、リリースの順序です。
+- go-kanna/kanna の [`DEVELOPING.md`](https://github.com/go-kanna/kanna/blob/main/DEVELOPING.md) には、複数のリポジトリにまたがる変更のしかたを書いています。全チェックアウトのワークスペース、それに対して全リポジトリのテストを実行するスクリプト、リリースの順序です。
 
 以前ここにあった Go モジュール（kanna v0.2.x と初代の kanna-orm）は、[`archive/v0.2`](https://github.com/go-kanna/go-kanna.github.io/tree/archive/v0.2) ブランチとそのタグに残しています。kanna-orm はその後 [go-kanna/orm](https://github.com/go-kanna/orm) で新しく書き直されました。
 

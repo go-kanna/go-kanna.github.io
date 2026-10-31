@@ -40,8 +40,9 @@ This repository is its site: **https://go-kanna.github.io/**
   each cut into its Latin and its Japanese, so that a page loads the Japanese only when it has some. Pages in Japanese
   take a fuller cut, which `assets/fonts/subset.py` makes.
 - [`assets/logo`](assets/logo) holds the mark and the script that draws it.
-- [`DEVELOPING.md`](DEVELOPING.md) says how to change the family across repositories: the workspace of every
-  checkout in [`dev`](dev), a script running every repository's tests against it, and the order releases go in.
+- [`DEVELOPING.md`](https://github.com/go-kanna/kanna/blob/main/DEVELOPING.md) of go-kanna/kanna says how to change the
+  family across repositories: the workspace of every checkout, a script running every repository's tests against it,
+  and the order releases go in.
 
 The Go module that used to live here, kanna v0.2.x with the first kanna-orm, is kept on the
 [`archive/v0.2`](https://github.com/go-kanna/go-kanna.github.io/tree/archive/v0.2) branch and its tags. kanna-orm has since been
