@@ -17,6 +17,7 @@ kanna は、Go のための 7 つのコードジェネレータのファミリ�
 | [go-kanna/i18n](https://github.com/go-kanna/i18n) | kanna-i18n: 翻訳を組み込んだ型付きのメッセージコンストラクタ |
 | [go-kanna/di](https://github.com/go-kanna/di) | kanna-di: 型の隣にある関数から生成するコンテナ構造体のコンストラクタ |
 | [go-kanna/fixture](https://github.com/go-kanna/fixture) | kanna-fixture: 構造体ごとの、全フィールドが埋まったコンストラクタ |
+| [go-kanna/kanna](https://github.com/go-kanna/kanna) | `kanna gen`: モジュールのジェネレータを、必要な順に 1 回ずつ実行します |
 
 ## ここにあるもの
 

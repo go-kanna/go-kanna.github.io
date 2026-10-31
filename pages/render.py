@@ -37,6 +37,7 @@ TOOLS = [
     ("i18n", "kanna-i18n"),
     ("di", "kanna-di"),
     ("fixture", "kanna-fixture"),
+    ("kanna", "kanna gen"),
 ]
 
 # What differs between the languages of the site: where a language's pages sit,
@@ -107,10 +108,11 @@ def go_version(repo):
 
 
 def unwrap_headings(body):
-    """Drop the permalink anchors GitHub puts beside headings, and the h1, which the page has its own of."""
+    """Drop the permalink anchors GitHub puts beside headings, and the h1, which
+    the page has its own of, with a mark above it, which the page has too."""
     body = re.sub(r'<a id="user-content-[^"]*" class="anchor".*?</a>', "", body, flags=re.S)
     body = re.sub(r'<div class="markdown-heading">(<h[1-6].*?</h[1-6]>)</div>', r"\1", body, flags=re.S)
-    return re.sub(r"\s*<h1[^>]*>.*?</h1>\s*", "", body, count=1, flags=re.S)
+    return re.sub(r"^.*?<h1[^>]*>.*?</h1>\s*", "", body, count=1, flags=re.S)
 
 
 def scroll_tables(body):

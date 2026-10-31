@@ -301,11 +301,17 @@ main > section > .wrap > h2 { margin-bottom: 0.9rem; max-width: 40rem; }
 .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem clamp(1.25rem, 2.5vw, 2rem); counter-reset: step; }
 .steps li { counter-increment: step; display: flex; flex-direction: column; gap: 0.75rem; }
 .steps h3::before { content: counter(step); display: block; margin-bottom: 0.6rem; font: 700 0.9375rem/1 var(--mono); color: var(--grain); }
-.steps .cmd { margin: 0; padding: 0.8rem 1rem; white-space: pre-wrap; overflow-wrap: anywhere; background: var(--mine); color: var(--mine-text); border-radius: 8px; font-size: 0.8125rem; line-height: 1.6; }
+.steps .cmd, .ways .cmd { margin: 0; padding: 0.8rem 1rem; white-space: pre-wrap; overflow-wrap: anywhere; background: var(--mine); color: var(--mine-text); border-radius: 8px; font-size: 0.8125rem; line-height: 1.6; }
 .steps .cmd .c { color: var(--mine-c); }
 .steps .cmd .k { color: var(--mine-k); }
-.steps p { margin: 0; color: var(--muted); font-size: 0.9688rem; }
-.steps code { font-size: 0.875em; }
+.steps p, .ways p { margin: 0; color: var(--muted); font-size: 0.9688rem; }
+.steps code, .ways p code { font-size: 0.875em; }
+
+/* kanna gen: the lines of a module as they are written, above them as it runs them */
+.order .layout { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: clamp(2rem, 4vw, 3.5rem); align-items: start; }
+.order .bench { font-size: 0.8125rem; }
+.ways { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.75rem; }
+.ways li { display: flex; flex-direction: column; gap: 0.6rem; }
 
 /* The three proverbs */
 .proverbs { list-style: none; margin: 0 0 2rem; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem clamp(2rem, 4vw, 3.5rem); }
@@ -478,7 +484,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   .picker a[aria-selected="true"] { border-color: var(--mine); }
 }
 @media (max-width: 52rem) {
-  .headline, .showcase .layout, .why .wrap { grid-template-columns: minmax(0, 1fr); }
+  .headline, .showcase .layout, .order .layout, .why .wrap { grid-template-columns: minmax(0, 1fr); }
   .sheet { columns: 1; }
   .proverbs { grid-template-columns: minmax(0, 1fr); }
   .why .mark { max-width: 10rem; }

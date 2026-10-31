@@ -20,6 +20,7 @@ This repository is its site: **https://go-kanna.github.io/**
 | [go-kanna/i18n](https://github.com/go-kanna/i18n)         | kanna-i18n: typed message constructors, the translations compiled in                         |
 | [go-kanna/di](https://github.com/go-kanna/di)             | kanna-di: the constructor of a container struct, from the functions next to your types       |
 | [go-kanna/fixture](https://github.com/go-kanna/fixture)   | kanna-fixture: a constructor for every struct, every field filled                            |
+| [go-kanna/kanna](https://github.com/go-kanna/kanna)       | `kanna gen`: the generators of a module, each run once, in the order they need               |
 
 ## What is here
 
