@@ -60,6 +60,7 @@
 
         <div class="panels">
           <div class="panel" id="validate-panel" role="tabpanel" aria-labelledby="validate-tab">
+            <a class="read" href="validate/"><b>kanna-validate</b><span>Read the README</span></a>
             <figure class="bench" aria-label="A struct marked for kanna-validate, and the Validate method it generates">
               <div class="pane mine">
                 <p class="file"><span>user.go</span><span>you write</span></p>
@@ -96,7 +97,7 @@
             <div class="about">
               <p class="what">kanna-validate writes a <code>Validate</code> method from the <code>validate</code> tags of a struct, and reports what breaks under Rails' error codes, keyed by the fields' JSON names.</p>
               <p class="like">The tags are written as for go-playground/validator. They are read once, by go generate, instead of by reflection on every call.</p>
-              <p class="meta"><a href="validate/">Read the docs</a> <a href="https://github.com/go-kanna/validate">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/validate/tags" data-tag="go-kanna/validate">v0.0.7</a><span data-go="go-kanna/validate">Go 1.27</span></span></p>
+              <p class="meta"><a href="validate/">Read the README</a> <a href="https://github.com/go-kanna/validate">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/validate/tags" data-tag="go-kanna/validate">v0.0.7</a><span data-go="go-kanna/validate">Go 1.27</span></span></p>
               <div class="install">
                 <code id="install-hero-validate">go get -tool github.com/go-kanna/validate/cmd/kanna-validate</code>
                 <button type="button" class="copy" data-copy="install-hero-validate">Copy</button>
@@ -105,6 +106,7 @@
           </div>
 
           <div class="panel" id="value-panel" role="tabpanel" aria-labelledby="value-tab">
+            <a class="read" href="value/"><b>kanna-value</b><span>Read the README</span></a>
             <figure class="bench" aria-label="A struct marked for kanna-value, and two of the methods it generates">
               <div class="pane mine">
                 <p class="file"><span>model.go</span><span>you write</span></p>
@@ -147,7 +149,7 @@
             <div class="about">
               <p class="what">kanna-value turns a struct holding one value and a <code>validate</code> method into a value type: constructors, an accessor, and JSON and SQL methods that hold every value to the rule, wherever it comes from. A string type with constants, marked <code>//kanna:enum</code>, becomes an enum that reads in only those.</p>
               <p class="like">The constructor and the four marshaling methods you would otherwise write for every value object, with the rule in one place, and the check of an enum's constants that every layer would repeat.</p>
-              <p class="meta"><a href="value/">Read the docs</a> <a href="https://github.com/go-kanna/value">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/value/tags" data-tag="go-kanna/value">v0.0.4</a><span data-go="go-kanna/value">Go 1.26</span></span></p>
+              <p class="meta"><a href="value/">Read the README</a> <a href="https://github.com/go-kanna/value">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/value/tags" data-tag="go-kanna/value">v0.0.4</a><span data-go="go-kanna/value">Go 1.26</span></span></p>
               <div class="install">
                 <code id="install-hero-value">go get -tool github.com/go-kanna/value/cmd/kanna-value</code>
                 <button type="button" class="copy" data-copy="install-hero-value">Copy</button>
@@ -156,6 +158,7 @@
           </div>
 
           <div class="panel" id="orm-panel" role="tabpanel" aria-labelledby="orm-tab">
+            <a class="read" href="orm/"><b>kanna-orm</b><span>Read the README</span></a>
             <figure class="bench" aria-label="A repository interface marked for kanna-orm, the implementation and a scope method it generates, and a call chaining scopes">
               <div class="pane mine">
                 <p class="file"><span>repository/order.go</span><span>you write</span></p>
@@ -203,7 +206,7 @@ RETURNING id, customer_id, status, placed_at, note`</span>
             <div class="about">
               <p class="what">kanna-orm writes the implementation of your repository interfaces, with the SQL in it as literals, and a scope type for each table whose methods narrow, order, page, and load relations.</p>
               <p class="like">Scopes that chain as gorm's do, queries checked against your schema as sqlc checks them, and no reflection in what it writes. On PostgreSQL through pgx or database/sql, and MySQL 8.4 or later.</p>
-              <p class="meta"><a href="orm/">Read the docs</a> <a href="https://github.com/go-kanna/orm">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/orm/tags" data-tag="go-kanna/orm">v0.0.3</a><span data-go="go-kanna/orm">Go 1.26</span></span></p>
+              <p class="meta"><a href="orm/">Read the README</a> <a href="https://github.com/go-kanna/orm">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/orm/tags" data-tag="go-kanna/orm">v0.0.3</a><span data-go="go-kanna/orm">Go 1.26</span></span></p>
               <div class="install">
                 <code id="install-hero-orm">go get -tool github.com/go-kanna/orm/cmd/kanna-orm</code>
                 <button type="button" class="copy" data-copy="install-hero-orm">Copy</button>
@@ -212,6 +215,7 @@ RETURNING id, customer_id, status, placed_at, note`</span>
           </div>
 
           <div class="panel" id="mapper-panel" role="tabpanel" aria-labelledby="mapper-tab">
+            <a class="read" href="mapper/"><b>kanna-mapper</b><span>Read the README</span></a>
             <figure class="bench" aria-label="Mapping functions declared for kanna-mapper, and one of the bodies it generates">
               <div class="pane mine">
                 <p class="file"><span>mapper.go</span><span>you write</span></p>
@@ -256,7 +260,7 @@ RETURNING id, customer_id, status, placed_at, note`</span>
             <div class="about">
               <p class="what">kanna-mapper writes the functions between your domain types and the wire types you do not control. You declare the signatures; it writes the bodies, field by field, and handles protobuf oneofs, enums, and sum types.</p>
               <p class="like">Declared much as with goverter. What Go cannot convert by itself, you list as the functions that do, <code>uuid.Parse</code> and <code>timestamppb.New</code> as they are.</p>
-              <p class="meta"><a href="mapper/">Read the docs</a> <a href="https://github.com/go-kanna/mapper">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/mapper/tags" data-tag="go-kanna/mapper">v0.0.7</a><span data-go="go-kanna/mapper">Go 1.26</span></span></p>
+              <p class="meta"><a href="mapper/">Read the README</a> <a href="https://github.com/go-kanna/mapper">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/mapper/tags" data-tag="go-kanna/mapper">v0.0.7</a><span data-go="go-kanna/mapper">Go 1.26</span></span></p>
               <div class="install">
                 <code id="install-hero-mapper">go get -tool github.com/go-kanna/mapper/cmd/kanna-mapper</code>
                 <button type="button" class="copy" data-copy="install-hero-mapper">Copy</button>
@@ -265,6 +269,7 @@ RETURNING id, customer_id, status, placed_at, note`</span>
           </div>
 
           <div class="panel" id="i18n-panel" role="tabpanel" aria-labelledby="i18n-tab">
+            <a class="read" href="i18n/"><b>kanna-i18n</b><span>Read the README</span></a>
             <figure class="bench" aria-label="Two locale files, the constructors kanna-i18n generates from them, and a handler using them">
               <div class="pane mine">
                 <p class="file"><span>locales/</span><span>you write</span></p>
@@ -314,7 +319,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <div class="about">
               <p class="what">kanna-i18n compiles a directory of locale files into a typed constructor for every message, the translations compiled in: CLDR plurals, locale-formatted numbers, and a <code>Localizer</code> that takes an Accept-Language value.</p>
               <p class="like">Locale files as with go-i18n, but a message is a function the compiler checks, not an ID looked up at run time.</p>
-              <p class="meta"><a href="i18n/">Read the docs</a> <a href="https://github.com/go-kanna/i18n">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/i18n/tags" data-tag="go-kanna/i18n">v0.0.7</a><span data-go="go-kanna/i18n">Go 1.26</span></span></p>
+              <p class="meta"><a href="i18n/">Read the README</a> <a href="https://github.com/go-kanna/i18n">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/i18n/tags" data-tag="go-kanna/i18n">v0.0.7</a><span data-go="go-kanna/i18n">Go 1.26</span></span></p>
               <div class="install">
                 <code id="install-hero-i18n">go get -tool github.com/go-kanna/i18n/cmd/kanna-i18n</code>
                 <button type="button" class="copy" data-copy="install-hero-i18n">Copy</button>
@@ -323,6 +328,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
           </div>
 
           <div class="panel" id="di-panel" role="tabpanel" aria-labelledby="di-tab">
+            <a class="read" href="di/"><b>kanna-di</b><span>Read the README</span></a>
             <figure class="bench" aria-label="A container struct marked for kanna-di, and the constructor it generates">
               <div class="pane mine">
                 <p class="file"><span>server.go</span><span>you write</span></p>
@@ -365,7 +371,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <div class="about">
               <p class="what">kanna-di writes the constructor of a container struct from the functions next to your types, in the order they need each other. What a provider opens, it closes, through the one cleanup the constructor returns.</p>
               <p class="like">Generated before compiling, as with Wire, but with no provider sets to keep: a dependency comes from the function next to its type, and an interface is bound with one tag.</p>
-              <p class="meta"><a href="di/">Read the docs</a> <a href="https://github.com/go-kanna/di">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/di/tags" data-tag="go-kanna/di">v0.0.5</a><span data-go="go-kanna/di">Go 1.26</span></span></p>
+              <p class="meta"><a href="di/">Read the README</a> <a href="https://github.com/go-kanna/di">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/di/tags" data-tag="go-kanna/di">v0.0.5</a><span data-go="go-kanna/di">Go 1.26</span></span></p>
               <div class="install">
                 <code id="install-hero-di">go get -tool github.com/go-kanna/di/cmd/kanna-di</code>
                 <button type="button" class="copy" data-copy="install-hero-di">Copy</button>
@@ -374,6 +380,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
           </div>
 
           <div class="panel" id="fixture-panel" role="tabpanel" aria-labelledby="fixture-tab">
+            <a class="read" href="fixture/"><b>kanna-fixture</b><span>Read the README</span></a>
             <figure class="bench" aria-label="A model struct, the fixture kanna-fixture generates for it, and a test using it">
               <div class="pane mine">
                 <p class="file"><span>model.go</span><span>you write</span></p>
@@ -417,7 +424,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <div class="about">
               <p class="what">kanna-fixture writes a constructor for every struct of a package, every field filled: numbered so that no two collide, within the rules its <code>validate</code> tags declare, or from a gofakeit template where you ask for one.</p>
               <p class="like">The <code>newTestUser</code> helpers every test package grows, written for every struct and kept in step with it. A fixture is valid as made, so a test of one rule changes one field.</p>
-              <p class="meta"><a href="fixture/">Read the docs</a> <a href="https://github.com/go-kanna/fixture">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/fixture/tags" data-tag="go-kanna/fixture">v0.0.7</a><span data-go="go-kanna/fixture">Go 1.26</span></span></p>
+              <p class="meta"><a href="fixture/">Read the README</a> <a href="https://github.com/go-kanna/fixture">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/fixture/tags" data-tag="go-kanna/fixture">v0.0.7</a><span data-go="go-kanna/fixture">Go 1.26</span></span></p>
               <div class="install">
                 <code id="install-hero-fixture">go get -tool github.com/go-kanna/fixture/cmd/kanna-fixture</code>
                 <button type="button" class="copy" data-copy="install-hero-fixture">Copy</button>
