@@ -30,6 +30,7 @@
       <a href="#tools">ツール</a>
       <a class="wide" href="#how">仕組み</a>
       <a class="wide" href="#demo">ブログのデモ</a>
+      <a class="wide" href="#gen">kanna gen</a>
       <a href="https://github.com/go-kanna">GitHub</a>
       <a href="../" hreflang="en" lang="en">English</a>
     </nav>
@@ -72,7 +73,7 @@
             <a href="#di-panel" id="di-tab" role="tab" aria-controls="di-panel" aria-selected="false"><b>kanna-di</b><span>登録なしで依存関係を組み立て</span></a>
             <a href="#fixture-panel" id="fixture-tab" role="tab" aria-controls="fixture-panel" aria-selected="false"><b>kanna-fixture</b><span>全フィールドが埋まったテストデータ</span></a>
           </div>
-          <p class="aside">それぞれが独立したモジュールです。1 つだけでも、<a href="#showcase">showcase</a> のように 7 つ全部でも使えます。</p>
+          <p class="aside">それぞれが独立したモジュールです。1 つだけでも、<a href="#showcase">showcase</a> のように 7 つ全部でも使えます。全部使うときは <a href="#gen">kanna gen</a> が順に実行します。</p>
         </div>
 
         <div class="panels">
@@ -561,6 +562,53 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
     </div>
   </section>
 
+  <section class="order" id="gen" aria-labelledby="gen-title">
+    <div class="wrap">
+      <h2 id="gen-title">7 つとも、必要な順に</h2>
+      <p class="intro">ツールは他のツールが書いたものを読むので、2 つ以上使うと実行の順序が問題になります。<code>kanna gen</code> は、各ツールが読むものと書くものから順序を求め、<code>//go:generate go tool kanna-*</code> の行を 1 回ずつ実行します。設定は不要で、パッケージの一覧を管理する必要もありません。</p>
+      <div class="layout">
+        <figure class="bench" aria-label="go generate が見つける順に並んだ 6 行の go:generate と、それを必要な順に実行する kanna gen">
+          <div class="pane mine">
+            <p class="file"><span>コードにある行（go generate が見つける順）</span><span>あなたが書く</span></p>
+<pre><code>  handler/handler.go:11   <span class="c">//go:generate go tool kanna-di</span>
+  mapper/todo.go:5        <span class="c">//go:generate go tool kanna-mapper</span>
+  model/todo.go:5         <span class="c">//go:generate go tool kanna-value</span>
+  model/todo.go:6         <span class="c">//go:generate go tool kanna-fixture</span>
+  usecase/put_todo.go:9   <span class="c">//go:generate go tool kanna-validate</span>
+  usecase/put_todo.go:10  <span class="c">//go:generate go tool kanna-di</span></code></pre>
+          </div>
+          <div class="seam"><svg class="curl" viewBox="16 60 202 140" aria-hidden="true"><path d="M 30 186 H 148 A 56 56 0 0 0 204 130 A 56 56 0 0 0 148 74 A 40 40 0 0 0 108 114 A 26 26 0 0 0 134 140 A 13 13 0 0 0 147 127" fill="none" stroke="#F3DCA4" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="pane gen">
+            <p class="file"><span>go tool kanna gen</span><span>kanna が書く</span></p>
+<pre><code>  model/todo.go:5         <span class="k">kanna-value</span>     wrote model/value_gen.go
+  model/todo.go:6         <span class="k">kanna-fixture</span>   wrote model/fixture/fixture_gen.go
+  usecase/put_todo.go:9   <span class="k">kanna-validate</span>  wrote usecase/validate_gen.go
+  usecase/put_todo.go:10  <span class="k">kanna-di</span>        wrote usecase/di_gen.go
+  mapper/todo.go:5        <span class="k">kanna-mapper</span>    wrote mapper/mapper_gen.go
+  handler/handler.go:11   <span class="k">kanna-di</span>        wrote handler/di_gen.go
+<span class="k">6 tasks, 6 files changed</span></code></pre>
+          </div>
+        </figure>
+        <ul class="ways">
+          <li>
+            <h3>理由を見る</h3>
+<pre class="cmd"><code>go tool kanna gen --plan</code></pre>
+            <p>実行するものと、その位置にある理由を表示します。たとえば <code>code in usecase calls what kanna-validate generates</code> のように示し、何も実行しません。</p>
+          </li>
+          <li>
+            <h3>CI でチェックする</h3>
+<pre class="cmd"><code>go tool kanna gen --check</code></pre>
+            <p>コミットされたファイルが、生成される内容と違えば失敗します。このとき何も書き出しません。</p>
+          </li>
+          <li>
+            <h3>インストールする</h3>
+<pre class="cmd"><code>go get -tool github.com/go-kanna/kanna</code></pre>
+            <p>実行するのはコードにすでにある行なので、これがなくても各ツールは <code>go generate</code> で今までどおり動きます。<a href="kanna/">README を読む</a></p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
 
   <section class="rules" aria-labelledby="rules-title">
     <div class="wrap">
@@ -599,6 +647,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <li><a class="name" href="mapper/">kanna-mapper</a><span>ToDo を protobuf メッセージに、その逆に <code>PutTodo</code> の入力にマッピングします。優先度は名前で対応させ、oneof である <code>ListTodo</code> のフィルタは直和型にします</span></li>
             <li><a class="name" href="fixture/">kanna-fixture</a><span>テストの出発点となる ToDo を作ります</span></li>
             <li><a class="name" href="i18n/">kanna-i18n</a><span>サービスのメッセージとバリデーションエラーの文言を、英語と日本語でコンパイルします</span></li>
+            <li><a class="name" href="kanna/">kanna gen</a><span><code>make gen</code> の裏で全部を実行し、コミットされた内容を CI でチェックします</span></li>
           </ul>
           <p class="more"><a href="https://github.com/go-kanna/showcase">GitHub でコードを読む</a></p>
         </div>
@@ -694,6 +743,18 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <button type="button" class="copy" data-copy="install-fixture">コピー</button>
           </div>
           <p class="status"><a href="https://github.com/go-kanna/fixture/tags" data-tag="go-kanna/fixture">v0.0.7</a> <span data-go="go-kanna/fixture">Go 1.26</span></p>
+        </li>
+        <li class="tool">
+          <div class="id">
+            <h3><a href="kanna/">kanna gen</a></h3>
+            <p class="links"><a href="https://github.com/go-kanna/kanna">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/kanna">pkg.go.dev</a></p>
+          </div>
+          <p class="what">モジュールのジェネレータを、各ツールが読むものと書くものから求めた順序で実行します。設定は増えません。実行するのは、すでにある <code>//go:generate</code> の行です。順序の理由の表示と、CI でのチェックもできます。</p>
+          <div class="install">
+            <code id="install-kanna">go get -tool github.com/go-kanna/kanna</code>
+            <button type="button" class="copy" data-copy="install-kanna">コピー</button>
+          </div>
+          <p class="status"><a href="https://github.com/go-kanna/kanna/tags" data-tag="go-kanna/kanna">v0.3.0</a> <span data-go="go-kanna/kanna">Go 1.26</span></p>
         </li>
       </ul>
     </div>
