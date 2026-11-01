@@ -229,6 +229,31 @@ main > section > .wrap > h2 { margin-bottom: 0.9rem; max-width: 40rem; }
 .lede { margin: 0; max-width: 32rem; font-size: 1.1875rem; line-height: 1.6; }
 :lang(ja) :is(.lede, .picker span) { word-break: auto-phrase; }
 
+.blog-demo {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: center;
+  padding-block: clamp(1.5rem, 3vw, 2.5rem);
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  border-block: 1px solid var(--rule);
+}
+.demo-copy h2 { max-width: 18ch; font-size: clamp(1.75rem, 3.1vw, 2.5rem); }
+:lang(ja) .demo-copy h2 { max-width: none; }
+.demo-copy p { margin: 1rem 0; }
+.demo-copy .demo-meta { color: var(--muted); font-size: 0.875rem; }
+.demo-link { display: inline-block; margin-top: 0.5rem; padding: 0.7rem 1.1rem; border-radius: 6px; background: var(--kon); color: var(--white); font-weight: 700; text-decoration: none; }
+.demo-link:hover { background: var(--ruri); color: var(--white); }
+.demo-preview { min-width: 0; margin: 0; }
+.demo-watch { position: relative; display: block; overflow: hidden; border: 1px solid var(--rule); border-radius: var(--radius); }
+.demo-watch img { display: block; width: 100%; height: auto; }
+.demo-play { position: absolute; inset: 0; display: grid; place-items: center; }
+.demo-play svg { width: 4rem; height: 4rem; padding: 1rem; border-radius: 50%; background: var(--kon); color: var(--white); box-shadow: 0 2px 12px #141b3d40; }
+.demo-watch:hover .demo-play svg { background: var(--ruri); }
+.demo-duration { position: absolute; right: 0.75rem; bottom: 0.75rem; padding: 0.1rem 0.45rem; border-radius: 3px; background: var(--kachi); color: var(--white); font: 500 0.8125rem/1.5 var(--mono); }
+.demo-preview iframe { display: block; width: 100%; aspect-ratio: 1200 / 837; border: 0; border-radius: var(--radius); }
+.demo-preview figcaption { margin-top: 0.6rem; color: var(--muted); font-size: 0.8125rem; }
+
 .workbench {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 8fr);
@@ -484,7 +509,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   .picker a[aria-selected="true"] { border-color: var(--mine); }
 }
 @media (max-width: 52rem) {
-  .headline, .showcase .layout, .order .layout, .why .wrap { grid-template-columns: minmax(0, 1fr); }
+  .headline, .blog-demo, .showcase .layout, .order .layout, .why .wrap { grid-template-columns: minmax(0, 1fr); }
   .sheet { columns: 1; }
   .proverbs { grid-template-columns: minmax(0, 1fr); }
   .why .mark { max-width: 10rem; }
