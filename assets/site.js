@@ -1,4 +1,4 @@
-// Copy buttons, and the workbench of the landing page. The landing page has a
+// Copy buttons, the demo video, and the workbench of the landing page. The landing page has a
 // copy button beside each install line; a tool page gets one on every code
 // block of its README. Without this script, each tab of the workbench is a link
 // to its panel, and every panel shows.
@@ -32,6 +32,21 @@
     button.textContent = label.copy;
     copyButton(() => pre.textContent, button);
     block.append(button);
+  }
+
+  for (const link of document.querySelectorAll(".demo-watch[data-video]")) {
+    link.addEventListener("click", (event) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      const player = document.createElement("iframe");
+      player.src = "https://www.youtube-nocookie.com/embed/" + link.dataset.video + "?autoplay=1";
+      player.title = link.getAttribute("aria-label");
+      player.allow = "autoplay; encrypted-media; fullscreen; picture-in-picture";
+      player.referrerPolicy = "strict-origin-when-cross-origin";
+      player.allowFullscreen = true;
+      link.replaceWith(player);
+      player.focus();
+    });
   }
 
   // The workbench: one tab per tool, showing what you write and what it

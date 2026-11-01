@@ -29,7 +29,7 @@
     <nav aria-label="Site">
       <a href="#tools">Tools</a>
       <a class="wide" href="#how">How it works</a>
-      <a class="wide" href="#showcase">Showcase</a>
+      <a class="wide" href="#demo">Blog demo</a>
       <a href="https://github.com/go-kanna">GitHub</a>
       <a href="ja/" hreflang="ja" lang="ja">日本語</a>
     </nav>
@@ -43,6 +43,23 @@
         <h1 id="hero-title"><span class="slashes" aria-hidden="true">// </span>Generated Go,<br><span class="slashes" aria-hidden="true">// </span>not magic Go.</h1>
         <p class="lede">Seven code generators for what every Go service repeats: validation, value types, the database, mapping, messages, wiring, and test data. Each reads what you have already written, from struct tags to your schema, and writes the plain Go you would otherwise write by hand.</p>
       </div>
+
+      <section class="blog-demo" id="demo" aria-labelledby="demo-title">
+        <div class="demo-copy">
+          <h2 id="demo-title">Build a blog API in Go in 15 minutes.</h2>
+          <p>Start with models and interfaces. Build post CRUD, add comments, validate requests, and test against a real database.</p>
+          <p class="demo-meta">A 14:48 recorded walkthrough with orm, validate, mapper, di, and fixture. Uses PostgreSQL; orm also supports MySQL.</p>
+          <a class="demo-link" href="https://github.com/go-kanna/showcase/blob/main/tutorial/README.md">Follow the tutorial</a>
+        </div>
+        <figure class="demo-preview">
+          <a class="demo-watch" href="https://www.youtube.com/watch?v=bMl3X8DPx-0" data-video="bMl3X8DPx-0" aria-label="Watch the blog API demo in English, 14 minutes 48 seconds">
+            <img src="assets/demo/blog-en.webp" width="1200" height="837" alt="The running blog API returns HTTP 201 with a post and its nested comments.">
+            <span class="demo-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>
+            <span class="demo-duration" aria-hidden="true">14:48</span>
+          </a>
+          <figcaption>Watch the demo with English captions.</figcaption>
+        </figure>
+      </section>
 
       <div class="workbench">
         <div class="side">
