@@ -31,6 +31,7 @@
       <a class="wide" href="#how">How it works</a>
       <a class="wide" href="#demo">Blog demo</a>
       <a class="wide" href="#gen">kanna gen</a>
+      <a class="widest" href="#principles">Principles</a>
       <a href="https://github.com/go-kanna">GitHub</a>
       <a href="ja/" hreflang="ja" lang="ja">日本語</a>
     </nav>
@@ -610,10 +611,43 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
     </div>
   </section>
 
+  <section class="principles" id="principles" aria-labelledby="principles-title">
+    <div class="wrap">
+      <h2 id="principles-title">Follow the conventions, and a declaration is all it takes</h2>
+      <p class="intro">The implementation is generated as plain Go you can read, and a mistake stops when you generate or compile. Six principles hold every generator to it.</p>
+      <ol class="tenets">
+        <li>
+          <h3>Conventions first</h3>
+          <p>Whatever the names of types, methods, fields, and foreign keys decide takes no directive or tag: kanna-mapper pairs fields of the same name, and kanna-di makes a value with the function next to its type. Directives and tags are only for facts no name can tell, such as which implementation an interface gets, or the rule a field is validated by.</p>
+        </li>
+        <li>
+          <h3>Off the conventions, write it by hand</h3>
+          <p>Where they do not fit, you write that part yourself: the SQL under a <code>-- query:</code> line for kanna-orm, a function converting a type for kanna-mapper. No setting is added to get around a convention.</p>
+        </li>
+        <li>
+          <h3>One way to do one thing</h3>
+          <p>Each thing has one way to be written, so code that uses kanna reads the same wherever you meet it.</p>
+        </li>
+        <li>
+          <h3>Mistakes stop at generation or compile time</h3>
+          <p>A generator checks what it reads, and the code that calls what it writes, and stops at the file and line of a mistake. What it writes is typed, so the compiler catches the rest. No mistake is left to be found at run time.</p>
+        </li>
+        <li>
+          <h3>What is generated is plain Go</h3>
+          <p>It is the code you would have written by hand, and reads without knowing kanna. The three Go proverbs below say what that takes.</p>
+        </li>
+        <li>
+          <h3>Least surprise</h3>
+          <p>Reading a declaration tells you what will be generated. A convention is a rule that decides from a name, one way; no generator searches the schema or other packages for a source the name does not give.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
   <section class="rules" aria-labelledby="rules-title">
     <div class="wrap">
       <h2 id="rules-title">Three Go proverbs every generator keeps</h2>
-      <p class="intro">The tools do different jobs, and hold to the same three rules.</p>
+      <p class="intro">The tools do different jobs, and what they write keeps to the same three proverbs.</p>
       <ul class="proverbs">
         <li>
           <blockquote><p>Clear is better than clever.</p></blockquote>

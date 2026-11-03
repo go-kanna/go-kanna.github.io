@@ -338,6 +338,14 @@ main > section > .wrap > h2 { margin-bottom: 0.9rem; max-width: 40rem; }
 .ways { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.75rem; }
 .ways li { display: flex; flex-direction: column; gap: 0.6rem; }
 
+/* The principles */
+.tenets { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem clamp(2rem, 4vw, 3.5rem); counter-reset: tenet; }
+.tenets li { counter-increment: tenet; }
+.tenets h3 { margin-bottom: 0.5rem; }
+.tenets h3::before { content: counter(tenet); display: block; margin-bottom: 0.6rem; font: 700 0.9375rem/1 var(--mono); color: var(--grain); }
+.tenets p { margin: 0; color: var(--muted); }
+.tenets code { font-size: 0.875em; white-space: nowrap; }
+
 /* The three proverbs */
 .proverbs { list-style: none; margin: 0 0 2rem; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem clamp(2rem, 4vw, 3.5rem); }
 .proverbs blockquote { margin: 0 0 0.9rem; font: 700 1.25rem/1.35 var(--mono); letter-spacing: -0.01em; }
@@ -499,9 +507,10 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 .lost p + p { margin-top: 1rem; }
 
 @media (max-width: 64rem) {
+  .bar nav .widest { display: none; }
   .doc { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
   .toc { position: static; order: -1; padding: 1rem 1.25rem; background: var(--ground-2); border: 1px solid var(--rule); border-radius: 8px; }
-  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .steps, .tenets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .workbench { grid-template-columns: minmax(0, 1fr); }
   .side { position: static; }
   .picker { grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); border-top: 0; gap: 0.4rem; }
@@ -517,7 +526,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 @media (max-width: 34rem) {
   .bar nav { gap: 1.1rem; font-size: 0.9375rem; }
   .bar nav .wide { display: none; }
-  .steps { grid-template-columns: minmax(0, 1fr); }
+  .steps, .tenets { grid-template-columns: minmax(0, 1fr); }
   .picker { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .picker span { display: none; }
   .pane { padding: 0.9rem 1rem 1rem; }
