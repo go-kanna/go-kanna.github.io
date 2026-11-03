@@ -22,6 +22,27 @@ This repository is its site: **https://go-kanna.github.io/**
 | [go-kanna/fixture](https://github.com/go-kanna/fixture)   | kanna-fixture: a constructor for every struct, every field filled                            |
 | [go-kanna/kanna](https://github.com/go-kanna/kanna)       | `kanna gen`: the generators of a module, each run once, in the order they need               |
 
+## Principles
+
+**Follow the conventions, and a declaration is all it takes.** The implementation is generated as plain Go you can read,
+and a mistake stops when you generate or compile. Six principles hold every generator to it:
+
+1. **Conventions first.** Whatever the names of types, methods, fields, and foreign keys decide takes no directive or
+   tag: kanna-mapper pairs fields of the same name, and kanna-di makes a value with the function next to its type.
+   Directives and tags are only for facts no name can tell, such as which implementation an interface gets, or the rule
+   a field is validated by.
+2. **Off the conventions, write it by hand.** Where they do not fit, you write that part yourself: the SQL under a
+   `-- query:` line for kanna-orm, a function converting a type for kanna-mapper. No setting is added to get around a
+   convention.
+3. **One way to do one thing.** Each thing has one way to be written, so code that uses kanna reads the same wherever
+   you meet it.
+4. **Mistakes stop at generation or compile time.** A generator checks what it reads, and the code that calls what it
+   writes, and stops at the file and line of a mistake. What it writes is typed, so the compiler catches the rest. No
+   mistake is left to be found at run time.
+5. **What is generated is plain Go.** It is the code you would have written by hand, and reads without knowing kanna.
+6. **Least surprise.** Reading a declaration tells you what will be generated. A convention is a rule that decides from
+   a name, one way; no generator searches the schema or other packages for a source the name does not give.
+
 ## What is here
 
 - `index.html` is the landing page, and `ja/index.html` the same in Japanese. Open either in a browser to preview it.
