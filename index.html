@@ -31,6 +31,7 @@
       <a class="wide" href="#how">How it works</a>
       <a class="wide" href="#demo">Blog demo</a>
       <a class="wide" href="#gen">kanna gen</a>
+      <a class="widest" href="#principles">Principles</a>
       <a href="https://github.com/go-kanna">GitHub</a>
       <a href="ja/" hreflang="ja" lang="ja">日本語</a>
     </nav>
@@ -610,10 +611,35 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
     </div>
   </section>
 
+  <section class="principles" id="principles" aria-labelledby="principles-title">
+    <div class="wrap">
+      <h2 id="principles-title">Follow the conventions, and a declaration is all it takes</h2>
+      <p class="intro">The implementation is generated as plain Go you can read, and a mistake is told as early as it can be.</p>
+      <ol class="tenets">
+        <li>
+          <h3>Conventions for the routine, your own code for the rest</h3>
+          <p>The conventions write the boilerplate; where they do not fit, you write Go or SQL instead of adding a setting.</p>
+        </li>
+        <li>
+          <h3>What is generated is plain Go</h3>
+          <p>It reads without knowing kanna, and you treat it as code you wrote by hand.</p>
+        </li>
+        <li>
+          <h3>What you know tells you what to expect</h3>
+          <p>Knowing Go and SQL, you can tell what a declaration means and how the generated code behaves.</p>
+        </li>
+        <li>
+          <h3>Mistakes early, and clearly</h3>
+          <p>A mistake that can be caught statically is told before anything runs; one only run time can judge is told when it runs.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
   <section class="rules" aria-labelledby="rules-title">
     <div class="wrap">
       <h2 id="rules-title">Three Go proverbs every generator keeps</h2>
-      <p class="intro">The tools do different jobs, and hold to the same three rules.</p>
+      <p class="intro">The tools do different jobs, and what they write keeps to the same three proverbs.</p>
       <ul class="proverbs">
         <li>
           <blockquote><p>Clear is better than clever.</p></blockquote>

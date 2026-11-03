@@ -22,6 +22,19 @@ This repository is its site: **https://go-kanna.github.io/**
 | [go-kanna/fixture](https://github.com/go-kanna/fixture)   | kanna-fixture: a constructor for every struct, every field filled                            |
 | [go-kanna/kanna](https://github.com/go-kanna/kanna)       | `kanna gen`: the generators of a module, each run once, in the order they need               |
 
+## Principles
+
+**Follow the conventions, and a declaration is all it takes.** The implementation is generated as plain Go you can read,
+and a mistake is told as early as it can be.
+
+1. **Conventions for the routine, your own code for the rest.** The conventions write the boilerplate; where they do not
+   fit, you write Go or SQL instead of adding a setting.
+2. **What is generated is plain Go.** It reads without knowing kanna, and you treat it as code you wrote by hand.
+3. **What you know tells you what to expect.** Knowing Go and SQL, you can tell what a declaration means and how the
+   generated code behaves.
+4. **Mistakes early, and clearly.** A mistake that can be caught statically is told before anything runs; one only run
+   time can judge is told when it runs.
+
 ## What is here
 
 - `index.html` is the landing page, and `ja/index.html` the same in Japanese. Open either in a browser to preview it.

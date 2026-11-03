@@ -31,6 +31,7 @@
       <a class="wide" href="#how">仕組み</a>
       <a class="wide" href="#demo">ブログのデモ</a>
       <a class="wide" href="#gen">kanna gen</a>
+      <a class="widest" href="#principles">考え方</a>
       <a href="https://github.com/go-kanna">GitHub</a>
       <a href="../" hreflang="en" lang="en">English</a>
     </nav>
@@ -610,10 +611,35 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
     </div>
   </section>
 
+  <section class="principles" id="principles" aria-labelledby="principles-title">
+    <div class="wrap">
+      <h2 id="principles-title">規約に従えば、宣言だけで動く</h2>
+      <p class="intro">実装は読める素の Go として生成し、誤りはできるだけ早く知らせます。</p>
+      <ol class="tenets">
+        <li>
+          <h3>規約で簡潔に、必要なところは手で書く</h3>
+          <p>定型のコードは規約に任せ、規約に合わないところは、設定を足さずに Go や SQL で書きます。</p>
+        </li>
+        <li>
+          <h3>生成物は、素の Go</h3>
+          <p>kanna を知らなくても読めて、手で書いたコードと同じように扱えます。</p>
+        </li>
+        <li>
+          <h3>知っている言葉で、予想どおりに</h3>
+          <p>Go と SQL を知っていれば、宣言の意味も、生成されるコードの動きも予想できます。</p>
+        </li>
+        <li>
+          <h3>誤りは早く、明確に</h3>
+          <p>静的に検出できる誤りは実行前に、実行時にしか判断できない誤りは実行時に知らせます。</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
   <section class="rules" aria-labelledby="rules-title">
     <div class="wrap">
       <h2 id="rules-title">すべてのジェネレータが守る、Go の 3 つのことわざ</h2>
-      <p class="intro">ツールの仕事はそれぞれ違っても、守るルールは同じ 3 つです。</p>
+      <p class="intro">ツールの仕事はそれぞれ違っても、生成するコードが守ることわざは同じ 3 つです。</p>
       <ul class="proverbs">
         <li>
           <blockquote lang="en"><p>Clear is better than clever.</p></blockquote>
