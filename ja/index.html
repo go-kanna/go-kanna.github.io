@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>kanna — 手で書くのと同じ Go を生成するコードジェネレータ</title>
-<meta name="description" content="kanna は 7 つの Go コードジェネレータのファミリーです。バリデーション、値オブジェクト、データベース、マッピング、メッセージ、依存関係の組み立て、テストデータ。すでに書いたコードを読み取り、本来手で書くはずの素の Go を生成します。">
-<meta property="og:title" content="kanna: 魔法ではない、生成された Go">
-<meta property="og:description" content="すでに書いたコードを読み取り、素の Go を生成する 7 つのコードジェネレータ。リフレクションはなく、レビューから隠れるものもありません。">
+<meta name="description" content="kanna は 7 つの Go コードジェネレータのファミリーです。バリデーション、値オブジェクト、データベース、マッピング、メッセージ、依存関係の組み立て、テストデータ。宣言を書けば、本来手で書くはずの素の Go を生成します。">
+<meta property="og:title" content="kanna: 宣言を書けば、手で書くはずの Go が生成される。">
+<meta property="og:description" content="必要なものを宣言すれば、手で書くはずの素の Go を生成する 7 つのコードジェネレータ。リフレクションはなく、レビューから隠れるものもありません。">
 <meta property="og:image" content="https://go-kanna.github.io/assets/logo/avatar-kon.png">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ja_JP">
@@ -42,8 +42,8 @@
   <section class="hero" aria-labelledby="hero-title">
     <div class="wrap">
       <div class="headline">
-        <h1 id="hero-title"><span class="slashes" aria-hidden="true">// </span>魔法ではない、<br><span class="slashes" aria-hidden="true">// </span>生成された Go。</h1>
-        <p class="lede">バリデーション、値オブジェクト、データベース、マッピング、メッセージ、依存関係の組み立て、テストデータ。Go のサービスならどこでも繰り返すものを引き受ける、7 つのコードジェネレータです。構造体タグからスキーマまで、すでに書いたものを読み取り、本来手で書くはずの素の Go を生成します。</p>
+        <h1 id="hero-title">宣言を書けば、<br>手で書くはずの<br>Go が生成される。</h1>
+        <p class="lede">バリデーション、値オブジェクト、データベース、マッピング、メッセージ、依存関係の組み立て、テストデータ。Go のサービスならどこでも繰り返すものを引き受ける、7 つのコードジェネレータです。必要なものを規約どおりの名前で宣言し、規約に合わないところは、その部分だけ Go や SQL で書きます。宣言の誤りは、生成するときにファイルと行を示して知らせます。</p>
       </div>
 
       <section class="blog-demo" id="demo" aria-labelledby="demo-title">
@@ -68,7 +68,7 @@
           <div class="picker" role="tablist" aria-label="ツール" aria-orientation="vertical">
             <a href="#validate-panel" id="validate-tab" role="tab" aria-controls="validate-panel" aria-selected="true"><b>kanna-validate</b><span>構造体タグからバリデーション</span></a>
             <a href="#value-panel" id="value-tab" role="tab" aria-controls="value-panel" aria-selected="false"><b>kanna-value</b><span>ルールを守る値オブジェクト</span></a>
-            <a href="#orm-panel" id="orm-tab" role="tab" aria-controls="orm-panel" aria-selected="false"><b>kanna-orm</b><span>素の SQL のリポジトリ</span></a>
+            <a href="#orm-panel" id="orm-tab" role="tab" aria-controls="orm-panel" aria-selected="false"><b>kanna-orm</b><span>インターフェースからリポジトリ</span></a>
             <a href="#mapper-panel" id="mapper-tab" role="tab" aria-controls="mapper-panel" aria-selected="false"><b>kanna-mapper</b><span>ドメインからワイヤへ、フィールド単位で</span></a>
             <a href="#i18n-panel" id="i18n-tab" role="tab" aria-controls="i18n-panel" aria-selected="false"><b>kanna-i18n</b><span>型付き関数になるメッセージ</span></a>
             <a href="#di-panel" id="di-tab" role="tab" aria-controls="di-panel" aria-selected="false"><b>kanna-di</b><span>登録なしで依存関係を組み立て</span></a>

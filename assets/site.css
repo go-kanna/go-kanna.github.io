@@ -223,8 +223,15 @@ main > section > .wrap > h2 { margin-bottom: 0.9rem; max-width: 40rem; }
   align-items: end;
   margin-bottom: clamp(2rem, 4vw, 3rem);
 }
-.hero h1 { font: 700 clamp(2.4rem, 5.6vw, 4.75rem)/1.02 var(--mono); letter-spacing: -0.03em; }
-.hero h1 .slashes { color: var(--steel); }
+.hero h1 { position: relative; padding-left: 3ch; font: 700 clamp(2.4rem, 5.6vw, 4.75rem)/1.02 var(--mono); letter-spacing: -0.03em; text-wrap: pretty; }
+.hero h1::before {
+  content: "//\A//\A//\A//\A//\A//\A//\A//" / "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  overflow: hidden;
+  white-space: pre;
+  color: var(--steel);
+}
 :lang(ja) .hero h1 { font-size: clamp(2rem, 4.6vw, 3.75rem); line-height: 1.25; letter-spacing: 0; }
 .lede { margin: 0; max-width: 32rem; font-size: 1.1875rem; line-height: 1.6; }
 :lang(ja) :is(.lede, .picker span) { word-break: auto-phrase; }
