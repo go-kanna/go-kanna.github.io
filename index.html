@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>kanna — Go code generators that write the code you would</title>
-<meta name="description" content="kanna is a family of seven Go code generators: validation, value types, the database, mapping, messages, wiring, and test data. Each reads what you have already written and writes the plain Go you would otherwise write by hand.">
-<meta property="og:title" content="kanna: generated Go, not magic Go">
-<meta property="og:description" content="Seven Go code generators that read what you have already written and write plain Go: no reflection, nothing hidden from review.">
+<meta name="description" content="kanna is a family of seven Go code generators: validation, value types, the database, mapping, messages, wiring, and test data. You write the declaration, and each writes the plain Go you would otherwise write by hand.">
+<meta property="og:title" content="kanna: You write the declaration. kanna writes the Go you would have.">
+<meta property="og:description" content="Seven Go code generators: declare what you need, and get the plain Go you would write by hand. No reflection, nothing hidden from review.">
 <meta property="og:image" content="https://go-kanna.github.io/assets/logo/avatar-kon.png">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
@@ -42,8 +42,8 @@
   <section class="hero" aria-labelledby="hero-title">
     <div class="wrap">
       <div class="headline">
-        <h1 id="hero-title"><span class="slashes" aria-hidden="true">// </span>Generated Go,<br><span class="slashes" aria-hidden="true">// </span>not magic Go.</h1>
-        <p class="lede">Seven code generators for what every Go service repeats: validation, value types, the database, mapping, messages, wiring, and test data. Each reads what you have already written, from struct tags to your schema, and writes the plain Go you would otherwise write by hand.</p>
+        <h1 id="hero-title">You write the declaration.<br>kanna writes the Go you would have.</h1>
+        <p class="lede">Seven code generators for what every Go service repeats: validation, value types, the database, mapping, messages, wiring, and test data. Declare what you need under the names the conventions expect; where they do not fit, write that part in Go or SQL. A mistake in a declaration is reported when the code is generated, with its file and line.</p>
       </div>
 
       <section class="blog-demo" id="demo" aria-labelledby="demo-title">
@@ -68,7 +68,7 @@
           <div class="picker" role="tablist" aria-label="The tools" aria-orientation="vertical">
             <a href="#validate-panel" id="validate-tab" role="tab" aria-controls="validate-panel" aria-selected="true"><b>kanna-validate</b><span>Validation from struct tags</span></a>
             <a href="#value-panel" id="value-tab" role="tab" aria-controls="value-panel" aria-selected="false"><b>kanna-value</b><span>Value types that keep their rule</span></a>
-            <a href="#orm-panel" id="orm-tab" role="tab" aria-controls="orm-panel" aria-selected="false"><b>kanna-orm</b><span>Repositories in plain SQL</span></a>
+            <a href="#orm-panel" id="orm-tab" role="tab" aria-controls="orm-panel" aria-selected="false"><b>kanna-orm</b><span>Repositories from interfaces</span></a>
             <a href="#mapper-panel" id="mapper-tab" role="tab" aria-controls="mapper-panel" aria-selected="false"><b>kanna-mapper</b><span>Domain to wire, field by field</span></a>
             <a href="#i18n-panel" id="i18n-tab" role="tab" aria-controls="i18n-panel" aria-selected="false"><b>kanna-i18n</b><span>Messages as typed functions</span></a>
             <a href="#di-panel" id="di-tab" role="tab" aria-controls="di-panel" aria-selected="false"><b>kanna-di</b><span>Wiring, with nothing registered</span></a>
