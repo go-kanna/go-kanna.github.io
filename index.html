@@ -162,7 +162,7 @@
 	<span class="k">return</span> <span class="k">nil</span>
 }
 
-<span class="c">// MustEmail, String, IsZero, MarshalJSON, Value, and Scan, which checks too.</span></code></pre>
+<span class="c">// MustEmail, String, IsZero, and MarshalJSON, Value, and Scan, which check too.</span></code></pre>
               </div>
             </figure>
             <div class="about">
@@ -191,7 +191,7 @@
               </div>
               <div class="seam"><svg class="curl" viewBox="16 60 202 140" aria-hidden="true"><path d="M 30 186 H 148 A 56 56 0 0 0 204 130 A 56 56 0 0 0 148 74 A 40 40 0 0 0 108 114 A 26 26 0 0 0 134 140 A 13 13 0 0 0 147 127" fill="none" stroke="#F3DCA4" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <div class="pane gen">
-                <p class="file"><span>postgres/orm_gen.go</span><span>kanna-orm writes</span></p>
+                <p class="file"><span>postgres/repository_gen.go</span><span>kanna-orm writes</span></p>
 <pre><code><span class="k">func</span> (r <span class="t">OrderRepository</span>) <span class="f">Insert</span>(ctx context.<span class="t">Context</span>, o model.<span class="t">Order</span>) (model.<span class="t">Order</span>, <span class="t">error</span>) {
 	<span class="k">const</span> q = <span class="s">`INSERT INTO orders (id, customer_id, status, placed_at, note)
 VALUES ($1, $2, $3, $4, $5)
@@ -206,10 +206,10 @@ RETURNING id, customer_id, status, placed_at, note`</span>
 }</code></pre>
               </div>
               <div class="pane gen">
-                <p class="file"><span>scopes/orm_gen.go</span><span>kanna-orm writes</span></p>
+                <p class="file"><span>scopes/scopes_gen.go</span><span>kanna-orm writes</span></p>
 <pre><code><span class="c">// StatusNe narrows to the rows whose status is not v.</span>
 <span class="k">func</span> (s <span class="t">Order</span>) <span class="f">StatusNe</span>(v model.<span class="t">OrderStatus</span>) <span class="t">Order</span> {
-	<span class="k">return</span> <span class="t">Order</span>{s.q.Where(<span class="s">`status &lt;&gt; `</span>, v)}
+	<span class="k">return</span> <span class="t">Order</span>{ormScope(ormRuntime(s.q).Where(<span class="s">`status &lt;&gt; `</span>, v))}
 }
 
 <span class="c">// ...a method for each column and relation, and Limit, After, and Cursor.</span></code></pre>
@@ -259,7 +259,7 @@ RETURNING id, customer_id, status, placed_at, note`</span>
                 <p class="file"><span>mapper_gen.go</span><span>kanna-mapper writes</span></p>
 <pre><code><span class="k">func</span> <span class="f">EmployeeFromProto</span>(src *employeev1.<span class="t">Employee</span>) (model.<span class="t">Employee</span>, <span class="t">error</span>) {
 	<span class="k">if</span> src == <span class="k">nil</span> {
-		<span class="k">return</span> model.<span class="t">Employee</span>{}, <span class="k">nil</span>
+		src = new(employeev1.<span class="t">Employee</span>)
 	}
 	v, err := uuid.Parse(src.GetId())
 	<span class="k">if</span> err != <span class="k">nil</span> {
@@ -461,21 +461,21 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
       <p class="intro">Plain Go declarations, in files headed <code>DO NOT EDIT</code>. Here is what the example in each repository gets, listed as <code>go doc</code> lists it.</p>
       <div class="sheet">
         <div class="output wide">
-          <h3><a href="orm/">kanna-orm</a><span>scopes/orm_gen.go, postgres/orm_gen.go</span></h3>
-<pre><code><span class="k">type</span> <span class="t">Order</span> <span class="k">struct</span>{ q orm.<span class="t">Of</span>[model.<span class="t">Order</span>] }
+          <h3><a href="orm/">kanna-orm</a><span>scopes/scopes_gen.go, postgres/repository_gen.go</span></h3>
+<pre><code><span class="k">type</span> <span class="t">Order</span> <span class="k">struct</span>{ q scope.<span class="t">Of</span>[model.<span class="t">Order</span>] }
 <span class="k">func</span> <span class="f">Orders</span>() <span class="t">Order</span>
 <span class="k">func</span> (s <span class="t">Order</span>) <span class="f">StatusEq</span>(v model.<span class="t">OrderStatus</span>) <span class="t">Order</span>
 <span class="k">func</span> (s <span class="t">Order</span>) <span class="f">PlacedAtDesc</span>() <span class="t">Order</span>
 <span class="k">func</span> (s <span class="t">Order</span>) <span class="f">WithLines</span>(sub ...<span class="t">OrderLine</span>) <span class="t">Order</span>
 <span class="k">func</span> (s <span class="t">Order</span>) <span class="f">After</span>(row model.<span class="t">Order</span>) <span class="t">Order</span>
 <span class="k">func</span> (s <span class="t">Order</span>) <span class="f">AfterCursor</span>(cursor <span class="t">string</span>) (<span class="t">Order</span>, <span class="t">error</span>)
-<span class="c">// ...79 methods on Order in all, for its columns, its relations, and paging</span>
+<span class="c">// ...80 methods on Order in all, for its columns, its relations, and paging</span>
 
-<span class="k">type</span> <span class="t">OrderRepository</span> <span class="k">struct</span>{ db <span class="t">DBTX</span> }
-<span class="k">func</span> <span class="f">NewOrderRepository</span>(db <span class="t">DBTX</span>) <span class="t">OrderRepository</span>
-<span class="k">func</span> (r <span class="t">OrderRepository</span>) <span class="f">Get</span>(ctx context.<span class="t">Context</span>, id model.<span class="t">OrderID</span>, s ...scopes.<span class="t">Order</span>) (model.<span class="t">Order</span>, <span class="t">error</span>)
-<span class="k">func</span> (r <span class="t">OrderRepository</span>) <span class="f">List</span>(ctx context.<span class="t">Context</span>, s ...scopes.<span class="t">Order</span>) ([]model.<span class="t">Order</span>, <span class="t">error</span>)
-<span class="k">func</span> (r <span class="t">OrderRepository</span>) <span class="f">Insert</span>(ctx context.<span class="t">Context</span>, o model.<span class="t">Order</span>) (model.<span class="t">Order</span>, <span class="t">error</span>)
+<span class="k">type</span> <span class="t">Order</span> <span class="k">struct</span>{ db <span class="t">ormDatabase</span> }
+<span class="k">func</span> <span class="f">NewOrder</span>(db <span class="t">DBTX</span>, opts ...option.<span class="t">Option</span>) <span class="t">Order</span>
+<span class="k">func</span> (r <span class="t">Order</span>) <span class="f">Get</span>(ctx context.<span class="t">Context</span>, id model.<span class="t">OrderID</span>, s ...scopes.<span class="t">Order</span>) (model.<span class="t">Order</span>, <span class="t">error</span>)
+<span class="k">func</span> (r <span class="t">Order</span>) <span class="f">List</span>(ctx context.<span class="t">Context</span>, s ...scopes.<span class="t">Order</span>) ([]model.<span class="t">Order</span>, <span class="t">error</span>)
+<span class="k">func</span> (r <span class="t">Order</span>) <span class="f">Insert</span>(ctx context.<span class="t">Context</span>, o model.<span class="t">Order</span>) (model.<span class="t">Order</span>, <span class="t">error</span>)
 <span class="c">// ...one for each method of the interface</span></code></pre>
         </div>
         <div class="output">
@@ -494,11 +494,13 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
 <span class="k">func</span> (x <span class="t">Email</span>) <span class="f">Value</span>() (driver.<span class="t">Value</span>, <span class="t">error</span>)
 <span class="k">func</span> (x *<span class="t">Email</span>) <span class="f">Scan</span>(src <span class="t">any</span>) <span class="t">error</span>
 
-<span class="c">// and for the enum OrderStatus</span>
-<span class="k">func</span> <span class="f">NewOrderStatus</span>(v <span class="t">string</span>) (<span class="t">OrderStatus</span>, <span class="t">error</span>)
-<span class="k">func</span> <span class="f">OrderStatusValues</span>() []<span class="t">OrderStatus</span>
-<span class="k">func</span> (x *<span class="t">OrderStatus</span>) <span class="f">UnmarshalText</span>(text []<span class="t">byte</span>) <span class="t">error</span>
-<span class="k">func</span> (x *<span class="t">OrderStatus</span>) <span class="f">Scan</span>(src <span class="t">any</span>) <span class="t">error</span></code></pre>
+<span class="c">// and for the enum Priority</span>
+<span class="k">func</span> <span class="f">NewPriority</span>(v <span class="t">string</span>) (<span class="t">Priority</span>, <span class="t">error</span>)
+<span class="k">func</span> <span class="f">PriorityValues</span>() []<span class="t">Priority</span>
+<span class="k">func</span> (x <span class="t">Priority</span>) <span class="f">String</span>() <span class="t">string</span>
+<span class="k">func</span> (x *<span class="t">Priority</span>) <span class="f">UnmarshalText</span>(text []<span class="t">byte</span>) <span class="t">error</span>
+<span class="k">func</span> (x *<span class="t">Priority</span>) <span class="f">Scan</span>(src <span class="t">any</span>) <span class="t">error</span>
+<span class="k">func</span> (x <span class="t">Priority</span>) <span class="f">Validate</span>() <span class="t">error</span></code></pre>
         </div>
         <div class="output">
           <h3><a href="mapper/">kanna-mapper</a><span>mapper_gen.go</span></h3>
@@ -518,13 +520,14 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
         </div>
         <div class="output">
           <h3><a href="di/">kanna-di</a><span>di_gen.go</span></h3>
-<pre><code><span class="k">func</span> <span class="f">newServer</span>(logs io.<span class="t">Writer</span>) (*server, <span class="k">func</span>(), <span class="t">error</span>)
-<span class="k">func</span> <span class="f">mustNewServer</span>(logs io.<span class="t">Writer</span>) (*server, <span class="k">func</span>())</code></pre>
+<pre><code><span class="k">func</span> <span class="f">newServer</span>(out io.<span class="t">Writer</span>) (*server, <span class="k">func</span>(), <span class="t">error</span>)
+<span class="k">func</span> <span class="f">mustNewServer</span>(out io.<span class="t">Writer</span>) (*server, <span class="k">func</span>())</code></pre>
         </div>
         <div class="output">
           <h3><a href="fixture/">kanna-fixture</a><span>fixture/fixture_gen.go</span></h3>
 <pre><code><span class="k">func</span> <span class="f">Article</span>(setters ...<span class="k">func</span>(*blog.<span class="t">Article</span>)) blog.<span class="t">Article</span>
 <span class="k">func</span> <span class="f">Author</span>(setters ...<span class="k">func</span>(*blog.<span class="t">Author</span>)) blog.<span class="t">Author</span>
+<span class="k">func</span> <span class="f">Invite</span>(setters ...<span class="k">func</span>(*blog.<span class="t">Invite</span>)) blog.<span class="t">Invite</span>
 <span class="k">func</span> <span class="f">SignUp</span>(setters ...<span class="k">func</span>(*blog.<span class="t">SignUp</span>)) blog.<span class="t">SignUp</span></code></pre>
         </div>
       </div>
@@ -663,7 +666,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
       <h2 id="showcase-title">Seven tools, one service</h2>
       <p class="intro"><a href="https://github.com/go-kanna/showcase">go-kanna/showcase</a> is a to-do service, gRPC over PostgreSQL, with every tool in its place. What the generators write is committed, so each file can be read beside what it came from: here, on wood.</p>
       <div class="layout">
-<pre class="tree" aria-label="The source tree of go-kanna/showcase, with the files the generators write"><code><span class="d">showcase/</span><span>├── <b>config/</b></span><span class="x">│   ├── api_config.go</span><span class="g">│   └── validate_gen.go                 <i>kanna-validate</i></span><span>├── <b>internal/</b></span><span>│   ├── <b>di/</b></span><span class="x">│   │   ├── infra_di.go</span><span class="g">│   │   └── di_gen.go                   <i>kanna-di</i></span><span>│   ├── <b>feature/todo/</b></span><span>│   │   ├── <b>model/</b></span><span class="x">│   │   │   ├── todo_model.go</span><span class="g">│   │   │   ├── value_gen.go            <i>kanna-value</i></span><span class="g">│   │   │   └── fixture/fixture_gen.go  <i>kanna-fixture</i></span><span>│   │   ├── <b>scopes/</b></span><span class="x">│   │   │   ├── scopes.go</span><span class="g">│   │   │   └── orm_gen.go              <i>kanna-orm</i></span><span>│   │   ├── <b>repository/</b></span><span class="x">│   │   │   └── todo_repository.go</span><span>│   │   ├── <b>postgres/</b></span><span class="x">│   │   │   ├── postgres_todo_repository.go</span><span class="x">│   │   │   ├── todo_queries.sql</span><span class="g">│   │   │   └── orm_gen.go              <i>kanna-orm</i></span><span>│   │   ├── <b>usecase/</b></span><span class="x">│   │   │   ├── *_use_case.go</span><span class="g">│   │   │   ├── di_gen.go               <i>kanna-di</i></span><span class="g">│   │   │   └── validate_gen.go         <i>kanna-validate</i></span><span>│   │   ├── <b>mapper/</b></span><span class="x">│   │   │   ├── todo_mapper.go</span><span class="g">│   │   │   └── mapper_gen.go           <i>kanna-mapper</i></span><span>│   │   └── <b>handler/</b></span><span class="x">│   │       ├── todo_handler.go</span><span class="g">│   │       └── di_gen.go               <i>kanna-di</i></span><span>│   └── <b>messages/</b></span><span class="x">│       ├── locales/</span><span class="g">│       └── i18n_gen.go                 <i>kanna-i18n</i></span><span class="x">└── kanna-orm.snapshot.json</span></code></pre>
+<pre class="tree" aria-label="The source tree of go-kanna/showcase, with the files the generators write"><code><span class="d">showcase/</span><span>├── <b>config/</b></span><span class="x">│   ├── api_config.go</span><span class="g">│   └── validate_gen.go                 <i>kanna-validate</i></span><span>├── <b>internal/</b></span><span>│   ├── <b>di/</b></span><span class="x">│   │   ├── infra_di.go</span><span class="g">│   │   └── di_gen.go                   <i>kanna-di</i></span><span>│   ├── <b>feature/todo/</b></span><span>│   │   ├── <b>model/</b></span><span class="x">│   │   │   ├── todo_model.go</span><span class="g">│   │   │   ├── value_gen.go            <i>kanna-value</i></span><span class="g">│   │   │   └── fixture/fixture_gen.go  <i>kanna-fixture</i></span><span>│   │   ├── <b>scopes/</b></span><span class="x">│   │   │   ├── scopes.go</span><span class="g">│   │   │   └── scopes_gen.go           <i>kanna-orm</i></span><span>│   │   ├── <b>repository/</b></span><span class="x">│   │   │   └── todo_repository.go</span><span>│   │   ├── <b>postgres/</b></span><span class="x">│   │   │   ├── postgres_todo_repository.go</span><span class="x">│   │   │   ├── todo_queries.sql</span><span class="g">│   │   │   └── repository_gen.go       <i>kanna-orm</i></span><span>│   │   ├── <b>usecase/</b></span><span class="x">│   │   │   ├── *_use_case.go</span><span class="g">│   │   │   ├── di_gen.go               <i>kanna-di</i></span><span class="g">│   │   │   └── validate_gen.go         <i>kanna-validate</i></span><span>│   │   ├── <b>mapper/</b></span><span class="x">│   │   │   ├── todo_mapper.go</span><span class="g">│   │   │   └── mapper_gen.go           <i>kanna-mapper</i></span><span>│   │   └── <b>handler/</b></span><span class="x">│   │       ├── todo_handler.go</span><span class="g">│   │       └── di_gen.go               <i>kanna-di</i></span><span>│   └── <b>messages/</b></span><span class="x">│       ├── locales/</span><span class="g">│       └── i18n_gen.go                 <i>kanna-i18n</i></span><span class="x">└── kanna-orm.snapshot.json</span></code></pre>
         <div>
           <ul class="uses">
             <li><a class="name" href="di/">kanna-di</a><span>builds the infrastructure once, and the handler from it, choosing the repository its use cases are given</span></li>
