@@ -593,12 +593,12 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
         <ul class="ways">
           <li>
             <h3>See why</h3>
-<pre class="cmd"><code>go tool kanna gen --plan</code></pre>
+<pre class="cmd"><code>go tool kanna gen -plan</code></pre>
             <p>Prints what would run and why it comes where it does, such as <code>code in usecase calls what kanna-validate generates</code>, and runs nothing.</p>
           </li>
           <li>
             <h3>Check in CI</h3>
-<pre class="cmd"><code>go tool kanna gen --check</code></pre>
+<pre class="cmd"><code>go tool kanna gen -check</code></pre>
             <p>Fails when a committed file is not what would be generated, and writes nothing.</p>
           </li>
           <li>

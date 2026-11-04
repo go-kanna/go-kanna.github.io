@@ -593,12 +593,12 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
         <ul class="ways">
           <li>
             <h3>理由を見る</h3>
-<pre class="cmd"><code>go tool kanna gen --plan</code></pre>
+<pre class="cmd"><code>go tool kanna gen -plan</code></pre>
             <p>実行するものと、その位置にある理由を表示します。たとえば <code>code in usecase calls what kanna-validate generates</code> のように示し、何も実行しません。</p>
           </li>
           <li>
             <h3>CI でチェックする</h3>
-<pre class="cmd"><code>go tool kanna gen --check</code></pre>
+<pre class="cmd"><code>go tool kanna gen -check</code></pre>
             <p>コミットされたファイルが、生成される内容と違えば失敗します。このとき何も書き出しません。</p>
           </li>
           <li>
