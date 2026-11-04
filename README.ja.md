@@ -4,13 +4,13 @@
 
 [![English](https://img.shields.io/badge/lang-English-blue.svg)](README.md)
 
-kanna は、Go のための 7 つのコードジェネレータのファミリーです。バリデーション、値オブジェクト、データベース、マッピング、メッセージ、依存関係の組み立て、テストデータを扱います。いずれも、構造体タグからスキーマまで、すでに書いたものを読み取り、本来手で書くはずの素の Go を生成します。リフレクションはなく、レビューから隠れるものもありません。ランタイムが必要なジェネレータは小さなものを同じモジュールで提供するので、両者がずれることはありません。
+kanna は、Go のための 7 つのコードジェネレータのファミリーです。バリデーション、値オブジェクト、データベース、マッピング、メッセージ、依存関係の組み立て、テストデータを扱います。必要なものを規約どおりの名前で宣言すれば、いずれも本来手で書くはずの素の Go を生成します。リフレクションはなく、レビューから隠れるものもありません。規約に合わないところは、その部分だけ Go や SQL で書きます。ランタイムが必要なジェネレータは小さなものを同じモジュールで提供するので、両者がずれることはありません。
 
 このリポジトリはそのサイトです: **https://go-kanna.github.io/ja/**
 
 | リポジトリ | 内容 |
 |---|---|
-| [go-kanna/validate](https://github.com/go-kanna/validate) | kanna-validate: 構造体タグから `Validate` メソッドを生成する。エラーコードは Rails と同じ |
+| [go-kanna/validate](https://github.com/go-kanna/validate) | kanna-validate: 構造体タグから `Validate` メソッドを生成する。エラーはフィールドの JSON 名をキーにしたコードで返す |
 | [go-kanna/value](https://github.com/go-kanna/value) | kanna-value: ルールを守り続ける値オブジェクトと、定数の値だけを取る enum |
 | [go-kanna/orm](https://github.com/go-kanna/orm) | kanna-orm: リポジトリのインターフェースの実装と、テーブルごとの連結できるスコープ |
 | [go-kanna/mapper](https://github.com/go-kanna/mapper) | kanna-mapper: ドメイン型とワイヤ型の間に宣言した関数の実装 |

@@ -5,15 +5,15 @@
 [![日本語](https://img.shields.io/badge/lang-%E6%97%A5%E6%9C%AC%E8%AA%9E-blue.svg)](README.ja.md)
 
 kanna is a family of seven code generators for Go: validation, value types, the database, mapping, messages, wiring,
-and test data. Each one reads what you have already written, from struct tags to your schema, and writes the plain Go
-you would otherwise write by hand: no reflection, nothing hidden from review. A generator that needs a runtime ships a
-small one in the same module, so the two never drift apart.
+and test data. You declare what you need under the names the conventions expect, and each writes the plain Go you would
+otherwise write by hand: no reflection, nothing hidden from review. Where the conventions do not fit, you write that
+part in Go or SQL. A generator that needs a runtime ships a small one in the same module, so the two never drift apart.
 
 This repository is its site: **https://go-kanna.github.io/**
 
 | Repository                                                | What it is                                                                                   |
 |-----------------------------------------------------------|----------------------------------------------------------------------------------------------|
-| [go-kanna/validate](https://github.com/go-kanna/validate) | kanna-validate: `Validate` methods from struct tags, with Rails' error codes                 |
+| [go-kanna/validate](https://github.com/go-kanna/validate) | kanna-validate: `Validate` methods from struct tags, with error codes keyed by JSON names    |
 | [go-kanna/value](https://github.com/go-kanna/value)       | kanna-value: value types held to their rule, and enums to their constants                    |
 | [go-kanna/orm](https://github.com/go-kanna/orm)           | kanna-orm: the implementation of your repository interfaces, and a chainable scope per table |
 | [go-kanna/mapper](https://github.com/go-kanna/mapper)     | kanna-mapper: the functions you declare between domain and wire types                        |
