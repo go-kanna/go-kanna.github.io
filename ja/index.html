@@ -114,7 +114,7 @@
               </div>
             </figure>
             <div class="about">
-              <p class="what">kanna-validate は、構造体の <code>validate</code> タグから <code>Validate</code> メソッドを生成し、違反を Rails のエラーコードで、フィールドの JSON 名をキーにして報告します。</p>
+              <p class="what">kanna-validate は、構造体の <code>validate</code> タグから <code>Validate</code> メソッドを生成し、違反をフィールドの JSON 名をキーにしたエラーコードで報告します。</p>
               <p class="like">タグの書き方は go-playground/validator と同じです。ただし呼び出しのたびにリフレクションで読むのではなく、go generate のときに 1 度だけ読みます。</p>
               <p class="meta"><a href="validate/">README を読む</a> <a href="https://github.com/go-kanna/validate">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/validate/tags" data-tag="go-kanna/validate">v0.0.7</a><span data-go="go-kanna/validate">Go 1.27</span></span></p>
               <div class="install">
@@ -691,7 +691,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <h3><a href="validate/">kanna-validate</a></h3>
             <p class="links"><a href="https://github.com/go-kanna/validate">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/validate">pkg.go.dev</a></p>
           </div>
-          <p class="what">構造体の <code>validate</code> タグから <code>Validate</code> メソッドを生成し、違反を Rails のエラーコードで、フィールドの JSON 名をキーにして報告します。リクエストをデコードし、問題をまとめて一度に報告します。</p>
+          <p class="what">構造体の <code>validate</code> タグから <code>Validate</code> メソッドを生成し、違反をフィールドの JSON 名をキーにしたエラーコードで報告します。リクエストをデコードし、問題をまとめて一度に報告します。</p>
           <div class="install">
             <code id="install-validate">go get -tool github.com/go-kanna/validate/cmd/kanna-validate</code>
             <button type="button" class="copy" data-copy="install-validate">コピー</button>
