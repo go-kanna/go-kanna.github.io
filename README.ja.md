@@ -17,7 +17,7 @@ kanna は、Go のための 7 つのコードジェネレータのファミリ�
 | [go-kanna/i18n](https://github.com/go-kanna/i18n) | kanna-i18n: 翻訳を組み込んだ型付きのメッセージコンストラクタ |
 | [go-kanna/di](https://github.com/go-kanna/di) | kanna-di: 型の隣にある関数から生成するコンテナ構造体のコンストラクタ |
 | [go-kanna/fixture](https://github.com/go-kanna/fixture) | kanna-fixture: 構造体ごとの、全フィールドが埋まったコンストラクタ |
-| [go-kanna/kanna](https://github.com/go-kanna/kanna) | `kanna gen`: モジュールのジェネレータを、必要な順に 1 回ずつ実行します |
+| [go-kanna/kanna](https://github.com/go-kanna/kanna) | `kanna gen`: モジュールのジェネレータを、必要な順に 1 回ずつ実行します。`kanna vet`: その vet を実行します |
 
 ## 考え方
 
@@ -48,7 +48,7 @@ kanna は、Go のための 7 つのコードジェネレータのファミリ�
 ジェネレータは、何かを書き出す前に、与えられたものと、生成物を呼び出す手書きのコードをチェックします。書き出したものがコンパイルでき、言ったとおりに動くことは、さらに 2 箇所でチェックしています:
 
 - 各ジェネレータのテストは、扱うすべての種類のパッケージについて生成コードをコンパイルし、呼び出します。
-- [go-kanna/showcase](https://github.com/go-kanna/showcase) は 7 つすべてを一緒に動かします。CI は、生成コードと protobuf のコードがコミット済みの内容と一致することをチェックし、ジェネレータが生成したものを削除して 1 回の実行ですべて書き直させて vet し、生成したものを呼び出すコードを kanna-orm vet、kanna-value vet、kanna-i18n vet で検査し、サービスを PostgreSQL に対してテストします。
+- [go-kanna/showcase](https://github.com/go-kanna/showcase) は 7 つすべてを一緒に動かします。CI は、生成コードと protobuf のコードがコミット済みの内容と一致することをチェックし、ジェネレータが生成したものを削除して 1 回の実行ですべて書き直させて vet し、生成したものを呼び出すコードを kanna vet で検査し、サービスを PostgreSQL に対してテストします。
 
 すべてのジェネレータの土台である [go-kanna/internal](https://github.com/go-kanna/internal) への変更は、タグを打つ前に各ジェネレータのテストを実行します。
 
