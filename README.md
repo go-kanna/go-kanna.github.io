@@ -70,7 +70,8 @@ what it writes compiles and does what it says is checked in two places beyond it
 - Each generator's tests compile the code it generates for a package of every kind it handles, and call it.
 - [go-kanna/showcase](https://github.com/go-kanna/showcase) runs all seven together. Its CI checks that the generated
   code and the protobuf code are what is committed, deletes what the generators wrote and has one run write it all
-  again and vet it, and tests the service against PostgreSQL.
+  again and vet it, checks the code calling what they write with kanna-orm vet, kanna-value vet, and kanna-i18n vet,
+  and tests the service against PostgreSQL.
 
 A change to [go-kanna/internal](https://github.com/go-kanna/internal), which every generator is built on, runs each
 generator's tests against it before it is tagged.
