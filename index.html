@@ -601,8 +601,9 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
           </li>
           <li>
             <h3>Check in CI</h3>
-<pre class="cmd"><code>go tool kanna gen -check</code></pre>
-            <p>Fails when a committed file is not what would be generated, and writes nothing.</p>
+<pre class="cmd"><code>go tool kanna gen -check
+go tool kanna vet</code></pre>
+            <p>The first fails when a committed file is not what would be generated, and writes nothing. The second runs the vet of each tool that has one, on the code calling what it writes.</p>
           </li>
           <li>
             <h3>Install it</h3>
@@ -676,7 +677,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <li><a class="name" href="mapper/">kanna-mapper</a><span>maps a to-do to its protobuf message, the input of <code>PutTodo</code> back from one, priorities by name, and the filter of <code>ListTodo</code>, a oneof, into a sum type</span></li>
             <li><a class="name" href="fixture/">kanna-fixture</a><span>makes the to-dos and comments the tests start from, normal in priority by <code>fixture.Priority</code>, written by hand</span></li>
             <li><a class="name" href="i18n/">kanna-i18n</a><span>compiles the service's messages, and the texts of validation errors, in English and Japanese</span></li>
-            <li><a class="name" href="kanna/">kanna gen</a><span>runs all of them behind <code>make gen</code>, and checks what is committed in CI</span></li>
+            <li><a class="name" href="kanna/">kanna gen</a><span>runs all of them behind <code>make gen</code> and their vets behind <code>make vet</code>, and checks what is committed in CI</span></li>
           </ul>
           <p class="more"><a href="https://github.com/go-kanna/showcase">Read the code on GitHub</a></p>
         </div>
@@ -778,7 +779,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <h3><a href="kanna/">kanna gen</a></h3>
             <p class="links"><a href="https://github.com/go-kanna/kanna">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/kanna">pkg.go.dev</a></p>
           </div>
-          <p class="what">Runs the generators of a module in the order they need, worked out from what each reads and writes. It adds no configuration: what it runs are the <code>//go:generate</code> lines already there, and it can show why each comes where it does, or check them in CI.</p>
+          <p class="what">Runs the generators of a module in the order they need, worked out from what each reads and writes. It adds no configuration: what it runs are the <code>//go:generate</code> lines already there, and it can show why each comes where it does, or check them in CI. <code>kanna vet</code> runs the vets of those that have one.</p>
           <div class="install">
             <code id="install-kanna">go get -tool github.com/go-kanna/kanna</code>
             <button type="button" class="copy" data-copy="install-kanna">Copy</button>

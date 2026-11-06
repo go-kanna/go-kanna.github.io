@@ -11,16 +11,16 @@ part in Go or SQL. A generator that needs a runtime ships a small one in the sam
 
 This repository is its site: **https://go-kanna.github.io/**
 
-| Repository                                                | What it is                                                                                   |
-|-----------------------------------------------------------|----------------------------------------------------------------------------------------------|
-| [go-kanna/validate](https://github.com/go-kanna/validate) | kanna-validate: `Validate` methods from struct tags, with error codes keyed by JSON names    |
-| [go-kanna/value](https://github.com/go-kanna/value)       | kanna-value: value types held to their rule, and enums to their constants                    |
-| [go-kanna/orm](https://github.com/go-kanna/orm)           | kanna-orm: the implementation of your repository interfaces, and a chainable scope per table |
-| [go-kanna/mapper](https://github.com/go-kanna/mapper)     | kanna-mapper: the functions you declare between domain and wire types                        |
-| [go-kanna/i18n](https://github.com/go-kanna/i18n)         | kanna-i18n: typed message constructors, the translations compiled in                         |
-| [go-kanna/di](https://github.com/go-kanna/di)             | kanna-di: the constructor of a container struct, from the functions next to your types       |
-| [go-kanna/fixture](https://github.com/go-kanna/fixture)   | kanna-fixture: a constructor for every struct, every field filled                            |
-| [go-kanna/kanna](https://github.com/go-kanna/kanna)       | `kanna gen`: the generators of a module, each run once, in the order they need               |
+| Repository                                                | What it is                                                                                              |
+|-----------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| [go-kanna/validate](https://github.com/go-kanna/validate) | kanna-validate: `Validate` methods from struct tags, with error codes keyed by JSON names               |
+| [go-kanna/value](https://github.com/go-kanna/value)       | kanna-value: value types held to their rule, and enums to their constants                               |
+| [go-kanna/orm](https://github.com/go-kanna/orm)           | kanna-orm: the implementation of your repository interfaces, and a chainable scope per table            |
+| [go-kanna/mapper](https://github.com/go-kanna/mapper)     | kanna-mapper: the functions you declare between domain and wire types                                   |
+| [go-kanna/i18n](https://github.com/go-kanna/i18n)         | kanna-i18n: typed message constructors, the translations compiled in                                    |
+| [go-kanna/di](https://github.com/go-kanna/di)             | kanna-di: the constructor of a container struct, from the functions next to your types                  |
+| [go-kanna/fixture](https://github.com/go-kanna/fixture)   | kanna-fixture: a constructor for every struct, every field filled                                       |
+| [go-kanna/kanna](https://github.com/go-kanna/kanna)       | `kanna gen`: the generators of a module, each run once, in the order they need; `kanna vet`: their vets |
 
 ## Principles
 
@@ -70,8 +70,7 @@ what it writes compiles and does what it says is checked in two places beyond it
 - Each generator's tests compile the code it generates for a package of every kind it handles, and call it.
 - [go-kanna/showcase](https://github.com/go-kanna/showcase) runs all seven together. Its CI checks that the generated
   code and the protobuf code are what is committed, deletes what the generators wrote and has one run write it all
-  again and vet it, checks the code calling what they write with kanna-orm vet, kanna-value vet, and kanna-i18n vet,
-  and tests the service against PostgreSQL.
+  again and vet it, checks the code calling what they write with kanna vet, and tests the service against PostgreSQL.
 
 A change to [go-kanna/internal](https://github.com/go-kanna/internal), which every generator is built on, runs each
 generator's tests against it before it is tagged.
