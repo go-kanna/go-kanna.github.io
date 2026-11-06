@@ -706,7 +706,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <h3><a href="value/">kanna-value</a></h3>
             <p class="links"><a href="https://github.com/go-kanna/value">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/value">pkg.go.dev</a></p>
           </div>
-          <p class="what">値を 1 つ保持する構造体と <code>validate</code> メソッドから値オブジェクトを生成します。コンストラクタ、アクセサ、JSON と SQL のメソッドがそろい、値がどこから来てもルールを守らせます。独自の型なのでメソッドも追加でき、kanna-validate の <code>email</code>、<code>url</code>、<code>uuid</code> タグも同じルールを呼び出します。定数を持つ string 型は、JSON、テキスト、データベースから定数の値だけを読み込む enum になります。</p>
+          <p class="what">値を 1 つ保持する構造体と <code>validate</code> メソッドから値オブジェクトを生成します。コンストラクタ、アクセサ、JSON と SQL のメソッドがそろい、値がどこから来てもルールを守らせます。独自の型なのでメソッドも追加でき、kanna-validate の <code>email</code>、<code>url</code>、<code>uuid</code> タグも同じルールを呼び出します。定数を持つ string 型は、JSON、テキスト、データベースから定数の値だけを読み込む enum になります。<code>kanna-value vet</code> は、コードが enum の値にする文字列の定数のうち、どの定数の値でもないものを見つけます。</p>
           <div class="install">
             <code id="install-value">go get -tool github.com/go-kanna/value/cmd/kanna-value</code>
             <button type="button" class="copy" data-copy="install-value">コピー</button>
@@ -718,7 +718,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <h3><a href="orm/">kanna-orm</a></h3>
             <p class="links"><a href="https://github.com/go-kanna/orm">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/orm">pkg.go.dev</a></p>
           </div>
-          <p class="what">リポジトリのインターフェースの実装を、SQL をリテラルのまま含めて生成します。テーブルごとのスコープ型も生成し、そのメソッドで絞り込み、並べ替え、ページング、リレーションの読み込みができます。マイグレーション済みのデータベースのスナップショットからスキーマを読むので、一致しないカラムや型があれば生成が止まります。PostgreSQL（pgx または database/sql 経由）と MySQL 8.4 以降に対応します。</p>
+          <p class="what">リポジトリのインターフェースの実装を、SQL をリテラルのまま含めて生成します。テーブルごとのスコープ型も生成し、そのメソッドで絞り込み、並べ替え、ページング、リレーションの読み込みができます。マイグレーション済みのデータベースのスナップショットからスキーマを読むので、一致しないカラムや型があれば生成が止まります。PostgreSQL（pgx または database/sql 経由）と MySQL 8.4 以降に対応します。<code>kanna-orm vet</code> は、リポジトリに必ず失敗する scope を渡す呼び出しを見つけます。</p>
           <div class="install">
             <code id="install-orm">go get -tool github.com/go-kanna/orm/cmd/kanna-orm</code>
             <button type="button" class="copy" data-copy="install-orm">コピー</button>
@@ -742,7 +742,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <h3><a href="i18n/">kanna-i18n</a></h3>
             <p class="links"><a href="https://github.com/go-kanna/i18n">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/i18n">pkg.go.dev</a></p>
           </div>
-          <p class="what">ロケールファイルのディレクトリをコンパイルし、メッセージごとに型付きのコンストラクタを生成します。翻訳そのものもコードに組み込むので、実行時に読み込みも解析もしません。CLDR の複数形、ロケールに合わせた数値の書式、Accept-Language の値を受け取る <code>Localizer</code> を備えています。</p>
+          <p class="what">ロケールファイルのディレクトリをコンパイルし、メッセージごとに型付きのコンストラクタを生成します。翻訳そのものもコードに組み込むので、実行時に読み込みも解析もしません。CLDR の複数形、ロケールに合わせた数値の書式、Accept-Language の値を受け取る <code>Localizer</code> を備えています。<code>kanna-i18n vet</code> は、コードが報告するエラーコードのうち、キーのまま表示されるものや、params が渡さないプレースホルダが残るものを見つけます。</p>
           <div class="install">
             <code id="install-i18n">go get -tool github.com/go-kanna/i18n/cmd/kanna-i18n</code>
             <button type="button" class="copy" data-copy="install-i18n">コピー</button>

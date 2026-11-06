@@ -706,7 +706,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <h3><a href="value/">kanna-value</a></h3>
             <p class="links"><a href="https://github.com/go-kanna/value">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/value">pkg.go.dev</a></p>
           </div>
-          <p class="what">Turns a struct holding one value and a <code>validate</code> method into a value type, with constructors, an accessor, and JSON and SQL methods that hold every value to the rule wherever it comes from. A type of your own, so it takes your methods; the <code>email</code>, <code>url</code>, and <code>uuid</code> tags of kanna-validate call the same rules. A string type with constants becomes an enum that reads in only those, from JSON, text, and a database.</p>
+          <p class="what">Turns a struct holding one value and a <code>validate</code> method into a value type, with constructors, an accessor, and JSON and SQL methods that hold every value to the rule wherever it comes from. A type of your own, so it takes your methods; the <code>email</code>, <code>url</code>, and <code>uuid</code> tags of kanna-validate call the same rules. A string type with constants becomes an enum that reads in only those, from JSON, text, and a database, and <code>kanna-value vet</code> finds a string constant your code makes one of its values that none of its constants holds.</p>
           <div class="install">
             <code id="install-value">go get -tool github.com/go-kanna/value/cmd/kanna-value</code>
             <button type="button" class="copy" data-copy="install-value">Copy</button>
@@ -718,7 +718,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <h3><a href="orm/">kanna-orm</a></h3>
             <p class="links"><a href="https://github.com/go-kanna/orm">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/orm">pkg.go.dev</a></p>
           </div>
-          <p class="what">Writes the implementation of your repository interfaces, with the SQL in it as literals, and a scope type for each table whose methods narrow, order, page, and load relations. It reads the schema from a snapshot of your migrated database, so a column or a type that does not match stops generation. PostgreSQL through pgx or database/sql, and MySQL 8.4 or later.</p>
+          <p class="what">Writes the implementation of your repository interfaces, with the SQL in it as literals, and a scope type for each table whose methods narrow, order, page, and load relations. It reads the schema from a snapshot of your migrated database, so a column or a type that does not match stops generation. PostgreSQL through pgx or database/sql, and MySQL 8.4 or later. <code>kanna-orm vet</code> finds the calls handing a repository a scope it fails on every time.</p>
           <div class="install">
             <code id="install-orm">go get -tool github.com/go-kanna/orm/cmd/kanna-orm</code>
             <button type="button" class="copy" data-copy="install-orm">Copy</button>
@@ -742,7 +742,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
             <h3><a href="i18n/">kanna-i18n</a></h3>
             <p class="links"><a href="https://github.com/go-kanna/i18n">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/i18n">pkg.go.dev</a></p>
           </div>
-          <p class="what">Compiles a directory of locale files into a typed constructor for every message, with the translations themselves compiled in, so nothing is read or parsed at run time. CLDR plurals, locale-formatted numbers, and a <code>Localizer</code> that takes an Accept-Language value.</p>
+          <p class="what">Compiles a directory of locale files into a typed constructor for every message, with the translations themselves compiled in, so nothing is read or parsed at run time. CLDR plurals, locale-formatted numbers, and a <code>Localizer</code> that takes an Accept-Language value. <code>kanna-i18n vet</code> finds the error codes your code reports that render as their key, or with a placeholder the params do not give.</p>
           <div class="install">
             <code id="install-i18n">go get -tool github.com/go-kanna/i18n/cmd/kanna-i18n</code>
             <button type="button" class="copy" data-copy="install-i18n">Copy</button>
