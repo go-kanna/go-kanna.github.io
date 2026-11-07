@@ -35,6 +35,7 @@ TOOLS = [
     ("orm", "kanna-orm"),
     ("mapper", "kanna-mapper"),
     ("i18n", "kanna-i18n"),
+    ("config", "kanna-config"),
     ("di", "kanna-di"),
     ("fixture", "kanna-fixture"),
     ("kanna", "kanna gen"),

@@ -4,7 +4,7 @@
 
 [![English](https://img.shields.io/badge/lang-English-blue.svg)](README.md)
 
-kanna は、Go のための 7 つのコードジェネレータのファミリーです。バリデーション、値オブジェクト、データベース、マッピング、メッセージ、依存関係の組み立て、テストデータを扱います。必要なものを規約どおりの名前で宣言すれば、いずれも本来手で書くはずの素の Go を生成します。リフレクションはなく、レビューから隠れるものもありません。規約に合わないところは、その部分だけ Go や SQL で書きます。ランタイムが必要なジェネレータは小さなものを同じモジュールで提供するので、両者がずれることはありません。
+kanna は、Go のための 8 つのコードジェネレータのファミリーです。バリデーション、値オブジェクト、データベース、マッピング、メッセージ、設定、依存関係の組み立て、テストデータを扱います。必要なものを規約どおりの名前で宣言すれば、いずれも本来手で書くはずの素の Go を生成します。リフレクションはなく、レビューから隠れるものもありません。規約に合わないところは、その部分だけ Go や SQL で書きます。ランタイムが必要なジェネレータは小さなものを同じモジュールで提供するので、両者がずれることはありません。
 
 このリポジトリはそのサイトです: **https://go-kanna.github.io/ja/**
 
@@ -15,6 +15,7 @@ kanna は、Go のための 7 つのコードジェネレータのファミリ�
 | [go-kanna/orm](https://github.com/go-kanna/orm) | kanna-orm: リポジトリのインターフェースの実装と、テーブルごとの連結できるスコープ |
 | [go-kanna/mapper](https://github.com/go-kanna/mapper) | kanna-mapper: ドメイン型とワイヤ型の間に宣言した関数の実装 |
 | [go-kanna/i18n](https://github.com/go-kanna/i18n) | kanna-i18n: 翻訳を組み込んだ型付きのメッセージコンストラクタ |
+| [go-kanna/config](https://github.com/go-kanna/config) | kanna-config: 設定の構造体を、フラグ、環境変数、ファイルから読む関数 |
 | [go-kanna/di](https://github.com/go-kanna/di) | kanna-di: 型の隣にある関数から生成するコンテナ構造体のコンストラクタ |
 | [go-kanna/fixture](https://github.com/go-kanna/fixture) | kanna-fixture: 構造体ごとの、全フィールドが埋まったコンストラクタ |
 | [go-kanna/kanna](https://github.com/go-kanna/kanna) | `kanna gen`: モジュールのジェネレータを、必要な順に 1 回ずつ実行します。`kanna vet`: その vet を実行します |
@@ -48,7 +49,7 @@ kanna は、Go のための 7 つのコードジェネレータのファミリ�
 ジェネレータは、何かを書き出す前に、与えられたものと、生成物を呼び出す手書きのコードをチェックします。書き出したものがコンパイルでき、言ったとおりに動くことは、さらに 2 箇所でチェックしています:
 
 - 各ジェネレータのテストは、扱うすべての種類のパッケージについて生成コードをコンパイルし、呼び出します。
-- [go-kanna/showcase](https://github.com/go-kanna/showcase) は 7 つすべてを一緒に動かします。CI は、生成コードと protobuf のコードがコミット済みの内容と一致することをチェックし、ジェネレータが生成したものを削除して 1 回の実行ですべて書き直させて vet し、生成したものを呼び出すコードを kanna vet で検査し、サービスを PostgreSQL に対してテストします。
+- [go-kanna/showcase](https://github.com/go-kanna/showcase) は kanna-config 以外のすべてを一緒に動かします。CI は、生成コードと protobuf のコードがコミット済みの内容と一致することをチェックし、ジェネレータが生成したものを削除して 1 回の実行ですべて書き直させて vet し、生成したものを呼び出すコードを kanna vet で検査し、サービスを PostgreSQL に対してテストします。
 
 すべてのジェネレータの土台である [go-kanna/internal](https://github.com/go-kanna/internal) への変更は、タグを打つ前に各ジェネレータのテストを実行します。
 
