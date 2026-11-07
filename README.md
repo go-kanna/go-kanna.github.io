@@ -4,10 +4,11 @@
 
 [![日本語](https://img.shields.io/badge/lang-%E6%97%A5%E6%9C%AC%E8%AA%9E-blue.svg)](README.ja.md)
 
-kanna is a family of seven code generators for Go: validation, value types, the database, mapping, messages, wiring,
-and test data. You declare what you need under the names the conventions expect, and each writes the plain Go you would
-otherwise write by hand: no reflection, nothing hidden from review. Where the conventions do not fit, you write that
-part in Go or SQL. A generator that needs a runtime ships a small one in the same module, so the two never drift apart.
+kanna is a family of eight code generators for Go: validation, value types, the database, mapping, messages, settings,
+wiring, and test data. You declare what you need under the names the conventions expect, and each writes the plain Go
+you would otherwise write by hand: no reflection, nothing hidden from review. Where the conventions do not fit, you
+write that part in Go or SQL. A generator that needs a runtime ships a small one in the same module, so the two never
+drift apart.
 
 This repository is its site: **https://go-kanna.github.io/**
 
@@ -18,6 +19,7 @@ This repository is its site: **https://go-kanna.github.io/**
 | [go-kanna/orm](https://github.com/go-kanna/orm)           | kanna-orm: the implementation of your repository interfaces, and a chainable scope per table            |
 | [go-kanna/mapper](https://github.com/go-kanna/mapper)     | kanna-mapper: the functions you declare between domain and wire types                                   |
 | [go-kanna/i18n](https://github.com/go-kanna/i18n)         | kanna-i18n: typed message constructors, the translations compiled in                                    |
+| [go-kanna/config](https://github.com/go-kanna/config)     | kanna-config: the function reading a struct of settings from flags, the environment, and files          |
 | [go-kanna/di](https://github.com/go-kanna/di)             | kanna-di: the constructor of a container struct, from the functions next to your types                  |
 | [go-kanna/fixture](https://github.com/go-kanna/fixture)   | kanna-fixture: a constructor for every struct, every field filled                                       |
 | [go-kanna/kanna](https://github.com/go-kanna/kanna)       | `kanna gen`: the generators of a module, each run once, in the order they need; `kanna vet`: their vets |
@@ -68,9 +70,10 @@ A generator checks what it is given, and the hand-written code calling what it w
 what it writes compiles and does what it says is checked in two places beyond it:
 
 - Each generator's tests compile the code it generates for a package of every kind it handles, and call it.
-- [go-kanna/showcase](https://github.com/go-kanna/showcase) runs all seven together. Its CI checks that the generated
-  code and the protobuf code are what is committed, deletes what the generators wrote and has one run write it all
-  again and vet it, checks the code calling what they write with kanna vet, and tests the service against PostgreSQL.
+- [go-kanna/showcase](https://github.com/go-kanna/showcase) runs all of them together but kanna-config. Its CI checks
+  that the generated code and the protobuf code are what is committed, deletes what the generators wrote and has one run
+  write it all again and vet it, checks the code calling what they write with kanna vet, and tests the service against
+  PostgreSQL.
 
 A change to [go-kanna/internal](https://github.com/go-kanna/internal), which every generator is built on, runs each
 generator's tests against it before it is tagged.
