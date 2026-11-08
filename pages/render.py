@@ -30,7 +30,7 @@ SITE = "https://go-kanna.github.io/"
 
 # Each repository's page is at its name, headed with the tool's name.
 TOOLS = [
-    ("validate", "kanna-validate"),
+    ("validator", "kanna-validator"),
     ("value", "kanna-value"),
     ("orm", "kanna-orm"),
     ("mapper", "kanna-mapper"),

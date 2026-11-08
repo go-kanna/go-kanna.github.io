@@ -12,17 +12,17 @@ drift apart.
 
 This repository is its site: **https://go-kanna.github.io/**
 
-| Repository                                                | What it is                                                                                              |
-|-----------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
-| [go-kanna/validate](https://github.com/go-kanna/validate) | kanna-validate: `Validate` methods from struct tags, with error codes keyed by JSON names               |
-| [go-kanna/value](https://github.com/go-kanna/value)       | kanna-value: value types held to their rule, and enums to their constants                               |
-| [go-kanna/orm](https://github.com/go-kanna/orm)           | kanna-orm: the implementation of your repository interfaces, and a chainable scope per table            |
-| [go-kanna/mapper](https://github.com/go-kanna/mapper)     | kanna-mapper: the functions you declare between domain and wire types                                   |
-| [go-kanna/i18n](https://github.com/go-kanna/i18n)         | kanna-i18n: typed message constructors, the translations compiled in                                    |
-| [go-kanna/config](https://github.com/go-kanna/config)     | kanna-config: the function reading a struct of settings from flags, the environment, and files          |
-| [go-kanna/di](https://github.com/go-kanna/di)             | kanna-di: the constructor of a container struct, from the functions next to your types                  |
-| [go-kanna/fixture](https://github.com/go-kanna/fixture)   | kanna-fixture: a constructor for every struct, every field filled                                       |
-| [go-kanna/kanna](https://github.com/go-kanna/kanna)       | `kanna gen`: the generators of a module, each run once, in the order they need; `kanna vet`: their vets |
+| Repository                                                  | What it is                                                                                              |
+|-------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| [go-kanna/validator](https://github.com/go-kanna/validator) | kanna-validator: `Validate` methods from struct tags, with error codes keyed by JSON names              |
+| [go-kanna/value](https://github.com/go-kanna/value)         | kanna-value: value types held to their rule, and enums to their constants                               |
+| [go-kanna/orm](https://github.com/go-kanna/orm)             | kanna-orm: the implementation of your repository interfaces, and a chainable scope per table            |
+| [go-kanna/mapper](https://github.com/go-kanna/mapper)       | kanna-mapper: the functions you declare between domain and wire types                                   |
+| [go-kanna/i18n](https://github.com/go-kanna/i18n)           | kanna-i18n: typed message constructors, the translations compiled in                                    |
+| [go-kanna/config](https://github.com/go-kanna/config)       | kanna-config: the function reading a struct of settings from flags, the environment, and files          |
+| [go-kanna/di](https://github.com/go-kanna/di)               | kanna-di: the constructor of a container struct, from the functions next to your types                  |
+| [go-kanna/fixture](https://github.com/go-kanna/fixture)     | kanna-fixture: a constructor for every struct, every field filled                                       |
+| [go-kanna/kanna](https://github.com/go-kanna/kanna)         | `kanna gen`: the generators of a module, each run once, in the order they need; `kanna vet`: their vets |
 
 ## Principles
 
@@ -40,7 +40,7 @@ and a mistake is told as early as it can be.
 ## What is here
 
 - `index.html` is the landing page, and `ja/index.html` the same in Japanese. Open either in a browser to preview it.
-- Each tool's page, `validate/` and so on, is its README, and `ja/validate/` its `README.ja.md`: `pages/render.py`
+- Each tool's page, `validator/` and so on, is its README, and `ja/validator/` its `README.ja.md`: `pages/render.py`
   fetches them from each repository's default branch through the GitHub API, renders each into `pages/page.html`, sets
   its blocks of generated code on wood, as the rest of the site does, and fills in the versions on the landing page
   from the latest tags and the `go.mod` files. None of that is committed. The Pages workflow runs the script on every

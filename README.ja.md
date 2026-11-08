@@ -10,7 +10,7 @@ kanna は、Go のための 8 つのコードジェネレータのファミリ�
 
 | リポジトリ | 内容 |
 |---|---|
-| [go-kanna/validate](https://github.com/go-kanna/validate) | kanna-validate: 構造体タグから `Validate` メソッドを生成する。エラーはフィールドの JSON 名をキーにしたコードで返す |
+| [go-kanna/validator](https://github.com/go-kanna/validator) | kanna-validator: 構造体タグから `Validate` メソッドを生成する。エラーはフィールドの JSON 名をキーにしたコードで返す |
 | [go-kanna/value](https://github.com/go-kanna/value) | kanna-value: ルールを守り続ける値オブジェクトと、定数の値だけを取る enum |
 | [go-kanna/orm](https://github.com/go-kanna/orm) | kanna-orm: リポジトリのインターフェースの実装と、テーブルごとの連結できるスコープ |
 | [go-kanna/mapper](https://github.com/go-kanna/mapper) | kanna-mapper: ドメイン型とワイヤ型の間に宣言した関数の実装 |
@@ -32,7 +32,7 @@ kanna は、Go のための 8 つのコードジェネレータのファミリ�
 ## ここにあるもの
 
 - `index.html` はランディングページで、`ja/index.html` はその日本語版です。どちらもブラウザで開けばプレビューできます。
-- `validate/` などの各ツールのページは README を、`ja/validate/` などは `README.ja.md` を表示します。`pages/render.py` は、これらを各リポジトリのデフォルトブランチから GitHub API で取得して `pages/page.html` に描画し、生成コードのブロックをサイトの他の部分と同じように木の色にし、ランディングページのバージョンを最新のタグと `go.mod` ファイルから埋めます。これらはコミットされません。Pages ワークフローが `main` への push ごとと 1 日 1 回スクリプトを実行するので、サイトはリポジトリに追従します。サイト全体をプレビューするには、gh CLI にログインした状態で次を実行します:
+- `validator/` などの各ツールのページは README を、`ja/validator/` などは `README.ja.md` を表示します。`pages/render.py` は、これらを各リポジトリのデフォルトブランチから GitHub API で取得して `pages/page.html` に描画し、生成コードのブロックをサイトの他の部分と同じように木の色にし、ランディングページのバージョンを最新のタグと `go.mod` ファイルから埋めます。これらはコミットされません。Pages ワークフローが `main` への push ごとと 1 日 1 回スクリプトを実行するので、サイトはリポジトリに追従します。サイト全体をプレビューするには、gh CLI にログインした状態で次を実行します:
 
   ```sh
   python3 pages/render.py && python3 -m http.server -d _site
