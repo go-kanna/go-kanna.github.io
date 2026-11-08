@@ -66,7 +66,7 @@
       <div class="workbench">
         <div class="side">
           <div class="picker" role="tablist" aria-label="The tools" aria-orientation="vertical">
-            <a href="#validate-panel" id="validate-tab" role="tab" aria-controls="validate-panel" aria-selected="true"><b>kanna-validate</b><span>Validation from struct tags</span></a>
+            <a href="#validator-panel" id="validator-tab" role="tab" aria-controls="validator-panel" aria-selected="true"><b>kanna-validator</b><span>Validation from struct tags</span></a>
             <a href="#value-panel" id="value-tab" role="tab" aria-controls="value-panel" aria-selected="false"><b>kanna-value</b><span>Value types that keep their rule</span></a>
             <a href="#orm-panel" id="orm-tab" role="tab" aria-controls="orm-panel" aria-selected="false"><b>kanna-orm</b><span>Repositories from interfaces</span></a>
             <a href="#mapper-panel" id="mapper-tab" role="tab" aria-controls="mapper-panel" aria-selected="false"><b>kanna-mapper</b><span>Domain to wire, field by field</span></a>
@@ -79,12 +79,12 @@
         </div>
 
         <div class="panels">
-          <div class="panel" id="validate-panel" role="tabpanel" aria-labelledby="validate-tab">
-            <a class="read" href="validate/"><b>kanna-validate</b><span>Read the README</span></a>
-            <figure class="bench" aria-label="A struct marked for kanna-validate, and the Validate method it generates">
+          <div class="panel" id="validator-panel" role="tabpanel" aria-labelledby="validator-tab">
+            <a class="read" href="validator/"><b>kanna-validator</b><span>Read the README</span></a>
+            <figure class="bench" aria-label="A struct marked for kanna-validator, and the Validate method it generates">
               <div class="pane mine">
                 <p class="file"><span>user.go</span><span>you write</span></p>
-<pre><code><span class="c">//go:generate go tool kanna-validate</span>
+<pre><code><span class="c">//go:generate go tool kanna-validator</span>
 
 <span class="c">//kanna:validate</span>
 <span class="k">type</span> <span class="t">CreateUserRequest</span> <span class="k">struct</span> {
@@ -94,20 +94,20 @@
               </div>
               <div class="seam"><svg class="curl" viewBox="16 60 202 140" aria-hidden="true"><path d="M 30 186 H 148 A 56 56 0 0 0 204 130 A 56 56 0 0 0 148 74 A 40 40 0 0 0 108 114 A 26 26 0 0 0 134 140 A 13 13 0 0 0 147 127" fill="none" stroke="#F3DCA4" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <div class="pane gen">
-                <p class="file"><span>validate_gen.go</span><span>kanna-validate writes</span></p>
+                <p class="file"><span>validator_gen.go</span><span>kanna-validator writes</span></p>
 <pre><code><span class="k">func</span> (x <span class="t">CreateUserRequest</span>) <span class="f">Validate</span>() <span class="t">error</span> {
-	<span class="k">var</span> errs validate.<span class="t">Errors</span>
+	<span class="k">var</span> errs validator.<span class="t">Errors</span>
 
 	<span class="k">if</span> x.Name == <span class="s">""</span> {
-		errs.Add(<span class="s">"name"</span>, validate.Blank())
+		errs.Add(<span class="s">"name"</span>, validator.Blank())
 	} <span class="k">else</span> {
 		<span class="k">if</span> utf8.RuneCountInString(x.Name) &gt; <span class="s">50</span> {
-			errs.Add(<span class="s">"name"</span>, validate.TooLong(<span class="s">50</span>))
+			errs.Add(<span class="s">"name"</span>, validator.TooLong(<span class="s">50</span>))
 		}
 	}
 
 	<span class="k">if</span> x.Age &lt; <span class="s">18</span> {
-		errs.Add(<span class="s">"age"</span>, validate.GreaterThanOrEqualTo(<span class="s">18</span>))
+		errs.Add(<span class="s">"age"</span>, validator.GreaterThanOrEqualTo(<span class="s">18</span>))
 	}
 
 	<span class="k">return</span> errs.Err()
@@ -115,12 +115,12 @@
               </div>
             </figure>
             <div class="about">
-              <p class="what">kanna-validate writes a <code>Validate</code> method from the <code>validate</code> tags of a struct, and reports what breaks as error codes, keyed by the fields' JSON names.</p>
+              <p class="what">kanna-validator writes a <code>Validate</code> method from the <code>validate</code> tags of a struct, and reports what breaks as error codes, keyed by the fields' JSON names.</p>
               <p class="like">The tags are written as for go-playground/validator. They are read once, by go generate, instead of by reflection on every call.</p>
-              <p class="meta"><a href="validate/">Read the README</a> <a href="https://github.com/go-kanna/validate">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/validate/tags" data-tag="go-kanna/validate">v0.0.7</a><span data-go="go-kanna/validate">Go 1.27</span></span></p>
+              <p class="meta"><a href="validator/">Read the README</a> <a href="https://github.com/go-kanna/validator">GitHub</a> <span class="version"><a href="https://github.com/go-kanna/validator/tags" data-tag="go-kanna/validator">v0.0.7</a><span data-go="go-kanna/validator">Go 1.27</span></span></p>
               <div class="install">
-                <code id="install-hero-validate">go get -tool github.com/go-kanna/validate/cmd/kanna-validate</code>
-                <button type="button" class="copy" data-copy="install-hero-validate">Copy</button>
+                <code id="install-hero-validator">go get -tool github.com/go-kanna/validator/cmd/kanna-validator</code>
+                <button type="button" class="copy" data-copy="install-hero-validator">Copy</button>
               </div>
             </div>
           </div>
@@ -367,7 +367,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
 <pre><code><span class="k">func</span> <span class="f">LoadDatabase</span>(src source.<span class="t">Source</span>) (<span class="t">Database</span>, <span class="t">error</span>) {
 	<span class="k">var</span> (
 		x    <span class="t">Database</span>
-		errs validate.<span class="t">Errors</span>
+		errs validator.<span class="t">Errors</span>
 	)
 
 	<span class="c">// ...WriterURL, the same way.</span>
@@ -379,7 +379,7 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
 	} <span class="k">else</span> <span class="k">if</span> ok {
 		namePoolMaxConns = v.Name
 		<span class="k">if</span> n, err := strconv.ParseInt(v.Text, <span class="s">10</span>, <span class="s">32</span>); err != <span class="k">nil</span> {
-			errs.Add(namePoolMaxConns, validate.FailWith(<span class="s">"invalid"</span>, <span class="k">map</span>[<span class="t">string</span>]<span class="t">any</span>{<span class="s">"type"</span>: <span class="s">"int32"</span>}))
+			errs.Add(namePoolMaxConns, validator.FailWith(<span class="s">"invalid"</span>, <span class="k">map</span>[<span class="t">string</span>]<span class="t">any</span>{<span class="s">"type"</span>: <span class="s">"int32"</span>}))
 		} <span class="k">else</span> {
 			x.PoolMaxConns = <span class="t">int32</span>(n)
 		}
@@ -392,11 +392,11 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
 	}
 
 	<span class="k">if</span> x.WriterURL == <span class="s">""</span> {
-		errs.Add(nameWriterURL, validate.Blank())
+		errs.Add(nameWriterURL, validator.Blank())
 	}
 
 	<span class="k">if</span> x.PoolMaxConns &lt; <span class="s">1</span> {
-		errs.Add(namePoolMaxConns, validate.GreaterThanOrEqualTo[<span class="t">int32</span>](<span class="s">1</span>))
+		errs.Add(namePoolMaxConns, validator.GreaterThanOrEqualTo[<span class="t">int32</span>](<span class="s">1</span>))
 	}
 
 	<span class="k">if</span> len(errs) &gt; <span class="s">0</span> {
@@ -420,7 +420,7 @@ src, err := source.Open(source.<span class="t">Sources</span>{
 <span class="c">// ...</span>
 db, err := config.LoadDatabase(src)
 <span class="c">// With DATABASE_WRITER_URL unset, and pool_max_conns: 0 in the file:
-// validate: DATABASE_WRITER_URL: blank; database.pool_max_conns: greater_than_or_equal_to (count=1)</span></code></pre>
+// validator: DATABASE_WRITER_URL: blank; database.pool_max_conns: greater_than_or_equal_to (count=1)</span></code></pre>
               </div>
             </figure>
             <div class="about">
@@ -567,7 +567,7 @@ db, err := config.LoadDatabase(src)
 <span class="c">// ...one for each method of the interface</span></code></pre>
         </div>
         <div class="output">
-          <h3><a href="validate/">kanna-validate</a><span>validate_gen.go</span></h3>
+          <h3><a href="validator/">kanna-validator</a><span>validator_gen.go</span></h3>
 <pre><code><span class="k">func</span> (x <span class="t">CreateUserRequest</span>) <span class="f">Validate</span>() <span class="t">error</span>
 <span class="k">func</span> (x <span class="t">Address</span>) <span class="f">Validate</span>() <span class="t">error</span></code></pre>
         </div>
@@ -636,12 +636,12 @@ db, err := config.LoadDatabase(src)
       <ol class="steps">
         <li>
           <h3>Install it into your module</h3>
-<pre class="cmd"><code>go get -tool github.com/go-kanna/validate/cmd/kanna-validate</code></pre>
+<pre class="cmd"><code>go get -tool github.com/go-kanna/validator/cmd/kanna-validator</code></pre>
           <p>The version is in your <code>go.mod</code>, so everyone on the project runs the same one.</p>
         </li>
         <li>
           <h3>Mark what it reads</h3>
-<pre class="cmd"><code><span class="c">//go:generate go tool kanna-validate</span>
+<pre class="cmd"><code><span class="c">//go:generate go tool kanna-validator</span>
 
 <span class="c">//kanna:validate</span>
 <span class="k">type</span> CreateUserRequest <span class="k">struct</span> {</code></pre>
@@ -673,18 +673,18 @@ db, err := config.LoadDatabase(src)
   mapper/todo.go:5        <span class="c">//go:generate go tool kanna-mapper</span>
   model/todo.go:5         <span class="c">//go:generate go tool kanna-value</span>
   model/todo.go:6         <span class="c">//go:generate go tool kanna-fixture</span>
-  usecase/put_todo.go:9   <span class="c">//go:generate go tool kanna-validate</span>
+  usecase/put_todo.go:9   <span class="c">//go:generate go tool kanna-validator</span>
   usecase/put_todo.go:10  <span class="c">//go:generate go tool kanna-di</span></code></pre>
           </div>
           <div class="seam"><svg class="curl" viewBox="16 60 202 140" aria-hidden="true"><path d="M 30 186 H 148 A 56 56 0 0 0 204 130 A 56 56 0 0 0 148 74 A 40 40 0 0 0 108 114 A 26 26 0 0 0 134 140 A 13 13 0 0 0 147 127" fill="none" stroke="#F3DCA4" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <div class="pane gen">
             <p class="file"><span>go tool kanna gen</span><span>kanna writes</span></p>
-<pre><code>  model/todo.go:5         <span class="k">kanna-value</span>     wrote model/value_gen.go
-  model/todo.go:6         <span class="k">kanna-fixture</span>   wrote model/fixture/fixture_gen.go
-  usecase/put_todo.go:9   <span class="k">kanna-validate</span>  wrote usecase/validate_gen.go
-  usecase/put_todo.go:10  <span class="k">kanna-di</span>        wrote usecase/di_gen.go
-  mapper/todo.go:5        <span class="k">kanna-mapper</span>    wrote mapper/mapper_gen.go
-  handler/handler.go:11   <span class="k">kanna-di</span>        wrote handler/di_gen.go
+<pre><code>  model/todo.go:5         <span class="k">kanna-value</span>      wrote model/value_gen.go
+  model/todo.go:6         <span class="k">kanna-fixture</span>    wrote model/fixture/fixture_gen.go
+  usecase/put_todo.go:9   <span class="k">kanna-validator</span>  wrote usecase/validator_gen.go
+  usecase/put_todo.go:10  <span class="k">kanna-di</span>         wrote usecase/di_gen.go
+  mapper/todo.go:5        <span class="k">kanna-mapper</span>     wrote mapper/mapper_gen.go
+  handler/handler.go:11   <span class="k">kanna-di</span>         wrote handler/di_gen.go
 <span class="k">6 tasks, 6 files changed</span></code></pre>
           </div>
         </figure>
@@ -692,7 +692,7 @@ db, err := config.LoadDatabase(src)
           <li>
             <h3>See why</h3>
 <pre class="cmd"><code>go tool kanna gen -plan</code></pre>
-            <p>Prints what would run and why it comes where it does, such as <code>code in usecase calls what kanna-validate generates</code>, and runs nothing.</p>
+            <p>Prints what would run and why it comes where it does, such as <code>code in usecase calls what kanna-validator generates</code>, and runs nothing.</p>
           </li>
           <li>
             <h3>Check in CI</h3>
@@ -762,11 +762,11 @@ go tool kanna vet</code></pre>
       <h2 id="showcase-title">Eight tools, one service</h2>
       <p class="intro"><a href="https://github.com/go-kanna/showcase">go-kanna/showcase</a> is a to-do service, gRPC over PostgreSQL, with every tool in its place. What the generators write is committed, so each file can be read beside what it came from: here, on wood.</p>
       <div class="layout">
-<pre class="tree" aria-label="The source tree of go-kanna/showcase, with the files the generators write"><code><span class="d">showcase/</span><span>├── <b>config/</b></span><span class="x">│   ├── api_config.go</span><span class="g">│   └── config_gen.go                   <i>kanna-config</i></span><span>├── <b>internal/</b></span><span>│   ├── <b>di/</b></span><span class="x">│   │   ├── infra_di.go</span><span class="g">│   │   └── di_gen.go                   <i>kanna-di</i></span><span>│   ├── <b>feature/todo/</b></span><span>│   │   ├── <b>model/</b></span><span class="x">│   │   │   ├── todo_model.go</span><span class="g">│   │   │   ├── value_gen.go            <i>kanna-value</i></span><span class="x">│   │   │   ├── fixture/priority.go</span><span class="g">│   │   │   └── fixture/fixture_gen.go  <i>kanna-fixture</i></span><span>│   │   ├── <b>scopes/</b></span><span class="x">│   │   │   ├── scopes.go</span><span class="g">│   │   │   └── scopes_gen.go           <i>kanna-orm</i></span><span>│   │   ├── <b>repository/</b></span><span class="x">│   │   │   └── *_repository.go</span><span>│   │   ├── <b>postgres/</b></span><span class="x">│   │   │   ├── postgres_*_repository.go</span><span class="x">│   │   │   ├── todo_queries.sql</span><span class="g">│   │   │   └── repository_gen.go       <i>kanna-orm</i></span><span>│   │   ├── <b>usecase/</b></span><span class="x">│   │   │   ├── *_use_case.go</span><span class="g">│   │   │   ├── di_gen.go               <i>kanna-di</i></span><span class="g">│   │   │   └── validate_gen.go         <i>kanna-validate</i></span><span>│   │   ├── <b>mapper/</b></span><span class="x">│   │   │   ├── todo_mapper.go</span><span class="g">│   │   │   └── mapper_gen.go           <i>kanna-mapper</i></span><span>│   │   └── <b>handler/</b></span><span class="x">│   │       ├── todo_handler.go</span><span class="g">│   │       └── di_gen.go               <i>kanna-di</i></span><span>│   └── <b>messages/</b></span><span class="x">│       ├── locales/</span><span class="g">│       └── i18n_gen.go                 <i>kanna-i18n</i></span><span class="x">└── kanna-orm.snapshot.json</span></code></pre>
+<pre class="tree" aria-label="The source tree of go-kanna/showcase, with the files the generators write"><code><span class="d">showcase/</span><span>├── <b>config/</b></span><span class="x">│   ├── api_config.go</span><span class="g">│   └── config_gen.go                   <i>kanna-config</i></span><span>├── <b>internal/</b></span><span>│   ├── <b>di/</b></span><span class="x">│   │   ├── infra_di.go</span><span class="g">│   │   └── di_gen.go                   <i>kanna-di</i></span><span>│   ├── <b>feature/todo/</b></span><span>│   │   ├── <b>model/</b></span><span class="x">│   │   │   ├── todo_model.go</span><span class="g">│   │   │   ├── value_gen.go            <i>kanna-value</i></span><span class="x">│   │   │   ├── fixture/priority.go</span><span class="g">│   │   │   └── fixture/fixture_gen.go  <i>kanna-fixture</i></span><span>│   │   ├── <b>scopes/</b></span><span class="x">│   │   │   ├── scopes.go</span><span class="g">│   │   │   └── scopes_gen.go           <i>kanna-orm</i></span><span>│   │   ├── <b>repository/</b></span><span class="x">│   │   │   └── *_repository.go</span><span>│   │   ├── <b>postgres/</b></span><span class="x">│   │   │   ├── postgres_*_repository.go</span><span class="x">│   │   │   ├── todo_queries.sql</span><span class="g">│   │   │   └── repository_gen.go       <i>kanna-orm</i></span><span>│   │   ├── <b>usecase/</b></span><span class="x">│   │   │   ├── *_use_case.go</span><span class="g">│   │   │   ├── di_gen.go               <i>kanna-di</i></span><span class="g">│   │   │   └── validator_gen.go        <i>kanna-validator</i></span><span>│   │   ├── <b>mapper/</b></span><span class="x">│   │   │   ├── todo_mapper.go</span><span class="g">│   │   │   └── mapper_gen.go           <i>kanna-mapper</i></span><span>│   │   └── <b>handler/</b></span><span class="x">│   │       ├── todo_handler.go</span><span class="g">│   │       └── di_gen.go               <i>kanna-di</i></span><span>│   └── <b>messages/</b></span><span class="x">│       ├── locales/</span><span class="g">│       └── i18n_gen.go                 <i>kanna-i18n</i></span><span class="x">└── kanna-orm.snapshot.json</span></code></pre>
         <div>
           <ul class="uses">
             <li><a class="name" href="di/">kanna-di</a><span>builds the infrastructure once, and the handler from it, choosing the repositories its use cases are given</span></li>
-            <li><a class="name" href="validate/">kanna-validate</a><span>checks what the use cases are given</span></li>
+            <li><a class="name" href="validator/">kanna-validator</a><span>checks what the use cases are given</span></li>
             <li><a class="name" href="config/">kanna-config</a><span>reads the server's settings from flags and the environment, as <code>API_PORT</code> and <code>DATABASE_WRITER_URL</code>, and checks them; kanna-di builds them through the <code>LoadAPI</code> and <code>LoadDatabase</code> it writes</span></li>
             <li><a class="name" href="value/">kanna-value</a><span>holds a to-do's completion time between 2000 and 2100, wherever it goes, and its priority to the three it declares</span></li>
             <li><a class="name" href="orm/">kanna-orm</a><span>implements the repositories the use cases depend on, and the scopes they read through. A list counts the comments of each to-do in a query written by hand, reads its three latest with <code>WithComments</code>, and goes on page by page with a cursor</span></li>
@@ -788,22 +788,22 @@ go tool kanna vet</code></pre>
       <ul class="tools">
         <li class="tool">
           <div class="id">
-            <h3><a href="validate/">kanna-validate</a></h3>
-            <p class="links"><a href="https://github.com/go-kanna/validate">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/validate">pkg.go.dev</a></p>
+            <h3><a href="validator/">kanna-validator</a></h3>
+            <p class="links"><a href="https://github.com/go-kanna/validator">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/validator">pkg.go.dev</a></p>
           </div>
           <p class="what">Generates a <code>Validate</code> method from the <code>validate</code> tags of a struct, and reports what breaks as error codes, keyed by the fields' JSON names. Decodes a request and reports everything wrong with it at once.</p>
           <div class="install">
-            <code id="install-validate">go get -tool github.com/go-kanna/validate/cmd/kanna-validate</code>
-            <button type="button" class="copy" data-copy="install-validate">Copy</button>
+            <code id="install-validator">go get -tool github.com/go-kanna/validator/cmd/kanna-validator</code>
+            <button type="button" class="copy" data-copy="install-validator">Copy</button>
           </div>
-          <p class="status"><a href="https://github.com/go-kanna/validate/tags" data-tag="go-kanna/validate">v0.0.7</a> <span data-go="go-kanna/validate">Go 1.27</span></p>
+          <p class="status"><a href="https://github.com/go-kanna/validator/tags" data-tag="go-kanna/validator">v0.0.7</a> <span data-go="go-kanna/validator">Go 1.27</span></p>
         </li>
         <li class="tool">
           <div class="id">
             <h3><a href="value/">kanna-value</a></h3>
             <p class="links"><a href="https://github.com/go-kanna/value">GitHub</a> <a href="https://pkg.go.dev/github.com/go-kanna/value">pkg.go.dev</a></p>
           </div>
-          <p class="what">Turns a struct holding one value and a <code>validate</code> method into a value type, with constructors, an accessor, and JSON and SQL methods that hold every value to the rule wherever it comes from. A type of your own, so it takes your methods; the <code>email</code>, <code>url</code>, and <code>uuid</code> tags of kanna-validate call the same rules. A string type with constants becomes an enum that reads in only those, from JSON, text, and a database, and <code>kanna-value vet</code> finds a string constant your code makes one of its values that none of its constants holds.</p>
+          <p class="what">Turns a struct holding one value and a <code>validate</code> method into a value type, with constructors, an accessor, and JSON and SQL methods that hold every value to the rule wherever it comes from. A type of your own, so it takes your methods; the <code>email</code>, <code>url</code>, and <code>uuid</code> tags of kanna-validator call the same rules. A string type with constants becomes an enum that reads in only those, from JSON, text, and a database, and <code>kanna-value vet</code> finds a string constant your code makes one of its values that none of its constants holds.</p>
           <div class="install">
             <code id="install-value">go get -tool github.com/go-kanna/value/cmd/kanna-value</code>
             <button type="button" class="copy" data-copy="install-value">Copy</button>
