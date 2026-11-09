@@ -32,7 +32,7 @@ kanna は、Go のための 8 つのコードジェネレータのファミリ�
 ## ここにあるもの
 
 - `index.html` はランディングページで、`ja/index.html` はその日本語版です。どちらもブラウザで開けばプレビューできます。
-- `validator/` などの各ツールのページは README を、`ja/validator/` などは `README.ja.md` を表示します。`pages/render.py` は、これらを各リポジトリのデフォルトブランチから GitHub API で取得して `pages/page.html` に描画し、生成コードのブロックをサイトの他の部分と同じように木の色にし、ランディングページのバージョンを最新のタグと `go.mod` ファイルから埋めます。これらはコミットされません。Pages ワークフローが `main` への push ごとと 1 日 1 回スクリプトを実行するので、サイトはリポジトリに追従します。サイト全体をプレビューするには、gh CLI にログインした状態で次を実行します:
+- `validator/` などの各ツールのページは README を、`ja/validator/` などは `README.ja.md` を表示します。`pages/render.py` は、これらを各リポジトリのデフォルトブランチから GitHub API で取得して `pages/page.html` のテンプレートに入れ、生成コードのブロックをサイトの他の部分と同じように木の色にし、ランディングページのバージョンを最新のタグと `go.mod` ファイルから埋めます。スクリプトが作ったものはコミットされません。Pages ワークフローが `main` への push ごとと 1 日 1 回スクリプトを実行するので、サイトはリポジトリに追従します。サイト全体をプレビューするには、gh CLI にログインした状態で次を実行します:
 
   ```sh
   python3 pages/render.py && python3 -m http.server -d _site
@@ -51,7 +51,7 @@ kanna は、Go のための 8 つのコードジェネレータのファミリ�
 - 各ジェネレータのテストは、扱うすべての種類のパッケージについて生成コードをコンパイルし、呼び出します。
 - [go-kanna/showcase](https://github.com/go-kanna/showcase) は 8 つすべてを一緒に動かします。CI は、生成コードと protobuf のコードがコミット済みの内容と一致することをチェックし、ジェネレータが生成したものを削除して 1 回の実行ですべて書き直させて vet し、生成したものを呼び出すコードを kanna vet で検査し、サービスを PostgreSQL に対してテストします。
 
-すべてのジェネレータの土台である [go-kanna/internal](https://github.com/go-kanna/internal) への変更は、タグを打つ前に各ジェネレータのテストを実行します。
+すべてのジェネレータの土台である [go-kanna/internal](https://github.com/go-kanna/internal) を変更すると、タグを打つ前に、その変更で各ジェネレータのテストが実行されます。
 
 ## ライセンス
 

@@ -41,10 +41,10 @@ and a mistake is told as early as it can be.
 
 - `index.html` is the landing page, and `ja/index.html` the same in Japanese. Open either in a browser to preview it.
 - Each tool's page, `validator/` and so on, is its README, and `ja/validator/` its `README.ja.md`: `pages/render.py`
-  fetches them from each repository's default branch through the GitHub API, renders each into `pages/page.html`, sets
-  its blocks of generated code on wood, as the rest of the site does, and fills in the versions on the landing page
-  from the latest tags and the `go.mod` files. None of that is committed. The Pages workflow runs the script on every
-  push to `main` and once a day, so the site follows the repositories. To preview the whole site, with the gh CLI
+  fetches them from each repository's default branch through the GitHub API, renders each into `pages/page.html`, gives
+  its blocks of generated code a wood background, as the rest of the site does, and fills in the versions on the landing
+  page from the latest tags and the `go.mod` files. None of that is committed. The Pages workflow runs the script on
+  every push to `main` and once a day, so the site follows the repositories. To preview the whole site, with the gh CLI
   logged in:
 
   ```sh
