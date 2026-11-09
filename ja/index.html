@@ -243,8 +243,8 @@ RETURNING id, customer_id, status, placed_at, note`</span>
 
 <span class="c">//kanna:mapper</span>
 <span class="k">type</span> _ <span class="k">interface</span> {
-	EmployeeToProto(model.<span class="t">Employee</span>) *employeev1.<span class="t">Employee</span>
-	EmployeeFromProto(*employeev1.<span class="t">Employee</span>) (model.<span class="t">Employee</span>, <span class="t">error</span>)
+	EmployeeToEmployeev1(model.<span class="t">Employee</span>) *employeev1.<span class="t">Employee</span>
+	EmployeeToModel(*employeev1.<span class="t">Employee</span>) (model.<span class="t">Employee</span>, <span class="t">error</span>)
 }
 
 <span class="c">//kanna:converter</span>
@@ -258,7 +258,7 @@ RETURNING id, customer_id, status, placed_at, note`</span>
               <div class="seam"><svg class="curl" viewBox="16 60 202 140" aria-hidden="true"><path d="M 30 186 H 148 A 56 56 0 0 0 204 130 A 56 56 0 0 0 148 74 A 40 40 0 0 0 108 114 A 26 26 0 0 0 134 140 A 13 13 0 0 0 147 127" fill="none" stroke="#F3DCA4" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <div class="pane gen">
                 <p class="file"><span>mapper_gen.go</span><span>kanna-mapper が生成</span></p>
-<pre><code><span class="k">func</span> <span class="f">EmployeeFromProto</span>(src *employeev1.<span class="t">Employee</span>) (model.<span class="t">Employee</span>, <span class="t">error</span>) {
+<pre><code><span class="k">func</span> <span class="f">EmployeeToModel</span>(src *employeev1.<span class="t">Employee</span>) (model.<span class="t">Employee</span>, <span class="t">error</span>) {
 	<span class="k">if</span> src == <span class="k">nil</span> {
 		src = new(employeev1.<span class="t">Employee</span>)
 	}
@@ -274,7 +274,7 @@ RETURNING id, customer_id, status, placed_at, note`</span>
 	}, <span class="k">nil</span>
 }
 
-<span class="c">// EmployeeToProto, and addressToModel and addressToEmployeev1, which they call.</span></code></pre>
+<span class="c">// EmployeeToEmployeev1, and addressToModel and addressToEmployeev1, which they call.</span></code></pre>
               </div>
             </figure>
             <div class="about">
@@ -592,8 +592,8 @@ db, err := config.LoadDatabase(src)
         </div>
         <div class="output">
           <h3><a href="mapper/">kanna-mapper</a><span>mapper_gen.go</span></h3>
-<pre><code><span class="k">func</span> <span class="f">EmployeeToProto</span>(emp model.<span class="t">Employee</span>) *employeev1.<span class="t">Employee</span>
-<span class="k">func</span> <span class="f">EmployeeFromProto</span>(emp *employeev1.<span class="t">Employee</span>) (model.<span class="t">Employee</span>, <span class="t">error</span>)
+<pre><code><span class="k">func</span> <span class="f">EmployeeToEmployeev1</span>(emp model.<span class="t">Employee</span>) *employeev1.<span class="t">Employee</span>
+<span class="k">func</span> <span class="f">EmployeeToModel</span>(emp *employeev1.<span class="t">Employee</span>) (model.<span class="t">Employee</span>, <span class="t">error</span>)
 <span class="k">func</span> <span class="f">addressToEmployeev1</span>(src model.<span class="t">Address</span>) *employeev1.<span class="t">Address</span>
 <span class="k">func</span> <span class="f">addressToModel</span>(src *employeev1.<span class="t">Address</span>) model.<span class="t">Address</span>
 <span class="c">// ...and the same two for Contact</span></code></pre>
