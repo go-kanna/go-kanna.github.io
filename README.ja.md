@@ -10,15 +10,15 @@ kanna は、Go のための 8 つのコードジェネレータのファミリ�
 
 | リポジトリ | 内容 |
 |---|---|
-| [go-kanna/validator](https://github.com/go-kanna/validator) | kanna-validator: 構造体タグから `Validate` メソッドを生成する。エラーはフィールドの JSON 名をキーにしたコードで返す |
+| [go-kanna/validator](https://github.com/go-kanna/validator) | kanna-validator: 構造体タグから生成する `Validate` メソッドと、フィールドの JSON 名をキーにしたコードのエラー |
 | [go-kanna/value](https://github.com/go-kanna/value) | kanna-value: ルールを守り続ける値オブジェクトと、定数の値だけを取る enum |
-| [go-kanna/orm](https://github.com/go-kanna/orm) | kanna-orm: リポジトリのインターフェースの実装と、テーブルごとの連結できるスコープ |
+| [go-kanna/orm](https://github.com/go-kanna/orm) | kanna-orm: repository のインターフェースの実装と、テーブルごとの連結できるスコープ |
 | [go-kanna/mapper](https://github.com/go-kanna/mapper) | kanna-mapper: ドメイン型とワイヤ型の間に宣言した関数の実装 |
 | [go-kanna/i18n](https://github.com/go-kanna/i18n) | kanna-i18n: 翻訳を組み込んだ型付きのメッセージコンストラクタ |
 | [go-kanna/config](https://github.com/go-kanna/config) | kanna-config: 設定の構造体を、フラグ、環境変数、ファイルから読む関数 |
 | [go-kanna/di](https://github.com/go-kanna/di) | kanna-di: 型の隣にある関数から生成するコンテナ構造体のコンストラクタ |
 | [go-kanna/fixture](https://github.com/go-kanna/fixture) | kanna-fixture: 構造体ごとの、全フィールドが埋まったコンストラクタ |
-| [go-kanna/kanna](https://github.com/go-kanna/kanna) | `kanna gen`: モジュールのジェネレータを、必要な順に 1 回ずつ実行します。`kanna vet`: その vet を実行します |
+| [go-kanna/kanna](https://github.com/go-kanna/kanna) | モジュールのジェネレータを必要な順に 1 回ずつ実行する `kanna gen` と、その vet を実行する `kanna vet` |
 
 ## 考え方
 
