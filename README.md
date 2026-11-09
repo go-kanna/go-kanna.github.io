@@ -67,7 +67,7 @@ written anew, in [go-kanna/orm](https://github.com/go-kanna/orm).
 ## How the generated code is checked
 
 A generator checks what it is given, and the hand-written code calling what it writes, before it writes anything. That
-what it writes compiles and does what it says is checked in two places beyond it:
+what it writes compiles and works as the generator says is checked in two places beyond it:
 
 - Each generator's tests compile the code it generates for a package of every kind it handles, and call it.
 - [go-kanna/showcase](https://github.com/go-kanna/showcase) runs all eight together. Its CI checks that the generated
