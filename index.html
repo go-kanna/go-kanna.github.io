@@ -75,7 +75,7 @@
             <a href="#di-panel" id="di-tab" role="tab" aria-controls="di-panel" aria-selected="false"><b>kanna-di</b><span>Wiring, with nothing registered</span></a>
             <a href="#fixture-panel" id="fixture-tab" role="tab" aria-controls="fixture-panel" aria-selected="false"><b>kanna-fixture</b><span>Test data, every field filled</span></a>
           </div>
-          <p class="aside">Each is a module of its own. Use one, or all eight together, as <a href="#showcase">the showcase</a> does, with <a href="#gen">kanna gen</a> to run them in order.</p>
+          <p class="aside">Each is a module of its own. Use one, or <a href="#start">all eight together</a>, as <a href="#showcase">the showcase</a> does, with <a href="#gen">kanna gen</a> to run them in order.</p>
         </div>
 
         <div class="panels">
@@ -559,7 +559,7 @@ db, err := config.LoadDatabase(src)
 <span class="k">func</span> (s <span class="t">Order</span>) <span class="f">AfterCursor</span>(cursor <span class="t">string</span>) (<span class="t">Order</span>, <span class="t">error</span>)
 <span class="c">// ...80 methods on Order in all, for its columns, its relations, and paging</span>
 
-<span class="k">type</span> <span class="t">Order</span> <span class="k">struct</span>{ db <span class="t">ormDatabase</span> }
+<span class="k">type</span> <span class="t">Order</span> <span class="k">struct</span>{ db <span class="t">kDatabase</span> }
 <span class="k">func</span> <span class="f">NewOrder</span>(db <span class="t">DBTX</span>, opts ...option.<span class="t">Option</span>) <span class="t">Order</span>
 <span class="k">func</span> (r <span class="t">Order</span>) <span class="f">Get</span>(ctx context.<span class="t">Context</span>, id model.<span class="t">OrderID</span>, s ...scopes.<span class="t">Order</span>) (model.<span class="t">Order</span>, <span class="t">error</span>)
 <span class="k">func</span> (r <span class="t">Order</span>) <span class="f">List</span>(ctx context.<span class="t">Context</span>, s ...scopes.<span class="t">Order</span>) ([]model.<span class="t">Order</span>, <span class="t">error</span>)
@@ -632,7 +632,7 @@ db, err := config.LoadDatabase(src)
   <section class="how" id="how" aria-labelledby="how-title">
     <div class="wrap">
       <h2 id="how-title">Learn one, and you know all eight</h2>
-      <p class="intro">Every tool is installed, run, and checked in CI the same way. Nothing is set up but the line that runs it.</p>
+      <p class="intro">Every tool is installed, run, and checked in CI the same way. Nothing is set up but the line that runs it, except that kanna-orm reads your schema from a snapshot, which you take once from your migrated database with <code>kanna-orm describe</code>, and again after each migration.</p>
       <ol class="steps">
         <li>
           <h3>Install it into your module</h3>
@@ -720,6 +720,44 @@ go tool kanna vet</code></pre>
     </div>
   </section>
 
+  <section class="start" id="start" aria-labelledby="start-title">
+    <div class="wrap">
+      <h2 id="start-title">All eight in one module</h2>
+      <p class="intro">Nine lines install the eight tools and kanna gen into your module. All eight together need <span data-go="go-kanna/config">Go 1.27</span> or later, as kanna-validator and kanna-config do.</p>
+      <div class="kit">
+<pre class="cmd"><code id="install-all">go get -tool github.com/go-kanna/validator/cmd/kanna-validator
+go get -tool github.com/go-kanna/value/cmd/kanna-value
+go get -tool github.com/go-kanna/orm/cmd/kanna-orm
+go get -tool github.com/go-kanna/mapper/cmd/kanna-mapper
+go get -tool github.com/go-kanna/i18n/cmd/kanna-i18n
+go get -tool github.com/go-kanna/config/cmd/kanna-config
+go get -tool github.com/go-kanna/di/cmd/kanna-di
+go get -tool github.com/go-kanna/fixture/cmd/kanna-fixture
+go get -tool github.com/go-kanna/kanna</code></pre>
+        <button type="button" class="copy" data-copy="install-all">Copy</button>
+      </div>
+      <div class="layout">
+<pre class="tree" aria-label="The source tree of a new service using all eight tools: the declarations written by hand, and the files each tool writes beside them, numbered in the order kanna gen runs them"><code><span class="d">app/</span><span>├── <b>config/</b></span><span class="x">│   ├── database.go               <i>//kanna:config</i></span><span class="g">│   └── config_gen.go             <i>1 kanna-config</i></span><span>├── <b>di/</b></span><span class="x">│   ├── infra.go                  <i>//kanna:container</i></span><span class="g">│   └── di_gen.go                 <i>2 kanna-di</i></span><span>├── <b>model/</b></span><span class="x">│   ├── order.go                  <i>//kanna:value, //kanna:enum</i></span><span class="g">│   ├── value_gen.go              <i>3 kanna-value</i></span><span class="g">│   └── fixture/fixture_gen.go    <i>4 kanna-fixture</i></span><span>├── <b>scopes/</b></span><span class="x">│   ├── scopes.go                 <i>//kanna:scopes</i></span><span class="g">│   └── scopes_gen.go             <i>5 kanna-orm</i></span><span>├── <b>repository/</b></span><span class="x">│   └── order.go                  <i>//kanna:repository</i></span><span>├── <b>postgres/</b></span><span class="g">│   └── repository_gen.go         <i>6 kanna-orm</i></span><span>├── <b>messages/</b></span><span class="x">│   ├── locales/en.yaml</span><span class="g">│   └── i18n_gen.go               <i>7 kanna-i18n</i></span><span>├── <b>usecase/</b></span><span class="x">│   ├── place_order.go            <i>//kanna:validate, //kanna:container</i></span><span class="g">│   ├── validator_gen.go          <i>8 kanna-validator</i></span><span class="g">│   └── di_gen.go                 <i>9 kanna-di</i></span><span>├── <b>mapper/</b></span><span class="x">│   ├── order.go                  <i>//kanna:mapper</i></span><span class="g">│   └── mapper_gen.go             <i>10 kanna-mapper</i></span><span>├── <b>handler/</b></span><span class="x">│   ├── order.go                  <i>//kanna:container</i></span><span class="g">│   └── di_gen.go                 <i>11 kanna-di</i></span><span class="g">└── kanna-orm.snapshot.json       <i>kanna-orm describe</i></span></code></pre>
+        <ul class="ways">
+          <li>
+            <h3>Where each goes</h3>
+            <p>The files you write carry the marks the tools read, and each file a tool writes is named for it. The numbers are the order kanna gen runs them in, worked out from what each package imports; <code>go tool kanna gen -plan</code> prints it for your module. <a href="#showcase">The showcase</a> has the same packages, under <code>internal/</code>.</p>
+          </li>
+          <li>
+            <h3>Take the snapshot</h3>
+<pre class="cmd"><code>go tool kanna-orm describe -database-url "$DATABASE_URL" ./...</code></pre>
+            <p>kanna-orm reads your schema from <code>kanna-orm.snapshot.json</code>, so take one from your migrated database once, and again after each migration. Commit it with the migration.</p>
+          </li>
+          <li>
+            <h3>Generate</h3>
+<pre class="cmd"><code>go tool kanna gen</code></pre>
+            <p>Runs the eleven lines, each once, in the order of the numbers. <a href="kanna/">Read the README</a></p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
   <section class="principles" id="principles" aria-labelledby="principles-title">
     <div class="wrap">
       <h2 id="principles-title">Follow the conventions, and a declaration is all it takes</h2>
@@ -760,7 +798,7 @@ go tool kanna vet</code></pre>
         </li>
         <li>
           <blockquote><p>A little copying is better than a little dependency.</p></blockquote>
-          <p>The generated code is yours, in your module. kanna-di and kanna-mapper import nothing at run time; a generator that needs a runtime ships a small one in its own module, so the two never drift apart.</p>
+          <p>The generated code is yours, in your module. kanna-di and kanna-mapper import nothing at run time, and kanna-fixture only gofakeit, for the fields given a template. A generator that needs a runtime ships a small one in its own module, so the two never drift apart; the code kanna-config writes calls the runtime of kanna-validator as well.</p>
         </li>
       </ul>
       <p class="credit">From Rob Pike's <a href="https://go-proverbs.github.io/">Go Proverbs</a>.</p>
@@ -772,7 +810,7 @@ go tool kanna vet</code></pre>
       <h2 id="showcase-title">Eight tools, one service</h2>
       <p class="intro"><a href="https://github.com/go-kanna/showcase">go-kanna/showcase</a> is a to-do service, gRPC over PostgreSQL, with every tool in its place. What the generators write is committed, so each file can be read beside what it came from: here, on wood.</p>
       <div class="layout">
-<pre class="tree" aria-label="The source tree of go-kanna/showcase, with the files the generators write"><code><span class="d">showcase/</span><span>├── <b>config/</b></span><span class="x">│   ├── api_config.go</span><span class="g">│   └── config_gen.go                   <i>kanna-config</i></span><span>├── <b>internal/</b></span><span>│   ├── <b>di/</b></span><span class="x">│   │   ├── infra_di.go</span><span class="g">│   │   └── di_gen.go                   <i>kanna-di</i></span><span>│   ├── <b>feature/todo/</b></span><span>│   │   ├── <b>model/</b></span><span class="x">│   │   │   ├── todo_model.go</span><span class="g">│   │   │   ├── value_gen.go            <i>kanna-value</i></span><span class="x">│   │   │   ├── fixture/priority.go</span><span class="g">│   │   │   └── fixture/fixture_gen.go  <i>kanna-fixture</i></span><span>│   │   ├── <b>scopes/</b></span><span class="x">│   │   │   ├── scopes.go</span><span class="g">│   │   │   └── scopes_gen.go           <i>kanna-orm</i></span><span>│   │   ├── <b>repository/</b></span><span class="x">│   │   │   └── *_repository.go</span><span>│   │   ├── <b>postgres/</b></span><span class="x">│   │   │   ├── postgres_*_repository.go</span><span class="x">│   │   │   ├── todo_queries.sql</span><span class="g">│   │   │   └── repository_gen.go       <i>kanna-orm</i></span><span>│   │   ├── <b>usecase/</b></span><span class="x">│   │   │   ├── *_use_case.go</span><span class="g">│   │   │   ├── di_gen.go               <i>kanna-di</i></span><span class="g">│   │   │   └── validator_gen.go        <i>kanna-validator</i></span><span>│   │   ├── <b>mapper/</b></span><span class="x">│   │   │   ├── todo_mapper.go</span><span class="g">│   │   │   └── mapper_gen.go           <i>kanna-mapper</i></span><span>│   │   └── <b>handler/</b></span><span class="x">│   │       ├── todo_handler.go</span><span class="g">│   │       └── di_gen.go               <i>kanna-di</i></span><span>│   └── <b>messages/</b></span><span class="x">│       ├── locales/</span><span class="g">│       └── i18n_gen.go                 <i>kanna-i18n</i></span><span class="x">└── kanna-orm.snapshot.json</span></code></pre>
+<pre class="tree" aria-label="The source tree of go-kanna/showcase, with the files the generators write"><code><span class="d">showcase/</span><span>├── <b>config/</b></span><span class="x">│   ├── api_config.go</span><span class="x">│   ├── database_config.go</span><span class="g">│   └── config_gen.go                   <i>kanna-config</i></span><span>├── <b>internal/</b></span><span>│   ├── <b>di/</b></span><span class="x">│   │   ├── config_di.go</span><span class="x">│   │   ├── infra_di.go</span><span class="g">│   │   └── di_gen.go                   <i>kanna-di</i></span><span>│   ├── <b>feature/todo/</b></span><span>│   │   ├── <b>model/</b></span><span class="x">│   │   │   ├── todo_model.go</span><span class="g">│   │   │   ├── value_gen.go            <i>kanna-value</i></span><span class="x">│   │   │   ├── fixture/priority.go</span><span class="g">│   │   │   └── fixture/fixture_gen.go  <i>kanna-fixture</i></span><span>│   │   ├── <b>projection/</b></span><span class="x">│   │   │   └── todo_projection.go</span><span>│   │   ├── <b>scopes/</b></span><span class="x">│   │   │   ├── scopes.go</span><span class="g">│   │   │   └── scopes_gen.go           <i>kanna-orm</i></span><span>│   │   ├── <b>repository/</b></span><span class="x">│   │   │   └── *_repository.go</span><span>│   │   ├── <b>postgres/</b></span><span class="x">│   │   │   ├── errors.go</span><span class="x">│   │   │   ├── todo_queries.sql</span><span class="g">│   │   │   └── repository_gen.go       <i>kanna-orm</i></span><span>│   │   ├── <b>usecase/</b></span><span class="x">│   │   │   ├── *_use_case.go</span><span class="g">│   │   │   ├── di_gen.go               <i>kanna-di</i></span><span class="g">│   │   │   └── validator_gen.go        <i>kanna-validator</i></span><span>│   │   ├── <b>mapper/</b></span><span class="x">│   │   │   ├── todo_mapper.go</span><span class="g">│   │   │   └── mapper_gen.go           <i>kanna-mapper</i></span><span>│   │   └── <b>handler/</b></span><span class="x">│   │       ├── todo_handler.go</span><span class="g">│   │       └── di_gen.go               <i>kanna-di</i></span><span>│   └── <b>messages/</b></span><span class="x">│       ├── locales/</span><span class="g">│       └── i18n_gen.go                 <i>kanna-i18n</i></span><span class="x">└── kanna-orm.snapshot.json</span></code></pre>
         <div>
           <ul class="uses">
             <li><a class="name" href="di/">kanna-di</a><span>builds the infrastructure once, and the handler from it, choosing the repositories its use cases are given</span></li>
