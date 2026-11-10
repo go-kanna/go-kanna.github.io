@@ -7,7 +7,7 @@ and in Japanese.
 
 The tool pages are not committed. The Pages workflow runs this on every push to
 main and once a day, so the pages follow the READMEs, and the versions on the
-landing page follow the tags and the go.mod files. To preview locally:
+landing page follow the tags and the go.mod files at them. To preview locally:
 
     python3 pages/render.py && python3 -m http.server -d _site
 
@@ -102,8 +102,11 @@ def latest_tag(repo):
 
 @functools.cache
 def go_version(repo):
-    """The Go the module asks for, from the go directive of its go.mod."""
-    gomod = gh(f"repos/{ORG}/{repo}/contents/go.mod", "-H", "Accept: application/vnd.github.raw+json")
+    """The Go the module asks for, from the go directive of the go.mod of its
+    latest tag, which is what go get installs."""
+    ref = latest_tag(repo)
+    path = f"repos/{ORG}/{repo}/contents/go.mod" + (f"?ref={ref}" if ref else "")
+    gomod = gh(path, "-H", "Accept: application/vnd.github.raw+json")
     m = re.search(r"^go (\d+\.\d+)", gomod, flags=re.M)
     return f"Go {m.group(1)}" if m else None
 

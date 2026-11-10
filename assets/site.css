@@ -387,6 +387,13 @@ main > section > .wrap > h2 { margin-bottom: 0.9rem; max-width: 40rem; }
 .uses code { font-size: 0.875em; }
 .showcase .more { margin: 0; }
 
+/* All eight in one module: the install lines, and the tree of a new service */
+.kit { position: relative; margin-bottom: 2.5rem; }
+.kit .cmd { margin: 0; padding: 1rem 1.25rem; overflow-x: auto; background: var(--mine); color: var(--mine-text); border-radius: 8px; font-size: 0.8125rem; line-height: 1.6; }
+.kit .copy { position: absolute; top: 0.6rem; right: 0.6rem; }
+.start .layout { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+.tree .x i { font-style: normal; color: var(--steel); }
+
 /* The ledger of every tool */
 .tools { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--text); }
 .tool { display: grid; gap: 0.6rem 2rem; padding-block: 1.4rem; border-bottom: 1px solid var(--rule); }
@@ -524,7 +531,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   .picker a[aria-selected="true"] { border-color: var(--mine); }
 }
 @media (max-width: 52rem) {
-  .headline, .blog-demo, .showcase .layout, .order .layout, .why .wrap { grid-template-columns: minmax(0, 1fr); }
+  .headline, .blog-demo, .showcase .layout, .start .layout, .order .layout, .why .wrap { grid-template-columns: minmax(0, 1fr); }
   .sheet { columns: 1; }
   .proverbs { grid-template-columns: minmax(0, 1fr); }
   .why .mark { max-width: 10rem; }

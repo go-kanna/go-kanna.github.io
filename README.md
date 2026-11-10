@@ -8,7 +8,8 @@ kanna is a family of eight code generators for Go: validation, value types, the 
 wiring, and test data. You declare what you need under the names the conventions expect, and each writes the plain Go
 you would otherwise write by hand: no reflection, nothing hidden from review. Where the conventions do not fit, you
 write that part in Go or SQL. A generator that needs a runtime ships a small one in the same module, so the two never
-drift apart.
+drift apart. The code kanna-config writes calls the runtime of kanna-validator as well, and kanna-fixture, which has no
+runtime, calls gofakeit for the fields given a template, each at the version your module selects.
 
 This repository is its site: **https://go-kanna.github.io/**
 
@@ -23,6 +24,27 @@ This repository is its site: **https://go-kanna.github.io/**
 | [go-kanna/di](https://github.com/go-kanna/di)               | kanna-di: the constructor of a container struct, from the functions next to your types                  |
 | [go-kanna/fixture](https://github.com/go-kanna/fixture)     | kanna-fixture: a constructor for every struct, every field filled                                       |
 | [go-kanna/kanna](https://github.com/go-kanna/kanna)         | `kanna gen`: the generators of a module, each run once, in the order they need; `kanna vet`: their vets |
+
+## Getting started
+
+Nine lines install the eight generators and kanna gen into your module. All eight together need Go 1.27 or later, as
+kanna-validator and kanna-config do.
+
+```sh
+go get -tool github.com/go-kanna/validator/cmd/kanna-validator
+go get -tool github.com/go-kanna/value/cmd/kanna-value
+go get -tool github.com/go-kanna/orm/cmd/kanna-orm
+go get -tool github.com/go-kanna/mapper/cmd/kanna-mapper
+go get -tool github.com/go-kanna/i18n/cmd/kanna-i18n
+go get -tool github.com/go-kanna/config/cmd/kanna-config
+go get -tool github.com/go-kanna/di/cmd/kanna-di
+go get -tool github.com/go-kanna/fixture/cmd/kanna-fixture
+go get -tool github.com/go-kanna/kanna
+```
+
+kanna-orm reads your schema from a snapshot, which you take once from your migrated database with `kanna-orm describe`,
+and again after each migration. [All eight in one module](https://go-kanna.github.io/#start) on the site shows where
+each declaration goes, what each generator writes beside it, and the order kanna gen runs them in.
 
 ## Principles
 
@@ -43,7 +65,7 @@ and a mistake is told as early as it can be.
 - Each tool's page, `validator/` and so on, is its README, and `ja/validator/` its `README.ja.md`: `pages/render.py`
   fetches them from each repository's default branch through the GitHub API, renders each into `pages/page.html`, gives
   its blocks of generated code a wood background, as the rest of the site does, and fills in the versions on the landing
-  page from the latest tags and the `go.mod` files. None of that is committed. The Pages workflow runs the script on
+  page from the latest tags and their `go.mod` files. None of that is committed. The Pages workflow runs the script on
   every push to `main` and once a day, so the site follows the repositories. To preview the whole site, with the gh CLI
   logged in:
 

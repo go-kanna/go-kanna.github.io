@@ -4,7 +4,7 @@
 
 [![English](https://img.shields.io/badge/lang-English-blue.svg)](README.md)
 
-kanna は、Go のための 8 つのコードジェネレータのファミリーです。バリデーション、値オブジェクト、データベース、マッピング、メッセージ、設定、依存関係の組み立て、テストデータを扱います。必要なものを規約どおりの名前で宣言すれば、いずれも本来手で書くはずの素の Go を生成します。リフレクションはなく、レビューから隠れるものもありません。規約に合わないところは、その部分だけ Go や SQL で書きます。ランタイムが必要なジェネレータは小さなものを同じモジュールで提供するので、両者がずれることはありません。
+kanna は、Go のための 8 つのコードジェネレータのファミリーです。バリデーション、値オブジェクト、データベース、マッピング、メッセージ、設定、依存関係の組み立て、テストデータを扱います。必要なものを規約どおりの名前で宣言すれば、いずれも本来手で書くはずの素の Go を生成します。リフレクションはなく、レビューから隠れるものもありません。規約に合わないところは、その部分だけ Go や SQL で書きます。ランタイムが必要なジェネレータは小さなものを同じモジュールで提供するので、両者がずれることはありません。ただし kanna-config が生成するコードは kanna-validator のランタイムも呼び、ランタイムを持たない kanna-fixture は、テンプレートを指定したフィールドで gofakeit を呼びます。これらは、利用するモジュールが選ぶバージョンで動きます。
 
 このリポジトリはそのサイトです: **https://go-kanna.github.io/ja/**
 
@@ -20,6 +20,24 @@ kanna は、Go のための 8 つのコードジェネレータのファミリ�
 | [go-kanna/fixture](https://github.com/go-kanna/fixture) | kanna-fixture: 構造体ごとの、全フィールドが埋まったコンストラクタ |
 | [go-kanna/kanna](https://github.com/go-kanna/kanna) | モジュールのジェネレータを必要な順に 1 回ずつ実行する `kanna gen` と、その vet を実行する `kanna vet` |
 
+## 使い始める
+
+9 行で、8 つのジェネレータと kanna gen をモジュールに入れます。kanna-validator と kanna-config が Go 1.27 以上を求めるので、8 つ全部を使うには Go 1.27 以上が必要です。
+
+```sh
+go get -tool github.com/go-kanna/validator/cmd/kanna-validator
+go get -tool github.com/go-kanna/value/cmd/kanna-value
+go get -tool github.com/go-kanna/orm/cmd/kanna-orm
+go get -tool github.com/go-kanna/mapper/cmd/kanna-mapper
+go get -tool github.com/go-kanna/i18n/cmd/kanna-i18n
+go get -tool github.com/go-kanna/config/cmd/kanna-config
+go get -tool github.com/go-kanna/di/cmd/kanna-di
+go get -tool github.com/go-kanna/fixture/cmd/kanna-fixture
+go get -tool github.com/go-kanna/kanna
+```
+
+kanna-orm はスキーマをスナップショットから読むので、マイグレーションしたデータベースから `kanna-orm describe` で 1 回取っておきます。マイグレーションのたびに取り直します。宣言をどのパッケージに置き、各ジェネレータがその隣に何を書き、kanna gen がどの順で動かすかは、サイトの [8 つ全部を 1 つのモジュールで](https://go-kanna.github.io/ja/#start) に図があります。
+
 ## 考え方
 
 **規約に従えば、宣言だけで動く。** 実装は読める素の Go として生成し、誤りはできるだけ早く知らせます。
@@ -32,7 +50,7 @@ kanna は、Go のための 8 つのコードジェネレータのファミリ�
 ## ここにあるもの
 
 - `index.html` はランディングページで、`ja/index.html` はその日本語版です。どちらもブラウザで開けばプレビューできます。
-- `validator/` などの各ツールのページは README を、`ja/validator/` などは `README.ja.md` を表示します。`pages/render.py` は、これらを各リポジトリのデフォルトブランチから GitHub API で取得して `pages/page.html` のテンプレートに入れ、生成コードのブロックをサイトの他の部分と同じように木の色にし、ランディングページのバージョンを最新のタグと `go.mod` ファイルから埋めます。スクリプトが作ったものはコミットされません。Pages ワークフローが `main` への push ごとと 1 日 1 回スクリプトを実行するので、サイトはリポジトリに追従します。サイト全体をプレビューするには、gh CLI にログインした状態で次を実行します:
+- `validator/` などの各ツールのページは README を、`ja/validator/` などは `README.ja.md` を表示します。`pages/render.py` は、これらを各リポジトリのデフォルトブランチから GitHub API で取得して `pages/page.html` のテンプレートに入れ、生成コードのブロックをサイトの他の部分と同じように木の色にし、ランディングページのバージョンを最新のタグと、そのタグの `go.mod` ファイルから埋めます。スクリプトが作ったものはコミットされません。Pages ワークフローが `main` への push ごとと 1 日 1 回スクリプトを実行するので、サイトはリポジトリに追従します。サイト全体をプレビューするには、gh CLI にログインした状態で次を実行します:
 
   ```sh
   python3 pages/render.py && python3 -m http.server -d _site
