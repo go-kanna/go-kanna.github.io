@@ -723,7 +723,7 @@ go tool kanna vet</code></pre>
   <section class="start" id="start" aria-labelledby="start-title">
     <div class="wrap">
       <h2 id="start-title">8 つ全部を 1 つのモジュールで</h2>
-      <p class="intro">9 行で、8 つのツールと kanna gen をモジュールに入れます。8 つ全部を使うには <span data-go="go-kanna/config">Go 1.27</span> 以上が必要です。kanna-validator と kanna-config がその版を求めるからです。</p>
+      <p class="intro">9 行で、8 つのツールと kanna gen をモジュールに入れます。kanna-validator、kanna-config、kanna-value のどれかを使うなら、<span data-go="go-kanna/config">Go 1.27</span> 以上が必要です。</p>
       <div class="kit">
 <pre class="cmd"><code id="install-all">go get -tool github.com/go-kanna/validator/cmd/kanna-validator
 go get -tool github.com/go-kanna/value/cmd/kanna-value

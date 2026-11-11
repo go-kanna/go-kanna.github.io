@@ -22,7 +22,7 @@ kanna は、Go のための 8 つのコードジェネレータのファミリ�
 
 ## 使い始める
 
-9 行で、8 つのジェネレータと kanna gen をモジュールに入れます。kanna-validator と kanna-config が Go 1.27 以上を求めるので、8 つ全部を使うには Go 1.27 以上が必要です。
+9 行で、8 つのジェネレータと kanna gen をモジュールに入れます。kanna-validator、kanna-config、kanna-value のどれかを使うなら、Go 1.27 以上が必要です。
 
 ```sh
 go get -tool github.com/go-kanna/validator/cmd/kanna-validator
