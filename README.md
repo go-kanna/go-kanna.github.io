@@ -27,8 +27,8 @@ This repository is its site: **https://go-kanna.github.io/**
 
 ## Getting started
 
-Nine lines install the eight generators and kanna gen into your module. Using kanna-validator, kanna-config, or kanna-value
-means you need Go 1.27 or later.
+Nine lines install the eight generators and kanna gen into your module.
+Using kanna-validator, kanna-config, or kanna-value means you need Go 1.27 or later.
 
 ```sh
 go get -tool github.com/go-kanna/validator/cmd/kanna-validator
