@@ -644,7 +644,8 @@ db, err := config.LoadDatabase(src)
       <ol class="steps">
         <li>
           <h3>Install it into your module</h3>
-<pre class="cmd"><code>go get -tool github.com/go-kanna/validator/cmd/kanna-validator</code></pre>
+<pre class="cmd"><code>go get -tool github.com/go-kanna/validator/cmd/kanna-validator
+go get -tool github.com/go-kanna/kanna</code></pre>
           <p>The version is in your <code>go.mod</code>, so everyone on the project runs the same one.</p>
         </li>
         <li>
@@ -657,13 +658,13 @@ db, err := config.LoadDatabase(src)
         </li>
         <li>
           <h3>Generate</h3>
-<pre class="cmd"><code>go generate ./...</code></pre>
-          <p>Each tool writes its <code>_gen.go</code> files and prints nothing when it succeeds. A mistake stops it instead, at the file and line, with what you probably meant.</p>
+<pre class="cmd"><code>go tool kanna gen</code></pre>
+          <p>Each tool writes its <code>_gen.go</code> files and prints nothing when it succeeds. A mistake stops it instead, at the file and line, with what you probably meant. With one tool, <code>go generate ./...</code> works too.</p>
         </li>
         <li>
           <h3>Check in CI</h3>
-<pre class="cmd"><code>KANNA_CHECK=1 go generate ./...</code></pre>
-          <p>Fails when a committed file is not what its generator would write now, and writes nothing.</p>
+<pre class="cmd"><code>go tool kanna gen -check</code></pre>
+          <p>Fails when a committed file is not what its generator would write now, and writes nothing. With one tool, <code>KANNA_CHECK=1 go generate ./...</code> works too.</p>
         </li>
       </ol>
     </div>

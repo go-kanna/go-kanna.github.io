@@ -644,7 +644,8 @@ db, err := config.LoadDatabase(src)
       <ol class="steps">
         <li>
           <h3>モジュールにインストールする</h3>
-<pre class="cmd"><code>go get -tool github.com/go-kanna/validator/cmd/kanna-validator</code></pre>
+<pre class="cmd"><code>go get -tool github.com/go-kanna/validator/cmd/kanna-validator
+go get -tool github.com/go-kanna/kanna</code></pre>
           <p>バージョンは <code>go.mod</code> に記録されるので、プロジェクトの全員が同じものを実行します。</p>
         </li>
         <li>
@@ -657,13 +658,13 @@ db, err := config.LoadDatabase(src)
         </li>
         <li>
           <h3>生成する</h3>
-<pre class="cmd"><code>go generate ./...</code></pre>
-          <p>各ツールは <code>_gen.go</code> ファイルを書き出し、成功したら何も出力しません。間違いがあれば止まり、ファイルと行、おそらく意図した内容を示します。</p>
+<pre class="cmd"><code>go tool kanna gen</code></pre>
+          <p>各ツールは <code>_gen.go</code> ファイルを書き出し、成功したら何も出力しません。間違いがあれば止まり、ファイルと行、おそらく意図した内容を示します。ツールが 1 つだけなら、<code>go generate ./...</code> でも同じです。</p>
         </li>
         <li>
           <h3>CI でチェックする</h3>
-<pre class="cmd"><code>KANNA_CHECK=1 go generate ./...</code></pre>
-          <p>コミットされたファイルが、ジェネレータが今書き出す内容と違えば失敗します。このとき何も書き出しません。</p>
+<pre class="cmd"><code>go tool kanna gen -check</code></pre>
+          <p>コミットされたファイルが、ジェネレータが今書き出す内容と違えば失敗します。このとき何も書き出しません。ツールが 1 つだけなら、<code>KANNA_CHECK=1 go generate ./...</code> でも同じです。</p>
         </li>
       </ol>
     </div>
