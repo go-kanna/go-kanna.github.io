@@ -723,7 +723,7 @@ go tool kanna vet</code></pre>
   <section class="start" id="start" aria-labelledby="start-title">
     <div class="wrap">
       <h2 id="start-title">All eight in one module</h2>
-      <p class="intro">Nine lines install the eight tools and kanna gen into your module. If you use kanna-validator, kanna-config, or kanna-value, you need <span data-go="go-kanna/config">Go 1.27</span> or later.</p>
+      <p class="intro">Nine lines install the eight tools and kanna gen into your module. The Go version each needs is under <a href="#requirements">Requirements and compatibility</a>.</p>
       <div class="kit">
 <pre class="cmd"><code id="install-all">go get -tool github.com/go-kanna/validator/cmd/kanna-validator
 go get -tool github.com/go-kanna/value/cmd/kanna-value
@@ -755,6 +755,31 @@ go get -tool github.com/go-kanna/kanna</code></pre>
           </li>
         </ul>
       </div>
+    </div>
+  </section>
+
+  <section class="requirements" id="requirements" aria-labelledby="requirements-title">
+    <div class="wrap">
+      <h2 id="requirements-title">Requirements and compatibility</h2>
+      <p class="intro">What to know before you install, and before you upgrade.</p>
+      <ul class="ways">
+        <li>
+          <h3>Go</h3>
+          <p>kanna-validator, kanna-value, kanna-fixture, kanna-config, and kanna-mapper need Go 1.27 or later. kanna-orm, kanna-di, kanna-i18n, and the kanna command need Go 1.26 or later. Using all eight means Go 1.27. <code>go get -tool</code> raises the go line of your go.mod to the version the tool asks for.</p>
+        </li>
+        <li>
+          <h3>OS</h3>
+          <p>Linux and macOS are checked. Windows is not.</p>
+        </li>
+        <li>
+          <h3>Versions</h3>
+          <p>While the version is v0.x, a minor release (v0.2.0) can stop a declaration that used to work or change what it means. Such changes are written in the release notes. A patch release (v0.1.1) does not break anything.</p>
+        </li>
+        <li>
+          <h3>Upgrading</h3>
+          <p>Upgrade the tools you use together, each to the latest. They share an internal module, and your module gets only one version of it. The version numbers do not need to match. Then run <code>go tool kanna gen</code> to generate again; <code>go tool kanna gen -check</code> reports files an older version wrote.</p>
+        </li>
+      </ul>
     </div>
   </section>
 
