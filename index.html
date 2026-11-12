@@ -99,15 +99,15 @@
 	<span class="k">var</span> errs validator.<span class="t">Errors</span>
 
 	<span class="k">if</span> x.Name == <span class="s">""</span> {
-		errs.Add(<span class="s">"name"</span>, validator.Blank())
+		errs.Add(validator.Field(<span class="s">"name"</span>), validator.Blank())
 	} <span class="k">else</span> {
 		<span class="k">if</span> utf8.RuneCountInString(x.Name) &gt; <span class="s">50</span> {
-			errs.Add(<span class="s">"name"</span>, validator.TooLong(<span class="s">50</span>))
+			errs.Add(validator.Field(<span class="s">"name"</span>), validator.TooLong(<span class="s">50</span>))
 		}
 	}
 
 	<span class="k">if</span> x.Age &lt; <span class="s">18</span> {
-		errs.Add(<span class="s">"age"</span>, validator.GreaterThanOrEqualTo(<span class="s">18</span>))
+		errs.Add(validator.Field(<span class="s">"age"</span>), validator.GreaterThanOrEqualTo(<span class="s">18</span>))
 	}
 
 	<span class="k">return</span> errs.Err()
@@ -163,7 +163,7 @@
 	<span class="k">return</span> <span class="k">nil</span>
 }
 
-<span class="c">// MustEmail, String, IsZero, and MarshalJSON, Value, and Scan, which check too.</span></code></pre>
+<span class="c">// MustEmail, String, IsZero, and MarshalJSON, MarshalJSONTo, UnmarshalJSONFrom, Value, and Scan, which check too.</span></code></pre>
               </div>
             </figure>
             <div class="about">
@@ -210,7 +210,7 @@ RETURNING id, customer_id, status, placed_at, note`</span>
                 <p class="file"><span>scopes/scopes_gen.go</span><span>kanna-orm writes</span></p>
 <pre><code><span class="c">// StatusNe narrows to the rows whose status is not v.</span>
 <span class="k">func</span> (s <span class="t">Order</span>) <span class="f">StatusNe</span>(v model.<span class="t">OrderStatus</span>) <span class="t">Order</span> {
-	<span class="k">return</span> <span class="t">Order</span>{ormScope(ormRuntime(s.q).Where(<span class="s">`status &lt;&gt; `</span>, v))}
+	<span class="k">return</span> <span class="t">Order</span>{kScope(kRuntime(s.q).Where(<span class="s">`status &lt;&gt; `</span>, v))}
 }
 
 <span class="c">// ...a method for each column and relation, and Limit, After, and Cursor.</span></code></pre>
@@ -373,30 +373,30 @@ fmt.Fprintln(w, loc.Localize(messages.ItemsCount(<span class="s">1</span>)))</co
 	<span class="c">// ...WriterURL, the same way.</span>
 
 	x.PoolMaxConns = <span class="s">10</span>
-	namePoolMaxConns := <span class="s">"DATABASE_POOL_MAX_CONNS"</span>
+	pathPoolMaxConns := validator.Field(<span class="s">"DATABASE_POOL_MAX_CONNS"</span>)
 	<span class="k">if</span> v, ok, err := src.Lookup(source.<span class="t">Key</span>{Env: <span class="s">"DATABASE_POOL_MAX_CONNS"</span>, File: []<span class="t">string</span>{<span class="s">"database"</span>, <span class="s">"pool_max_conns"</span>}, Flag: <span class="s">"database-pool-max-conns"</span>}); err != <span class="k">nil</span> {
-		errs.Add(v.Name, err)
+		errs.Add(v.Path, err)
 	} <span class="k">else</span> <span class="k">if</span> ok {
-		namePoolMaxConns = v.Name
-		<span class="k">if</span> n, err := strconv.ParseInt(v.Text, <span class="s">10</span>, <span class="s">32</span>); err != <span class="k">nil</span> {
-			errs.Add(namePoolMaxConns, validator.FailWith(<span class="s">"invalid"</span>, <span class="k">map</span>[<span class="t">string</span>]<span class="t">any</span>{<span class="s">"type"</span>: <span class="s">"int32"</span>}))
+		pathPoolMaxConns = v.Path
+		<span class="k">if</span> n, err := strconv.ParseInt(v.Text, <span class="s">0</span>, <span class="s">32</span>); err != <span class="k">nil</span> {
+			errs.Add(pathPoolMaxConns, validator.FailWith(<span class="s">"invalid"</span>, <span class="k">map</span>[<span class="t">string</span>]<span class="t">any</span>{<span class="s">"type"</span>: <span class="s">"int32"</span>}))
 		} <span class="k">else</span> {
 			x.PoolMaxConns = <span class="t">int32</span>(n)
 		}
 	}
 
-	<span class="c">// ...DialTimeout, the same way, with time.ParseDuration.</span>
+	<span class="c">// ...DialTimeout, the same way, with time.ParseDuration, and the keys of the database section that no field reads.</span>
 
 	<span class="k">if</span> len(errs) &gt; <span class="s">0</span> {
 		<span class="k">return</span> <span class="t">Database</span>{}, errs
 	}
 
 	<span class="k">if</span> x.WriterURL == <span class="s">""</span> {
-		errs.Add(nameWriterURL, validator.Blank())
+		errs.Add(pathWriterURL, validator.Blank())
 	}
 
 	<span class="k">if</span> x.PoolMaxConns &lt; <span class="s">1</span> {
-		errs.Add(namePoolMaxConns, validator.GreaterThanOrEqualTo[<span class="t">int32</span>](<span class="s">1</span>))
+		errs.Add(pathPoolMaxConns, validator.GreaterThanOrEqualTo[<span class="t">int32</span>](<span class="s">1</span>))
 	}
 
 	<span class="k">if</span> len(errs) &gt; <span class="s">0</span> {
@@ -578,7 +578,9 @@ db, err := config.LoadDatabase(src)
 <span class="k">func</span> (x <span class="t">Email</span>) <span class="f">String</span>() <span class="t">string</span>
 <span class="k">func</span> (x <span class="t">Email</span>) <span class="f">IsZero</span>() <span class="t">bool</span>
 <span class="k">func</span> (x <span class="t">Email</span>) <span class="f">MarshalJSON</span>() ([]<span class="t">byte</span>, <span class="t">error</span>)
+<span class="k">func</span> (x <span class="t">Email</span>) <span class="f">MarshalJSONTo</span>(enc *jsontext.<span class="t">Encoder</span>) <span class="t">error</span>
 <span class="k">func</span> (x *<span class="t">Email</span>) <span class="f">UnmarshalJSON</span>(data []<span class="t">byte</span>) <span class="t">error</span>
+<span class="k">func</span> (x *<span class="t">Email</span>) <span class="f">UnmarshalJSONFrom</span>(dec *jsontext.<span class="t">Decoder</span>) <span class="t">error</span>
 <span class="k">func</span> (x <span class="t">Email</span>) <span class="f">Value</span>() (driver.<span class="t">Value</span>, <span class="t">error</span>)
 <span class="k">func</span> (x *<span class="t">Email</span>) <span class="f">Scan</span>(src <span class="t">any</span>) <span class="t">error</span>
 
@@ -586,7 +588,13 @@ db, err := config.LoadDatabase(src)
 <span class="k">func</span> <span class="f">NewPriority</span>(v <span class="t">string</span>) (<span class="t">Priority</span>, <span class="t">error</span>)
 <span class="k">func</span> <span class="f">PriorityValues</span>() []<span class="t">Priority</span>
 <span class="k">func</span> (x <span class="t">Priority</span>) <span class="f">String</span>() <span class="t">string</span>
+<span class="k">func</span> (x <span class="t">Priority</span>) <span class="f">MarshalText</span>() ([]<span class="t">byte</span>, <span class="t">error</span>)
 <span class="k">func</span> (x *<span class="t">Priority</span>) <span class="f">UnmarshalText</span>(text []<span class="t">byte</span>) <span class="t">error</span>
+<span class="k">func</span> (x <span class="t">Priority</span>) <span class="f">MarshalJSON</span>() ([]<span class="t">byte</span>, <span class="t">error</span>)
+<span class="k">func</span> (x <span class="t">Priority</span>) <span class="f">MarshalJSONTo</span>(enc *jsontext.<span class="t">Encoder</span>) <span class="t">error</span>
+<span class="k">func</span> (x *<span class="t">Priority</span>) <span class="f">UnmarshalJSON</span>(data []<span class="t">byte</span>) <span class="t">error</span>
+<span class="k">func</span> (x *<span class="t">Priority</span>) <span class="f">UnmarshalJSONFrom</span>(dec *jsontext.<span class="t">Decoder</span>) <span class="t">error</span>
+<span class="k">func</span> (x <span class="t">Priority</span>) <span class="f">Value</span>() (driver.<span class="t">Value</span>, <span class="t">error</span>)
 <span class="k">func</span> (x *<span class="t">Priority</span>) <span class="f">Scan</span>(src <span class="t">any</span>) <span class="t">error</span>
 <span class="k">func</span> (x <span class="t">Priority</span>) <span class="f">Validate</span>() <span class="t">error</span></code></pre>
         </div>
