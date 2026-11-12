@@ -28,7 +28,7 @@ This repository is its site: **https://go-kanna.github.io/**
 ## Getting started
 
 Nine lines install the eight generators and kanna gen into your module.
-Using kanna-validator, kanna-config, or kanna-value means you need Go 1.27 or later.
+The Go version each needs is under [Requirements and compatibility](#requirements-and-compatibility).
 
 ```sh
 go get -tool github.com/go-kanna/validator/cmd/kanna-validator
@@ -45,6 +45,19 @@ go get -tool github.com/go-kanna/kanna
 kanna-orm reads your schema from a snapshot, which you take once from your migrated database with `kanna-orm describe`,
 and again after each migration. [All eight in one module](https://go-kanna.github.io/#start) on the site shows where
 each declaration goes, what each generator writes beside it, and the order kanna gen runs them in.
+
+## Requirements and compatibility
+
+- **Go:** kanna-validator, kanna-value, kanna-fixture, kanna-config, and kanna-mapper need Go 1.27 or later. kanna-orm,
+  kanna-di, kanna-i18n, and the kanna command need Go 1.26 or later. Using all eight means Go 1.27. `go get -tool` raises
+  the go line of your go.mod to the version the tool asks for.
+- **OS:** Linux and macOS are checked. Windows is not.
+- **Versions:** while the version is v0.x, a minor release (v0.2.0) can stop a declaration that used to work or change
+  what it means. Such changes are written in the release notes. A patch release (v0.1.1) does not break anything.
+- **Upgrading:** upgrade the generators you use together, each to the latest. They share an internal module, and your
+  module gets only one version of it. The version numbers do not need to match.
+- **After upgrading:** run `go tool kanna gen` to generate again. `go tool kanna gen -check` reports files an older
+  version wrote.
 
 ## Principles
 

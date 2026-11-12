@@ -723,7 +723,7 @@ go tool kanna vet</code></pre>
   <section class="start" id="start" aria-labelledby="start-title">
     <div class="wrap">
       <h2 id="start-title">8 つ全部を 1 つのモジュールで</h2>
-      <p class="intro">9 行で、8 つのツールと kanna gen をモジュールに入れます。kanna-validator、kanna-config、kanna-value のどれかを使うなら、<span data-go="go-kanna/config">Go 1.27</span> 以上が必要です。</p>
+      <p class="intro">9 行で、8 つのツールと kanna gen をモジュールに入れます。各ツールが必要とする Go の版は、<a href="#requirements">要件と互換性</a>にあります。</p>
       <div class="kit">
 <pre class="cmd"><code id="install-all">go get -tool github.com/go-kanna/validator/cmd/kanna-validator
 go get -tool github.com/go-kanna/value/cmd/kanna-value
@@ -755,6 +755,31 @@ go get -tool github.com/go-kanna/kanna</code></pre>
           </li>
         </ul>
       </div>
+    </div>
+  </section>
+
+  <section class="requirements" id="requirements" aria-labelledby="requirements-title">
+    <div class="wrap">
+      <h2 id="requirements-title">要件と互換性</h2>
+      <p class="intro">入れる前と、上げる前に知っておきたいことです。</p>
+      <ul class="ways">
+        <li>
+          <h3>Go</h3>
+          <p>kanna-validator、kanna-value、kanna-fixture、kanna-config、kanna-mapper は Go 1.27 以降、kanna-orm、kanna-di、kanna-i18n、kanna コマンドは Go 1.26 以降が必要です。8 つ全部を使うなら 1.27 です。<code>go get -tool</code> は、go.mod の go 行を、そのツールが求める版に上げます。</p>
+        </li>
+        <li>
+          <h3>OS</h3>
+          <p>Linux と macOS で確かめています。Windows は確かめていません。</p>
+        </li>
+        <li>
+          <h3>版</h3>
+          <p>v0.x の間は、マイナー版（v0.2.0）で、通っていた宣言が止まったり、意味が変わったりすることがあります。その変更は Release ノートに書きます。パッチ版（v0.1.1）では壊しません。</p>
+        </li>
+        <li>
+          <h3>上げるとき</h3>
+          <p>使っているツールは、まとめてそれぞれ最新にします。内部モジュールを共有していて、モジュールにはその 1 つの版しか入らないためです。版の番号を揃える必要はありません。上げたら <code>go tool kanna gen</code> で生成し直します。古い版が書いたファイルは、<code>go tool kanna gen -check</code> が知らせます。</p>
+        </li>
+      </ul>
     </div>
   </section>
 
