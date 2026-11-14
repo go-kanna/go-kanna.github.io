@@ -459,9 +459,18 @@ db, err := config.LoadDatabase(src)
 	<span class="k">if</span> err != <span class="k">nil</span> {
 		<span class="k">return</span> <span class="k">nil</span>, <span class="k">nil</span>, err
 	}
+	<span class="k">var</span> cleanups []<span class="k">func</span>()
+	cleanupAll := <span class="k">func</span>() {
+		<span class="k">for</span> _, c := <span class="k">range</span> slices.Backward(cleanups) {
+			c()
+		}
+	}
 	db, cleanup, err := openDB(cfg)
 	<span class="k">if</span> err != <span class="k">nil</span> {
 		<span class="k">return</span> <span class="k">nil</span>, <span class="k">nil</span>, err
+	}
+	<span class="k">if</span> cleanup != <span class="k">nil</span> {
+		cleanups = append(cleanups, cleanup)
 	}
 	repo := postgres.NewUserRepository(db)
 	log := newLogger()
@@ -471,7 +480,7 @@ db, err := config.LoadDatabase(src)
 
 	<span class="k">return</span> &amp;<span class="t">server</span>{
 		users: users,
-	}, cleanup, <span class="k">nil</span>
+	}, cleanupAll, <span class="k">nil</span>
 }</code></pre>
               </div>
             </figure>
