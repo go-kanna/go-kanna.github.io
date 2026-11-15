@@ -49,8 +49,8 @@ each declaration goes, what each generator writes beside it, and the order kanna
 ## Requirements and compatibility
 
 - **Go:** kanna-validator, kanna-value, kanna-fixture, kanna-config, and kanna-mapper need Go 1.27 or later. kanna-orm,
-  kanna-di, kanna-i18n, and the kanna command need Go 1.26 or later. Using all eight means Go 1.27. `go get -tool` raises
-  the go line of your go.mod to the version the tool asks for.
+  kanna-di, kanna-i18n, and the kanna command need Go 1.26 or later. Using all eight means Go 1.27. `go get -tool`
+  raises the go line of your go.mod to the version the tool asks for.
 - **OS:** Linux and macOS are checked. Windows is not.
 - **Versions:** while the version is v0.x, a minor release (v0.2.0) can stop a declaration that used to work or change
   what it means. Such changes are written in the release notes. A patch release (v0.1.1) does not break anything.
@@ -96,8 +96,8 @@ and a mistake is told as early as it can be.
   and the order releases go in.
 
 The Go module that used to live here, kanna v0.2.x with the first kanna-orm, is kept on the
-[`archive/v0.2`](https://github.com/go-kanna/go-kanna.github.io/tree/archive/v0.2) branch and its tags. kanna-orm has since been
-written anew, in [go-kanna/orm](https://github.com/go-kanna/orm).
+[`archive/v0.2`](https://github.com/go-kanna/go-kanna.github.io/tree/archive/v0.2) branch and its tags. kanna-orm has
+since been written anew, in [go-kanna/orm](https://github.com/go-kanna/orm).
 
 ## How the generated code is checked
 

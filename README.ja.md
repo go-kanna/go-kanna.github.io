@@ -22,7 +22,7 @@ kanna は、Go のための 8 つのコードジェネレータのファミリ�
 
 ## 使い始める
 
-9 行で、8 つのジェネレータと kanna gen をモジュールに入れます。各ジェネレータが必要とする Go の版は、[要件と互換性](#要件と互換性) にあります。
+9 行で、8 つのジェネレータと kanna gen をモジュールに入れます。各ジェネレータが必要とする Go のバージョンは、[要件と互換性](#要件と互換性) にあります。
 
 ```sh
 go get -tool github.com/go-kanna/validator/cmd/kanna-validator
@@ -36,15 +36,15 @@ go get -tool github.com/go-kanna/fixture/cmd/kanna-fixture
 go get -tool github.com/go-kanna/kanna
 ```
 
-kanna-orm はスキーマをスナップショットから読むので、マイグレーションしたデータベースから `kanna-orm describe` で 1 回取っておきます。マイグレーションのたびに取り直します。宣言をどのパッケージに置き、各ジェネレータがその隣に何を書き、kanna gen がどの順で動かすかは、サイトの [8 つ全部を 1 つのモジュールで](https://go-kanna.github.io/ja/#start) に図があります。
+kanna-orm はスキーマをスナップショットから読むので、マイグレーションしたデータベースから `kanna-orm describe` で 1 回取っておきます。マイグレーションのたびに取り直します。宣言をどのパッケージに置き、各ジェネレータがその隣に何を書き、kanna gen がどの順で動かすかは、サイトの [8 つ全部を 1 つのモジュールで](https://go-kanna.github.io/ja/#start) が示しています。
 
 ## 要件と互換性
 
-- **Go:** kanna-validator、kanna-value、kanna-fixture、kanna-config、kanna-mapper は Go 1.27 以降、kanna-orm、kanna-di、kanna-i18n、kanna コマンドは Go 1.26 以降が必要です。8 つ全部を使うなら 1.27 です。`go get -tool` は、go.mod の go 行を、そのツールが求める版に上げます。
+- **Go:** kanna-validator、kanna-value、kanna-fixture、kanna-config、kanna-mapper は Go 1.27 以降、kanna-orm、kanna-di、kanna-i18n、kanna コマンドは Go 1.26 以降が必要です。8 つ全部を使うなら 1.27 です。`go get -tool` は、go.mod の go 行を、そのツールが求めるバージョンに上げます。
 - **OS:** Linux と macOS で確かめています。Windows は確かめていません。
-- **版:** v0.x の間は、マイナー版（v0.2.0）で、通っていた宣言が止まったり、意味が変わったりすることがあります。その変更は Release ノートに書きます。パッチ版（v0.1.1）では壊しません。
-- **上げるとき:** 使っているジェネレータは、まとめてそれぞれ最新にします。内部モジュールを共有していて、モジュールにはその 1 つの版しか入らないためです。版の番号を揃える必要はありません。
-- **上げたあと:** `go tool kanna gen` で生成し直します。古い版が書いたファイルは、`go tool kanna gen -check` が知らせます。
+- **バージョン:** v0.x の間は、マイナーバージョン（v0.2.0）で、通っていた宣言が止まったり、意味が変わったりすることがあります。その変更は Release ノートに書きます。パッチバージョン（v0.1.1）では壊しません。
+- **上げるとき:** 使っているジェネレータは、まとめてそれぞれ最新にします。内部モジュールを共有していて、モジュールにはその 1 つのバージョンしか入らないためです。バージョンの番号を揃える必要はありません。
+- **上げたあと:** `go tool kanna gen` で生成し直します。古いバージョンが書いたファイルは、`go tool kanna gen -check` が知らせます。
 
 ## 考え方
 
